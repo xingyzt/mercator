@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Google Meet Filters & Transforms
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  Change how you look on Google Meet.
 // @author       Xing
 // @match        https://meet.google.com/*
@@ -58,6 +58,7 @@ transform: scaleX(-1)
         slider.type = 'range'
 
         slider.min = [
+            'blur',
             'sepia',
             'scale',
             'pillarbox',
@@ -126,7 +127,7 @@ contrast(${amp**sliders.contrast.value})
 sepia(${sliders.sepia.value*100}%)
 hue-rotate(${180*sliders.hue.value}deg)
 saturate(${amp**sliders.saturate.value*100}%)
-blur(${amp**sliders.blur.value}px)
+blur(${sliders.blur.value*w/32}px)
 `
 
                 canvas_ctx.rotate(-sliders.rotate.value*2*Math.PI)
