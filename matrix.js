@@ -11,25 +11,30 @@
 (async function() {
     'use strict';
 
+    const video = document.createElement('video')
+    video.style='position:fixed;left:0;top:0;height:50px;z-index:9999999;background:black';
+    video.setAttribute('playsinline','');
+    video.setAttribute('autoplay','');
+
+
+    const toggle = document.createElement('input')
+    toggle.type='checkbox'
+    toggle.checked=true
+    toggle.style='position:fixed;left:0;top:0;width:50px;height:10px;z-index:9999999';
+
     class mercatorMediaStream extends MediaStream {
         constructor(old_stream) {
             super(old_stream)
 
-            const camera = document.createElement('canvas');
-            const matrix = document.createElement('canvas');
-            const comp = document.createElement('canvas');
-
-            const video = document.createElement('video');
+            const camera = document.createElement('canvas')
+            const matrix = document.createElement('canvas')
+            const comp = document.createElement('canvas')
 
             // Matrix rain
             const katakana = `1234567890ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヹヺーヽヾヿ`;
 
-            video.setAttribute('playsinline','');
-            video.setAttribute('autoplay','');
-
             document.body.appendChild(video);
-
-            video.style='position:fixed;left:0;top:0;width:50px;height:50px;z-index:9999999;background:black';
+            document.body.appendChild(toggle);
 
             const constraints = {audio: false, video: true};
 
@@ -78,52 +83,66 @@
 
             function draw(){
 
-                matrix_ctx.fillStyle = '#020'
-                matrix_ctx.fillRect(rainx,rainy,r*1.5,-r)
+                if(toggle.checked){
 
-                matrix_ctx.strokeStyle = '#080'
-                matrix_ctx.fillStyle = '#8f8'
-                matrix_ctx.strokeText(...rain_text)
-                matrix_ctx.fillText(...rain_text)
+                    matrix_ctx.fillStyle = '#020'
+                    matrix_ctx.fillRect(rainx,rainy,r*1.5,-r)
 
-                rainx = Math.floor(Math.random*w/r)*r*1.5
-                rainy = Math.floor(Math.random*h/r)*r
-                rain_text = [
-                    katakana[Math.floor(Math.random()*katakana.length)],
-                    rainx+text_offset,
-                    rainy
-                ]
+                    matrix_ctx.strokeStyle = '#080'
+                    matrix_ctx.fillStyle = '#8f8'
+                    matrix_ctx.strokeText(...rain_text)
+                    matrix_ctx.fillText(...rain_text)
 
-                matrix_ctx.strokeStyle = '#0f0'
-                matrix_ctx.fillStyle = '#fff'
-                matrix_ctx.strokeText(...rain_text)
-                matrix_ctx.fillText(...rain_text)
+                    rainx = Math.floor(Math.random*w/r)*r*1.5
+                    rainy = Math.floor(Math.random*h/r)*r
+                    rain_text = [
+                        katakana[Math.floor(Math.random()*katakana.length)],
+                        rainx+text_offset,
+                        rainy
+                    ]
 
-                camera_ctx.drawImage(video, 0, 0, w/r, h/r)
+                    matrix_ctx.strokeStyle = '#0f0'
+                    matrix_ctx.fillStyle = '#fff'
+                    matrix_ctx.strokeText(...rain_text)
+                    matrix_ctx.fillText(...rain_text)
 
-                comp_ctx.clearRect(0,0,w,h)
-                comp_ctx.globalCompositeOperation = 'source_over'
-                comp_ctx.drawImage(camera,0,0,w,h)
-                comp_ctx.globalCompositeOperation = 'color'
-                comp_ctx.drawImage(matrix,0,0,w,h)
-                comp_ctx.globalCompositeOperation = 'multiply'
-                comp_ctx.drawImage(matrix,0,0,w,h)
+                    camera_ctx.drawImage(video, 0, 0, w/r, h/r)
+
+                    comp_ctx.clearRect(0,0,w,h)
+                    comp_ctx.globalCompositeOperation = 'source_over'
+                    comp_ctx.drawImage(camera,0,0,w,h)
+                    comp_ctx.globalCompositeOperation = 'color'
+                    comp_ctx.drawImage(matrix,0,0,w,h)
+                    comp_ctx.globalCompositeOperation = 'multiply'
+                    comp_ctx.drawImage(matrix,0,0,w,h)
+
+                } else {
+
+                    comp_ctx.globalCompositeOperation = 'source_over'
+                    comp_ctx.clearRect(0,0,w,h)
+                    comp_ctx.drawImage(video,0,0,w,h)
+
+                }
 
                 requestAnimationFrame(draw)
+
             }
+
             draw()
 
             return comp.captureStream(10)
+
         }
     }
 
     async function newGetUserMedia(constraints) {
-        if (constraints && constraints.video && !constraints.audio) {
+        if (constraints && constraints.video && !constraints.audio ) {
             return new mercatorMediaStream(await navigator.mediaDevices.oldGetUserMedia(constraints))
         } else {
             return navigator.mediaDevices.oldGetUserMedia(constraints)
         }
     }
+
     MediaDevices.prototype.oldGetUserMedia = MediaDevices.prototype.getUserMedia
     MediaDevices.prototype.getUserMedia = newGetUserMedia
 
