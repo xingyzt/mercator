@@ -1,14 +1,12 @@
 // ==UserScript==
 // @name         Google Meet Filters & Transforms
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  Change how you look on Google Meet.
 // @author       Xing
 // @match        https://meet.google.com/*
 // @grant        none
 // ==/UserScript==
-
-// MERCATOR FILTERS
 
 (async function() {
     'use strict'
@@ -49,13 +47,23 @@ transform: scaleX(-1)
         scale: '',
         x: '',
         y: '',
+
+        pillarbox: '',
+        letterbox: '',
     }
 
     Object.keys(sliders).forEach(key=>{
         let slider = document.createElement('input')
         sliders[key] = slider
         slider.type = 'range'
-        slider.min = ['sepia','scale'].includes(key) ? 0 : -1
+
+        slider.min = [
+            'sepia',
+            'scale',
+            'pillarbox',
+            'letterbox'
+        ].includes(key) ? 0 : -1
+
         slider.max = 1
         slider.step = 0.001
         slider.value = 0
@@ -113,12 +121,12 @@ justify-content: space-between
                 canvas_ctx.translate(w/2,h/2)
 
                 canvas_ctx.filter = `
- brightness(${amp**sliders.brightness.value})
- contrast(${amp**sliders.contrast.value})
- sepia(${sliders.sepia.value*100}%)
- hue-rotate(${180*sliders.hue.value}deg)
- saturate(${amp**sliders.saturate.value*100}%)
- blur(${amp**sliders.blur.value}px)
+brightness(${amp**sliders.brightness.value})
+contrast(${amp**sliders.contrast.value})
+sepia(${sliders.sepia.value*100}%)
+hue-rotate(${180*sliders.hue.value}deg)
+saturate(${amp**sliders.saturate.value*100}%)
+blur(${amp**sliders.blur.value}px)
 `
 
                 canvas_ctx.rotate(-sliders.rotate.value*2*Math.PI)
@@ -130,7 +138,16 @@ justify-content: space-between
                 canvas_ctx.translate(-sliders.x.value*w,sliders.y.value*h)
                 canvas_ctx.translate(-w/2,-h/2)
 
+                let pillarbox = sliders.pillarbox.value*w/2
+                let letterbox = sliders.letterbox.value*h/2
+
                 canvas_ctx.drawImage(video,0,0,w,h)
+
+                canvas_ctx.clearRect(0,0,pillarbox,h)
+                canvas_ctx.clearRect(0,0,w,letterbox)
+                canvas_ctx.clearRect(w,0,-pillarbox,h)
+                canvas_ctx.clearRect(0,h,w,-letterbox)
+
 
                 requestAnimationFrame(draw)
 
