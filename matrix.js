@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Mercator
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      0.1
 // @description  Google Meet Matrix Rain
 // @author       Xing
 // @match        https://meet.google.com/*
@@ -50,7 +50,10 @@
             const matrix_ctx = matrix.getContext(‘2d’)
             const camera_ctx = camera.getContext(‘2d’)
             const comp_ctx = comp.getContext(‘2d’)
-            matrix_ctx.font = r+’px sans-serif’
+            matrix_ctx.font = r+’px monospace’
+            matrix_ctx.textAlign = ‘center’
+            matrix_ctx.translate(w*1.5, 0)
+            matrix_ctx.scale(-1,1)
             camera_ctx.filter = ‘brightness(0.8) contrast(2.5)’
 
             matrix_ctx.fillStyle=’#020’
@@ -59,8 +62,8 @@
             matrix_ctx.lineWidth = r/10
             matrix_ctx.strokeStyle = ‘#080’
 
-            const text_offset = r/4
-            for(let x = text_offset; x < w*1.5+text_offset; x+=r*1.5){
+            const text_offset = r/2
+            for(let x = text_offset; x < w*1.5; x+=r*1.5){
                 for(let y = 0; y < h; y+=r){
                     const rand_text = katakana[Math.floor(Math.random()*katakana.length)]
                     matrix_ctx.strokeText(rand_text,x,y)
@@ -69,23 +72,31 @@
             }
             let rainx = 0
             let rainy = 0
-            let rain_text = 0
+            let rain_text = ['Z',text_offset,0]
             comp_ctx.imageSmoothingEnabled = false
 
             function draw(){
 
                 matrix_ctx.fillStyle = ‘#020’
                 matrix_ctx.fillRect(rainx,rainy,r*1.5,-r)
+
+                matrix_ctx.strokeStyle = ‘#080’
                 matrix_ctx.fillStyle = ‘#8f8’
-                rain_text = katakana[Math.floor(Math.random()*katakana.length)]
-                matrix_ctx.strokeText(rain_text,rainx+text_offset,rainy);
-                matrix_ctx.fillText(rain_text,rainx+text_offset,rainy);
+                matrix_ctx.strokeText(…rain_text)
+                matrix_ctx.fillText(…rain_text)
+
                 rainx = Math.floor(Math.random*w/r)*r*1.5
                 rainy = Math.floor(Math.random*h/r)*r
+                rain_text = [
+                    katakana[Math.floor(Math.random()*katakana.length)],
+                    rainx+text_offset,
+                    rainy
+                ]
+
                 matrix_ctx.strokeStyle = ‘#0f0’
                 matrix_ctx.fillStyle = ‘#fff’
-                matrix_ctx.strokeText(rain_text,rainx+text_offset,rainy);
-                matrix_ctx.fillText(rain_text,rainx+text_offset,rainy);
+                matrix_ctx.strokeText(…rain_text)
+                matrix_ctx.fillText(…rain_text)
 
                 camera_ctx.drawImage(video, 0, 0, w/r, h/r)
 
