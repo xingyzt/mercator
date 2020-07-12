@@ -9,13 +9,13 @@
 // ==/UserScript==
 
 (async function() {
-    ‘use strict’;
+    'use strict';
 
-    const camera = document.createElement(‘canvas’);
-    const matrix = document.createElement(‘canvas’);
-    const comp = document.createElement(‘canvas’);
+    const camera = document.createElement('canvas');
+    const matrix = document.createElement('canvas');
+    const comp = document.createElement('canvas');
 
-    const video = document.createElement(‘video’);
+    const video = document.createElement('video');
 
     const katakana = `ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヹヺーヽヾヿ`;
 
@@ -30,9 +30,9 @@
 
     const constraints = {audio: false, video: true};
 
-    navigator.mediaDevices.getUserMedia(constraints).then(stream=>{
-        video.srcObject = stream;
-    });
+    const original_stream = await navigator.mediaDevices.getUserMedia(constraints)
+
+    video.srcObject = original_stream
 
     const w = 400;
     const h = 300;
@@ -47,14 +47,10 @@
     const comp_ctx = comp.getContext('2d');
     matrix_ctx.font = '8px serif';
     camera_ctx.filter = 'brightness(0.8) contrast(2.5)'
-    const random = seed => {
-        const x = Math.sin(seed) * 10000
-        return x - Math.floor(x)
-    }
 
-    matrix_ctx.fillStyle=’#010’
+    matrix_ctx.fillStyle='#010'
     matrix_ctx.fillRect(0,0,w,h)
-    matrix_ctx.fillStyle = ‘#0f0’
+    matrix_ctx.fillStyle = '#0f0'
 
     for(let x = 0; x < w; x+=rx){
         for(let y = 0; y < h; y+=ry){
@@ -65,9 +61,9 @@
     let randy = 0
     comp_ctx.imageSmoothingEnabled = false;
     setInterval(()=>{
-        matrix_ctx.fillStyle = ‘#010’
+        matrix_ctx.fillStyle = '#010'
         matrix_ctx.fillRect(randx,randy,rx,-ry)
-        matrix_ctx.fillStyle = ‘#0f0’
+        matrix_ctx.fillStyle = '#0f0'
         matrix_ctx.fillText(katakana[Math.floor(Math.random()*katakana.length)],randx,randy);
         randx = Math.floor(Math.random()*w/rx)*rx
         randy = Math.floor(Math.random()*h/ry)*ry
@@ -85,9 +81,8 @@
         comp_ctx.drawImage(matrix,0,0,w,h)
     },1)
 
-    const stream = comp.captureStream(10);
 
-    MediaDevices.prototype.getUserMedia = ()=>{
-        return stream
-    }
+    const modifiedStream = comp.captureStream(10)
+
+    MediaDevices.prototype.getUserMedia = () => { return modifiedStream }
 })();
