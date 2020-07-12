@@ -9,27 +9,27 @@
 // ==/UserScript==
 
 (async function() {
-    ‘use strict’;
+    'use strict';
 
     class mercatorMediaStream extends MediaStream {
         constructor(old_stream) {
             super(old_stream)
 
-            const camera = document.createElement(‘canvas’);
-            const matrix = document.createElement(‘canvas’);
-            const comp = document.createElement(‘canvas’);
+            const camera = document.createElement('canvas');
+            const matrix = document.createElement('canvas');
+            const comp = document.createElement('canvas');
 
-            const video = document.createElement(‘video’);
+            const video = document.createElement('video');
 
             // Matrix rain
             const katakana = `1234567890ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヹヺーヽヾヿ`;
 
-            video.setAttribute(‘playsinline’,’');
-            video.setAttribute(‘autoplay’,’');
+            video.setAttribute('playsinline','');
+            video.setAttribute('autoplay','');
 
             document.body.appendChild(video);
 
-            video.style=’position:fixed;left:0;top:0;width:50px;height:50px;z-index:9999999;background:black’;
+            video.style='position:fixed;left:0;top:0;width:50px;height:50px;z-index:9999999;background:black';
 
             const constraints = {audio: false, video: true};
 
@@ -47,22 +47,23 @@
             comp.height = h
             camera.width = w/r
             camera.height = h/r
-            const matrix_ctx = matrix.getContext(‘2d’)
-            const camera_ctx = camera.getContext(‘2d’)
-            const comp_ctx = comp.getContext(‘2d’)
-            matrix_ctx.font = r+’px monospace’
-            matrix_ctx.textAlign = ‘center’
+            const matrix_ctx = matrix.getContext('2d')
+            const camera_ctx = camera.getContext('2d')
+            const comp_ctx = comp.getContext('2d')
+            matrix_ctx.font = 0.9*r+'px monospace'
+            matrix_ctx.textAlign = 'center'
             matrix_ctx.translate(w*1.5, 0)
             matrix_ctx.scale(-1,1)
-            camera_ctx.filter = ‘brightness(0.8) contrast(2.5)’
+            camera_ctx.filter = 'brightness(0.8) contrast(2.5)'
 
-            matrix_ctx.fillStyle=’#020’
+            matrix_ctx.fillStyle='#020'
             matrix_ctx.fillRect(0,0,w*1.5,h)
-            matrix_ctx.fillStyle = ‘#8f8’
+            matrix_ctx.fillStyle = '#8f8'
             matrix_ctx.lineWidth = r/10
-            matrix_ctx.strokeStyle = ‘#080’
+            matrix_ctx.strokeStyle = '#080'
+            matrix_ctx.textBaseline = 'ideographic'
 
-            const text_offset = r/2
+            const text_offset = r*1.5/2
             for(let x = text_offset; x < w*1.5; x+=r*1.5){
                 for(let y = 0; y < h; y+=r){
                     const rand_text = katakana[Math.floor(Math.random()*katakana.length)]
@@ -77,13 +78,13 @@
 
             function draw(){
 
-                matrix_ctx.fillStyle = ‘#020’
+                matrix_ctx.fillStyle = '#020'
                 matrix_ctx.fillRect(rainx,rainy,r*1.5,-r)
 
-                matrix_ctx.strokeStyle = ‘#080’
-                matrix_ctx.fillStyle = ‘#8f8’
-                matrix_ctx.strokeText(…rain_text)
-                matrix_ctx.fillText(…rain_text)
+                matrix_ctx.strokeStyle = '#080'
+                matrix_ctx.fillStyle = '#8f8'
+                matrix_ctx.strokeText(...rain_text)
+                matrix_ctx.fillText(...rain_text)
 
                 rainx = Math.floor(Math.random*w/r)*r*1.5
                 rainy = Math.floor(Math.random*h/r)*r
@@ -93,19 +94,19 @@
                     rainy
                 ]
 
-                matrix_ctx.strokeStyle = ‘#0f0’
-                matrix_ctx.fillStyle = ‘#fff’
-                matrix_ctx.strokeText(…rain_text)
-                matrix_ctx.fillText(…rain_text)
+                matrix_ctx.strokeStyle = '#0f0'
+                matrix_ctx.fillStyle = '#fff'
+                matrix_ctx.strokeText(...rain_text)
+                matrix_ctx.fillText(...rain_text)
 
                 camera_ctx.drawImage(video, 0, 0, w/r, h/r)
 
                 comp_ctx.clearRect(0,0,w,h)
-                comp_ctx.globalCompositeOperation = ‘source_over’
+                comp_ctx.globalCompositeOperation = 'source_over'
                 comp_ctx.drawImage(camera,0,0,w,h)
-                comp_ctx.globalCompositeOperation = ‘color’
+                comp_ctx.globalCompositeOperation = 'color'
                 comp_ctx.drawImage(matrix,0,0,w,h)
-                comp_ctx.globalCompositeOperation = ‘multiply’
+                comp_ctx.globalCompositeOperation = 'multiply'
                 comp_ctx.drawImage(matrix,0,0,w,h)
 
                 requestAnimationFrame(draw)
