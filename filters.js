@@ -12,36 +12,60 @@
     'use strict'
 
     const form = document.createElement('form')
-    form.style='position:fixed;left:0;top:0;width:50px;z-index:9999999'
+    form.style=`
+position: fixed;
+left: 0;
+top: 0;
+width: 400px;
+z-index: 9999999;
+background: #fff4;
+backdrop-filter: blur(1rem);
+border-radius: 1vmin;
+padding: 1rem
+`
 
     const video = document.createElement('video')
     video.style='height:50px;background:black'
     video.setAttribute('playsinline','')
     video.setAttribute('autoplay','')
 
-    const filter = document.createElement('textarea')
-
     const sliders = {
-        rotate: document.createElement('input'),
-        scale: document.createElement('input'),
-        movex: document.createElement('input'),
-        movey: document.createElement('input')
+
+        brightness: '',
+        contrast: '',
+        sepia: '',
+        hue: '',
+        saturate: '',
+        blur: '',
+
+        rotate: '',
+        scale: '',
+        x: '',
+        y: '',
     }
 
-    form.appendChild(filter)
-    Object.values(sliders).forEach(slider=>{
+    Object.keys(sliders).forEach(key=>{
+        let slider = document.createElement('input')
+        sliders[key] = slider
         slider.type = 'range'
-        slider.step = 0.001
-        slider.min = -1
+        slider.min = key=='sepia' ? 0 : -1
         slider.max = 1
+        slider.step = 0.001
         slider.value = 0
         slider.style = 'width: 300px'
-        form.appendChild(slider)
+
+        let label = document.createElement('label')
+        label.style = `
+display: flex;
+justify-content: space-between
+`
+        label.innerText = key
+        slider.title = key
+
+        form.appendChild(label)
+        label.appendChild(slider)
     })
 
-    filter.placeholder='filter'
-    filter.value = 'brightness(1) contrast(1) saturate(100%) blur(0px) hue-rotate(0deg)'
-    filter.style = 'width: 300px'
 
     form.appendChild(video)
     document.body.appendChild(form)
@@ -64,6 +88,8 @@
             canvas.height = h
             const canvas_ctx = canvas.getContext('2d')
 
+            const amp = 8
+
             function draw(){
 
                 canvas_ctx.setTransform(1,0,0,1,0,0)
@@ -71,17 +97,22 @@
 
                 canvas_ctx.translate(w/2,h/2)
 
-                canvas_ctx.filter = filter.value || 'brightness(1)'
+                canvas_ctx.filter = `
+ brightness(${amp**sliders.brightness.value})
+ contrast(${amp**sliders.contrast.value})
+ sepia(${sliders.sepia.value*100}%)
+ hue-rotate(${180*sliders.hue.value}deg)
+ saturate(${amp**sliders.saturate.value*100}%)
+ blur(${amp**sliders.blur.value}px)
+`
 
-                let rotate = sliders.rotate.value+1-1
+                canvas_ctx.rotate(-sliders.rotate.value*2*Math.PI)
 
-                canvas_ctx.rotate(-rotate*2*Math.PI)
-
-                let scale = 4**sliders.scale.value
+                let scale = amp**sliders.scale.value
 
                 canvas_ctx.scale(scale,scale)
 
-                canvas_ctx.translate(-sliders.movex.value*w,sliders.movey.value*h)
+                canvas_ctx.translate(-sliders.x.value*w,sliders.y.value*h)
                 canvas_ctx.translate(-w/2,-h/2)
 
                 canvas_ctx.drawImage(video,0,0,w,h)
