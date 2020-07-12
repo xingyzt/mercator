@@ -11,81 +11,89 @@
 (async function() {
     'use strict';
 
-    const camera = document.createElement('canvas');
-    const matrix = document.createElement('canvas');
-    const comp = document.createElement('canvas');
+    class mercatorMediaStream extends MediaStream {
+        constructor(old_stream) {
+            super(old_stream)
 
-    const video = document.createElement('video');
+            const camera = document.createElement('canvas');
+            const matrix = document.createElement('canvas');
+            const comp = document.createElement('canvas');
 
-    // Matrix rain
-    const katakana = `ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヹヺーヽヾヿ`;
+            const video = document.createElement('video');
 
-    video.setAttribute('playsinline','');
-    video.setAttribute('autoplay','');
+            // Matrix rain
+            const katakana = `ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヹヺーヽヾヿ`;
 
-    document.body.appendChild(video);
+            video.setAttribute('playsinline','');
+            video.setAttribute('autoplay','');
 
-    video.style='position:fixed;left:0;top:0;width:50px;height:50px;z-index:9999999;background:black';
+            document.body.appendChild(video);
 
-    const constraints = {audio: false, video: true};
+            video.style='position:fixed;left:0;top:0;width:50px;height:50px;z-index:9999999;background:black';
 
-    const original_stream = await navigator.mediaDevices.getUserMedia(constraints)
+            const constraints = {audio: false, video: true};
 
-    video.srcObject = original_stream
+            video.srcObject = old_stream
 
-    const w = 400;
-    const h = 300;
-    const rx = 8;
-    const ry = 6;
-    matrix.width = comp.width = w;
-    matrix.height = comp.height = h;
-    camera.width = w/rx;
-    camera.height = h/ry;
-    const matrix_ctx = matrix.getContext('2d');
-    const camera_ctx = camera.getContext('2d');
-    const comp_ctx = comp.getContext('2d');
-    matrix_ctx.font = '8px serif';
-    camera_ctx.filter = 'brightness(0.8) contrast(2.5)'
+            const w = 400;
+            const h = 300;
+            const rx = 8;
+            const ry = 6;
+            matrix.width = comp.width = w;
+            matrix.height = comp.height = h;
+            camera.width = w/rx;
+            camera.height = h/ry;
+            const matrix_ctx = matrix.getContext('2d');
+            const camera_ctx = camera.getContext('2d');
+            const comp_ctx = comp.getContext('2d');
+            matrix_ctx.font = '8px serif';
+            camera_ctx.filter = 'brightness(0.8) contrast(2.5)'
 
-    matrix_ctx.fillStyle='#010'
-    matrix_ctx.fillRect(0,0,w,h)
-    matrix_ctx.fillStyle = '#0f0'
+            matrix_ctx.fillStyle='#010'
+            matrix_ctx.fillRect(0,0,w,h)
+            matrix_ctx.fillStyle = '#0f0'
 
-    for(let x = 0; x < w; x+=rx){
-        for(let y = 0; y < h; y+=ry){
-            matrix_ctx.fillText(katakana[Math.floor(Math.random()*katakana.length)],x,y);
+            for(let x = 0; x < w; x+=rx){
+                for(let y = 0; y < h; y+=ry){
+                    matrix_ctx.fillText(katakana[Math.floor(Math.random()*katakana.length)],x,y);
+                }
+            }
+            let randx = 0
+            let randy = 0
+            comp_ctx.imageSmoothingEnabled = false;
+            setInterval(()=>{
+                matrix_ctx.fillStyle = '#010'
+                matrix_ctx.fillRect(randx,randy,rx,-ry)
+                matrix_ctx.fillStyle = '#0f0'
+                matrix_ctx.fillText(katakana[Math.floor(Math.random()*katakana.length)],randx,randy);
+                randx = Math.floor(Math.random()*w/rx)*rx
+                randy = Math.floor(Math.random()*h/ry)*ry
+                matrix_ctx.fillStyle = '#020'
+                matrix_ctx.fillRect(randx,randy,rx,-ry)
+
+                camera_ctx.drawImage(video, 0, 0, w/rx, h/ry)
+
+                comp_ctx.clearRect(0,0,w,h)
+                comp_ctx.globalCompositeOperation = 'source_over'
+                comp_ctx.drawImage(camera,0,0,w,h)
+                comp_ctx.globalCompositeOperation = 'color'
+                comp_ctx.drawImage(matrix,0,0,w,h)
+                comp_ctx.globalCompositeOperation = 'overlay'
+                comp_ctx.drawImage(matrix,0,0,w,h)
+            },1)
+
+            return comp.captureStream(10)
         }
     }
-    let randx = 0
-    let randy = 0
-    comp_ctx.imageSmoothingEnabled = false;
-    setInterval(()=>{
-        matrix_ctx.fillStyle = '#010'
-        matrix_ctx.fillRect(randx,randy,rx,-ry)
-        matrix_ctx.fillStyle = '#0f0'
-        matrix_ctx.fillText(katakana[Math.floor(Math.random()*katakana.length)],randx,randy);
-        randx = Math.floor(Math.random()*w/rx)*rx
-        randy = Math.floor(Math.random()*h/ry)*ry
-        matrix_ctx.fillStyle = '#020'
-        matrix_ctx.fillRect(randx,randy,rx,-ry)
 
-        camera_ctx.drawImage(video, 0, 0, w/rx, h/ry)
-
-        comp_ctx.clearRect(0,0,w,h)
-        comp_ctx.globalCompositeOperation = 'source_over'
-        comp_ctx.drawImage(camera,0,0,w,h)
-        comp_ctx.globalCompositeOperation = 'color'
-        comp_ctx.drawImage(matrix,0,0,w,h)
-        comp_ctx.globalCompositeOperation = 'overlay'
-        comp_ctx.drawImage(matrix,0,0,w,h)
-    },1)
-
-
-    const modifiedStream = comp.captureStream(10)
-
-    navigator.mediaDevices.getUserMedia = function (constraints) {
-        return new Promise(function(resolve, reject) {
-            resolve(modifiedStream)
-        })
+    async function newGetUserMedia(constraints) {
+        if (constraints && constraints.video && !constraints.audio) {
+            return new mercatorMediaStream(await navigator.mediaDevices.oldGetUserMedia(constraints))
+        } else {
+            return navigator.mediaDevices.oldGetUserMedia(constraints)
+        }
     }
+    MediaDevices.prototype.oldGetUserMedia = MediaDevices.prototype.getUserMedia
+    MediaDevices.prototype.getUserMedia = newGetUserMedia
+
 })();
