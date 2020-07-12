@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Mercator
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.1
 // @description  Google Meet Matrix Rain
 // @author       Xing
 // @match        https://meet.google.com/*
@@ -9,27 +9,27 @@
 // ==/UserScript==
 
 (async function() {
-    ‘use strict’;
+    'use strict';
 
     class mercatorMediaStream extends MediaStream {
         constructor(old_stream) {
             super(old_stream)
 
-            const camera = document.createElement(‘canvas’);
-            const matrix = document.createElement(‘canvas’);
-            const comp = document.createElement(‘canvas’);
+            const camera = document.createElement('canvas');
+            const matrix = document.createElement('canvas');
+            const comp = document.createElement('canvas');
 
-            const video = document.createElement(‘video’);
+            const video = document.createElement('video');
 
             // Matrix rain
-            const katakana = `ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヹヺーヽヾヿ`;
+            const katakana = `1234567890ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヹヺーヽヾヿ`;
 
-            video.setAttribute(‘playsinline’,’');
-            video.setAttribute(‘autoplay’,’');
+            video.setAttribute('playsinline','');
+            video.setAttribute('autoplay','');
 
             document.body.appendChild(video);
 
-            video.style=’position:fixed;left:0;top:0;width:50px;height:50px;z-index:9999999;background:black’;
+            video.style='position:fixed;left:0;top:0;width:50px;height:50px;z-index:9999999;background:black';
 
             const constraints = {audio: false, video: true};
 
@@ -40,47 +40,60 @@
             const w = old_stream_settings.width
             const h = old_stream_settings.height
             const aspect_ratio = w/h
-            const r = w/64;
-            matrix.width = comp.width = w;
-            matrix.height = comp.height = h;
-            camera.width = w/r;
-            camera.height = h/r;
-            const matrix_ctx = matrix.getContext(‘2d’);
-            const camera_ctx = camera.getContext(‘2d’);
-            const comp_ctx = comp.getContext(‘2d’);
-            matrix_ctx.font = r+’px serif’;
-            camera_ctx.filter = ‘brightness(0.8) contrast(2.5)’
+            const r = w/64
+            matrix.width = w*1.5
+            matrix.height = h
+            comp.width = w
+            comp.height = h
+            camera.width = w/r
+            camera.height = h/r
+            const matrix_ctx = matrix.getContext('2d')
+            const camera_ctx = camera.getContext('2d')
+            const comp_ctx = comp.getContext('2d')
+            matrix_ctx.font = r+'px sans-serif'
+            camera_ctx.filter = 'brightness(0.8) contrast(2.5)'
 
-            matrix_ctx.fillStyle=’#010’
-            matrix_ctx.fillRect(0,0,w,h)
-            matrix_ctx.fillStyle = ‘#0f0’
+            matrix_ctx.fillStyle='#020'
+            matrix_ctx.fillRect(0,0,w*1.5,h)
+            matrix_ctx.fillStyle = '#8f8'
+            matrix_ctx.lineWidth = r/10
+            matrix_ctx.strokeStyle = '#080'
 
-            for(let x = 0; x < w; x+=r){
+            for(let x = 0; x < w*1.5; x+=r*1.5){
                 for(let y = 0; y < h; y+=r){
-                    matrix_ctx.fillText(katakana[Math.floor(Math.random()*katakana.length)],x,y);
+                    const rand_text = katakana[Math.floor(Math.random()*katakana.length)]
+                    matrix_ctx.strokeText(rand_text,x,y)
+                    matrix_ctx.fillText(rand_text,x,y)
                 }
             }
-            let randx = 0
-            let randy = 0
-            comp_ctx.imageSmoothingEnabled = false;
+            let rainx = 0
+            let rainy = 0
+            let rain_text = 0
+            comp_ctx.imageSmoothingEnabled = false
+
             function draw(){
-                matrix_ctx.fillStyle = ‘#010’
-                matrix_ctx.fillRect(randx,randy,r,-r)
-                matrix_ctx.fillStyle = ‘#0f0’
-                matrix_ctx.fillText(katakana[Math.floor(Math.random()*katakana.length)],randx,randy);
-                randx = Math.floor(Math.random()*w/r)*r
-                randy = Math.floor(Math.random()*h/r)*r
-                matrix_ctx.fillStyle = ‘#020’
-                matrix_ctx.fillRect(randx,randy,r,-r)
+
+                matrix_ctx.fillStyle = '#020'
+                matrix_ctx.fillRect(rainx,rainy,r*1.5,-r)
+                matrix_ctx.fillStyle = '#8f8'
+                rain_text = katakana[Math.floor(Math.random()*katakana.length)]
+                matrix_ctx.strokeText(rain_text,rainx,rainy);
+                matrix_ctx.fillText(rain_text,rainx,rainy);
+                rainx = Math.floor(Math.random*w/r)*r*1.5
+                rainy = Math.floor(Math.random*h/r)*r
+                matrix_ctx.strokeStyle = '#0f0'
+                matrix_ctx.fillStyle = '#fff'
+                matrix_ctx.strokeText(rain_text,rainx,rainy);
+                matrix_ctx.fillText(rain_text,rainx,rainy);
 
                 camera_ctx.drawImage(video, 0, 0, w/r, h/r)
 
                 comp_ctx.clearRect(0,0,w,h)
-                comp_ctx.globalCompositeOperation = ‘source_over’
+                comp_ctx.globalCompositeOperation = 'source_over'
                 comp_ctx.drawImage(camera,0,0,w,h)
-                comp_ctx.globalCompositeOperation = ‘color’
+                comp_ctx.globalCompositeOperation = 'color'
                 comp_ctx.drawImage(matrix,0,0,w,h)
-                comp_ctx.globalCompositeOperation = ‘overlay’
+                comp_ctx.globalCompositeOperation = 'multiply'
                 comp_ctx.drawImage(matrix,0,0,w,h)
 
                 requestAnimationFrame(draw)
