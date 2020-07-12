@@ -1,4 +1,4 @@
 # Mercator
 GreaseMonkey/TamperMonkey scripts that adds Google Meet effects.
 
-Does not work in Chrome OS.
+[Matrix Rain script on Greasyfork](https://greasyfork.org/en/scripts/406914-google-meet-matrix-rain)
