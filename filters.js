@@ -1,17 +1,19 @@
 // ==UserScript==
 // @name         Google Meet Filters & Transforms
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  Change how you look on Google Meet.
 // @author       Xing
 // @match        https://meet.google.com/*
 // @grant        none
 // ==/UserScript==
 
-(async function() {
-    'use strict'
+// MERCATOR FILTERS
 
-    const form = document.createElement('form')
+(async function() {
+    ‘use strict’
+
+    const form = document.createElement(‘form’)
     form.style=`
 position: fixed;
 left: 0;
@@ -20,11 +22,20 @@ width: 400px;
 z-index: 9999999;
 background: #fff4;
 backdrop-filter: blur(1rem);
-border-radius: 1vmin;
-padding: 1rem
+border-radius: 0 0 1vmin 0;
+padding: 1rem;
+transition: opacity 200ms;
+opacity: .2
 `
+    form.addEventListener('mouseenter',()=>{
+        form.style.opacity = 1
+    })
 
-    const video = document.createElement('video')
+    form.addEventListener('mouseleave',()=>{
+        form.style.opacity = 0.2
+    })
+
+    const video = document.createElement(‘video’)
     video.style=`
 height: 50px;
 background: magenta;
@@ -53,9 +64,9 @@ transform: scaleX(-1)
     }
 
     Object.keys(sliders).forEach(key=>{
-        let slider = document.createElement('input')
+        let slider = document.createElement(‘input’)
         sliders[key] = slider
-        slider.type = 'range'
+        slider.type = ‘range’
 
         slider.min = [
             'blur',
@@ -68,9 +79,9 @@ transform: scaleX(-1)
         slider.max = 1
         slider.step = 0.001
         slider.value = 0
-        slider.style = 'width: 300px'
+        slider.style = ‘width: 300px’
 
-        let label = document.createElement('label')
+        let label = document.createElement(‘label’)
         label.style = `
 display: flex;
 justify-content: space-between
@@ -94,11 +105,11 @@ justify-content: space-between
     form.appendChild(video)
     document.body.appendChild(form)
 
-    class mercatorMediaStream extends MediaStream {
+    class mercator_filters_MediaStream extends MediaStream {
         constructor(old_stream) {
             super(old_stream)
 
-            const canvas = document.createElement('canvas')
+            const canvas = document.createElement(‘canvas’)
 
             const constraints = {audio: false, video: true}
 
@@ -110,7 +121,7 @@ justify-content: space-between
             const h = old_stream_settings.height
             canvas.width = w
             canvas.height = h
-            const canvas_ctx = canvas.getContext('2d')
+            const canvas_ctx = canvas.getContext(‘2d’)
 
             const amp = 8
 
@@ -161,15 +172,15 @@ blur(${sliders.blur.value*w/32}px)
         }
     }
 
-    async function newGetUserMedia(constraints) {
+    async function mercator_filters_newGetUserMedia(constraints) {
         if (constraints && constraints.video && !constraints.audio ) {
-            return new mercatorMediaStream(await navigator.mediaDevices.oldGetUserMedia(constraints))
+            return new mercator_filters_MediaStream(await navigator.mediaDevices.mercator_filters_oldGetUserMedia(constraints))
         } else {
-            return navigator.mediaDevices.oldGetUserMedia(constraints)
+            return navigator.mediaDevices.mercator_filters_oldGetUserMedia(constraints)
         }
     }
 
-    MediaDevices.prototype.oldGetUserMedia = MediaDevices.prototype.getUserMedia
-    MediaDevices.prototype.getUserMedia = newGetUserMedia
+    MediaDevices.prototype.mercator_filters_oldGetUserMedia = MediaDevices.prototype.getUserMedia
+    MediaDevices.prototype.getUserMedia = mercator_filters_newGetUserMedia
 
 })()
