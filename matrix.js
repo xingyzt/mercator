@@ -17,14 +17,13 @@
 
     const video = document.createElement('video');
 
+    // Matrix rain
     const katakana = `ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヹヺーヽヾヿ`;
 
     video.setAttribute('playsinline','');
     video.setAttribute('autoplay','');
 
     document.body.appendChild(video);
-
-    video.width = 10
 
     video.style='position:fixed;left:0;top:0;width:50px;height:50px;z-index:9999999;background:black';
 
@@ -84,5 +83,9 @@
 
     const modifiedStream = comp.captureStream(10)
 
-    MediaDevices.prototype.getUserMedia = () => { return modifiedStream }
+    navigator.mediaDevices.getUserMedia = function (constraints) {
+        return new Promise(function(resolve, reject) {
+            resolve(modifiedStream)
+        })
+    }
 })();
