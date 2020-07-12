@@ -11,9 +11,9 @@
 // MERCATOR FILTERS
 
 (async function() {
-    ‘use strict’
+    'use strict'
 
-    const form = document.createElement(‘form’)
+    const form = document.createElement('form')
     form.style=`
 position: fixed;
 left: 0;
@@ -35,7 +35,7 @@ opacity: .2
         form.style.opacity = 0.2
     })
 
-    const video = document.createElement(‘video’)
+    const video = document.createElement('video')
     video.style=`
 height: 50px;
 background: magenta;
@@ -64,9 +64,9 @@ transform: scaleX(-1)
     }
 
     Object.keys(sliders).forEach(key=>{
-        let slider = document.createElement(‘input’)
+        let slider = document.createElement('input')
         sliders[key] = slider
-        slider.type = ‘range’
+        slider.type = 'range'
 
         slider.min = [
             'blur',
@@ -79,9 +79,9 @@ transform: scaleX(-1)
         slider.max = 1
         slider.step = 0.001
         slider.value = 0
-        slider.style = ‘width: 300px’
+        slider.style = 'width: 300px'
 
-        let label = document.createElement(‘label’)
+        let label = document.createElement('label')
         label.style = `
 display: flex;
 justify-content: space-between
@@ -109,7 +109,7 @@ justify-content: space-between
         constructor(old_stream) {
             super(old_stream)
 
-            const canvas = document.createElement(‘canvas’)
+            const canvas = document.createElement('canvas')
 
             const constraints = {audio: false, video: true}
 
@@ -121,7 +121,7 @@ justify-content: space-between
             const h = old_stream_settings.height
             canvas.width = w
             canvas.height = h
-            const canvas_ctx = canvas.getContext(‘2d’)
+            const canvas_ctx = canvas.getContext('2d')
 
             const amp = 8
 
