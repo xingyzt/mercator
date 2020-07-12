@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Mercator
+// @name         Mercator Matrix
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      1.0
 // @description  Google Meet Matrix Rain
 // @author       Xing
 // @match        https://meet.google.com/*
@@ -9,18 +9,18 @@
 // ==/UserScript==
 
 (async function() {
-    'use strict';
+    'use strict'
 
     const video = document.createElement('video')
-    video.style='position:fixed;left:0;top:0;height:50px;z-index:9999999;background:black';
-    video.setAttribute('playsinline','');
-    video.setAttribute('autoplay','');
+    video.style='position:fixed;left:0;top:0;height:50px;z-index:9999999;background:black'
+    video.setAttribute('playsinline','')
+    video.setAttribute('autoplay','')
 
 
     const toggle = document.createElement('input')
     toggle.type='checkbox'
     toggle.checked=true
-    toggle.style='position:fixed;left:0;top:0;width:50px;height:10px;z-index:9999999';
+    toggle.style='position:fixed;left:0;top:0;width:50px;height:10px;z-index:9999999'
 
     class mercatorMediaStream extends MediaStream {
         constructor(old_stream) {
@@ -33,10 +33,10 @@
             // Matrix rain
             const katakana = `1234567890ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヹヺーヽヾヿ`;
 
-            document.body.appendChild(video);
-            document.body.appendChild(toggle);
+            document.body.appendChild(video)
+            document.body.appendChild(toggle)
 
-            const constraints = {audio: false, video: true};
+            const constraints = {audio: false, video: true}
 
             video.srcObject = old_stream
 
@@ -79,11 +79,12 @@
             let rainx = 0
             let rainy = 0
             let rain_text = ['Z',text_offset,0]
-            comp_ctx.imageSmoothingEnabled = false
 
             function draw(){
 
                 if(toggle.checked){
+
+                    comp_ctx.imageSmoothingEnabled = false
 
                     matrix_ctx.fillStyle = '#020'
                     matrix_ctx.fillRect(rainx,rainy,r*1.5,-r)
@@ -146,4 +147,4 @@
     MediaDevices.prototype.oldGetUserMedia = MediaDevices.prototype.getUserMedia
     MediaDevices.prototype.getUserMedia = newGetUserMedia
 
-})();
+})()
