@@ -1,4 +1,4 @@
-// MERCATOR FILTERS
+// MERCATOR FILTERS is made by Xing in 2020 under the MIT License
 
 const code = '(' + {{FILTERS}} +')()'
 
