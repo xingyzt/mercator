@@ -1,0 +1,21 @@
+Change how you look on Google Meet!
+
+Filters:
+- Brightness
+- Contrast
+- Sepia
+- Hue rotation
+- Saturation
+- Blur
+- Fog
+- Vignette
+
+Transforms:
+- Rotate
+- Scale
+- Horizontal & vertical translate
+- Pillarbox & letterbox crop
+
+Source code: https://github.com/FlyOrBoom/Mercator
+
+MIT License 2020
