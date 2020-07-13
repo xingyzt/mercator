@@ -1,13 +1,3 @@
-// ==UserScript==
-// @name         Mercator Matrix
-// @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  Google Meet Matrix Rain
-// @author       Xing
-// @match        https://meet.google.com/*
-// @grant        none
-// ==/UserScript==
-
 (async function() {
     'use strict'
 
