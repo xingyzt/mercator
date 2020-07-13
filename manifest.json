@@ -1,0 +1,22 @@
+{
+  "name": "Google Meet Filters & Transforms",
+  "version": "1.5",
+  "author": "Xing (x-ing.space)",
+  "description": "Change how you look on Google Meet with adjustable exposure, blur, vignette, and more!",
+  "content_scripts": [
+    {
+      "run_at": "document_end",
+      "matches": ["https://meet.google.com/*"],
+      "js": ["mercator-filters.js"]
+    }
+  ],
+  "page_action": {
+    "default_icon": {
+      "128": "icon.png"
+    }
+  },
+  "icons": {
+    "128": "icon.png"
+  },
+  "manifest_version": 2
+}
