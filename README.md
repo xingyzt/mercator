@@ -1,6 +1,4 @@
-![logo](icon.png)
-# Mercator
-Scripts that alters the camera feed for Google Meet.
+Mercator Scripts are small Javascript programs that alters the camera feed for Google Meet.
 
 ## Mercator Filters
 
