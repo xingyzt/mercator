@@ -5,19 +5,21 @@ for _dir in [
 	if _file.is_dir() and _file.name[0] != '.'
 ]:
 	with open(_dir+'/script.js') as script:
+		script_source = script.read()
 		with open(_dir+'/wrapper.webextension.js') as wrapper_webextension:
 			with open(_dir+'/script.webextension.js','w+') as script_webextension:
 				script_webextension.write(
-					wrapper_webextension.replace(
+					wrapper_webextension.read().replace(
 						'{{script.js}}',
-						script.read()
+						script_source
 					)
 				)
+		with open(_dir+'/wrapper.greasyfork.js') as wrapper_greasyfork:
 			with open(_dir+'/script.greasyfork.js','w+') as script_greasyfork:
 				script_greasyfork.write(
-					wrapper_greasyfork.replace(
+					wrapper_greasyfork.read().replace(
 						'{{script.js}}',
-						script.read()
+						script_source
 					)
 				)
 
