@@ -1,19 +1,25 @@
-<svg width='128' height='128' viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'>
-	<title>Logo of Google Meet Filters &amp; Transforms</title>
+<svg
+	width='128' height='128'
+	viewBox='0 0 128 128'
+	xmlns='http://www.w3.org/2000/svg'
+	fill='lime' stroke='lime'
+	stroke-width='8'
+	stroke-linejoin='round'
+	>
+
+	<title>Logo of Google Meet Matrix Rain</title>
 	<desc>Do stuff.</desc>
-	<circle cx='64' cy='64' r='64' fill='hsl(31, 100%, 73%)'/>
 
-	<rect fill='hsl( 18, 100%, 68%)' width='96' x='16' y='0' height='128'/>
-	<rect fill='hsl(-10, 100%, 80%)' width='80' x='16' y='0' height='128'/>
-	<rect fill='hsl(  5,  90%, 72%)' width='64' x='16' y='0' height='128'/>
-	<rect fill='hsl( 48, 100%, 75%)' width='48' x='16' y='0' height='128'/>
-	<rect fill='hsl( 36, 100%, 70%)' width='32' x='16' y='0' height='128'/>
-	<rect fill='hsl( 20,  90%, 70%)' width='16' x='16' y='0' height='128'/>
+	<g stroke-width='0'>
+		<circle cx='64' cy='64' r='64'/>
 
-	<circle cx='64' cy='64' r='52' fill='hsl(191, 35%, 41%)'/>
+		<rect width='96' x='16' y='0' height='128'/>
 
-	<rect x='34' y='46' width='44' height='36' fill='white' rx='8' ry='8'/>
-	<path d='M68 64l22 -10v20z' fill='white' stroke-width='8' stroke='white' stroke-linejoin='round'/>
+		<circle cx='64' cy='64' r='52' fill='black'/>
+	</g>
+
+	<rect x='38' y='50' width='36' height='28'/>
+	<path d='M68 64l22 -10v20z'/>
 
 	<desc>(C) Xing 2020.</desc>
 
