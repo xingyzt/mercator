@@ -1,9 +1,21 @@
-async function() {
-    ‘use strict’
+// ==UserScript==
+// @name         Google Meet Filters & Transforms
+// @namespace    http://tampermonkey.net/
+// @version      1.5
+// @description  Change how you look on Google Meet.
+// @author       Xing
+// @match        https://meet.google.com/*
+// @grant        none
+// ==/UserScript==
+
+// MERCATOR FILTERS
+
+const code = '(' + async function() {
+    'use strict'
 
     // Create form
 
-    const form = document.createElement(‘form’)
+    const form = document.createElement('form')
     form.style=`
 position: fixed;
 left: 0;
@@ -49,9 +61,9 @@ opacity: .2
     }
 
     Object.keys(sliders).forEach(key=>{
-        let slider = document.createElement(‘input’)
+        let slider = document.createElement('input')
         sliders[key] = slider
-        slider.type = ‘range’
+        slider.type = 'range'
 
         slider.min = [
             'blur',
@@ -64,9 +76,9 @@ opacity: .2
         slider.max = 1
         slider.step = 0.01
         slider.value = 0
-        slider.style = ‘width: 300px’
+        slider.style = 'width: 300px'
 
-        let label = document.createElement(‘label’)
+        let label = document.createElement('label')
         label.style = `
 display: flex;
 justify-content: space-between
@@ -81,7 +93,7 @@ justify-content: space-between
 
     // Create preview video
 
-    const video = document.createElement(‘video’)
+    const video = document.createElement('video')
     video.style=`
 height: 50px;
 background: magenta;
@@ -111,7 +123,7 @@ transform: scaleX(-1)
 
             super(old_stream)
 
-            const canvas = document.createElement(‘canvas’)
+            const canvas = document.createElement('canvas')
 
             const constraints = {audio: false, video: true}
 
@@ -123,7 +135,7 @@ transform: scaleX(-1)
             const h = old_stream_settings.height
             canvas.width = w
             canvas.height = h
-            const canvas_ctx = canvas.getContext(‘2d’)
+            const canvas_ctx = canvas.getContext('2d')
 
             // Amp: for values that can range from 0 to +infinity, amp**value does the mapping.
 
@@ -225,7 +237,7 @@ blur(${sliders.blur.value*w/32}px)
                     canvas_ctx.clearRect(0,h,w,-letterbox)
 
                 }
-m
+
                 // Recursive call
 
                 requestAnimationFrame(draw)
@@ -250,4 +262,9 @@ m
     MediaDevices.prototype.mercator_filters_oldGetUserMedia = MediaDevices.prototype.getUserMedia
     MediaDevices.prototype.getUserMedia = mercator_filters_newGetUserMedia
 
-}
+}+')()'
+
+const mercator_filter_script = document.createElement('script')
+mercator_filter_script.textContent = code
+document.documentElement.appendChild(mercator_filter_script)
+mercator_filter_script.remove()
