@@ -5,7 +5,7 @@ for _dir in [
 	if _file.is_dir() and _file.name[0] != '.'
 ]:
 	with open(_dir+'/script.js') as script:
-		script_source = script.read()
+		script_source = script.read()[:-1]
 		with open(_dir+'/wrapper.webextension.js') as wrapper_webextension:
 			with open(_dir+'/script.webextension.js','w+') as script_webextension:
 				script_webextension.write(

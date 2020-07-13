@@ -1,16 +1,4 @@
-// ==UserScript==
-// @name         Google Meet Filters & Transforms
-// @namespace    http://tampermonkey.net/
-// @version      1.5
-// @description  Change how you look on Google Meet.
-// @author       Xing
-// @match        https://meet.google.com/*
-// @grant        none
-// ==/UserScript==
-
-// MERCATOR FILTERS
-
-const code = '(' + async function() {
+async function() {
     'use strict'
 
     // Create form
@@ -262,9 +250,4 @@ blur(${sliders.blur.value*w/32}px)
     MediaDevices.prototype.mercator_filters_oldGetUserMedia = MediaDevices.prototype.getUserMedia
     MediaDevices.prototype.getUserMedia = mercator_filters_newGetUserMedia
 
-}+')()'
-
-const mercator_filter_script = document.createElement('script')
-mercator_filter_script.textContent = code
-document.documentElement.appendChild(mercator_filter_script)
-mercator_filter_script.remove()
+}
