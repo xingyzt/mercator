@@ -3,45 +3,60 @@
 const code = '(' + async function() {
 	'use strict'
 
+	// Create shadow root
+
+	const host = document.createElement('aside')
+
+	const shadow = host.attachShadow({mode: 'open'})
+
 	// Create form
 
+	const main = document.createElement('main')
+
 	const form = document.createElement('form')
-	form.id = 'mercator-filters'
 
 	const style = document.createElement('style')
-	style.innerText = `
-#mercator-filters, #mercator-filters * {
-	box-sizing: border-box
+
+	style.textContent = `
+* {
+	box-sizing: border-box;
 }
 
-#mercator-filters {
+:focus {
+	outline: 0;
+}
+
+main {
+	z-index: 99999;
 	position: fixed;
 	left: 0;
 	top: 0;
 	width: 480px;
 	max-width: 100vw;
-	height: 110vh;
-	z-index: 9999999;
-	background: #fffa;
-	backdrop-filter: blur(1rem);
-	padding: 1rem;
+	height: auto;
+	min-height: 100vh;
+	overflow: scroll;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	background: white;
+	transform: translateY(calc(-100% + 3rem));
+	box-shadow: 0 .1rem .25rem #0004;
+	border-radius: 0 0 1rem 0;
 	transition: transform 200ms;
-	transform: translateY(-100vh);
-	box-shadow: 0 0 4rem #0004;
-	border-bottom-right-radius: 10vh;
+	padding: 1rem 1rem 0 1rem
 }
 
-#mercator-filters:hover {
+main:hover {
 	transform: none;
+	border-radius: 0;
+	height: 100vh;
+	padding: 1rem;
 }
 
 #previews {
-	position: absolute;
-	cursor: pointer;
-	width: 400px;
-	height: calc(10vh - 1rem);
-	bottom: 1rem;
-	display: flex;
+	margin-top: 1rem;
+	height: 3rem
 }
 
 #previews>* {
@@ -55,93 +70,120 @@ const code = '(' + async function() {
 	margin-right: 1rem;
 }
 
-#mercator-filters:hover>#previews {
-	bottom: calc(10vh + 1rem);
-	height: fit-content;
+main:hover>#previews {
+	height: auto
 }
 
-#mercator-filters:hover>#previews>* {
-	width: 50%;
+main:hover>#previews>* {
 	height: auto;
+	width: calc(50% - .5rem);
 }
 
-#mercator-filters label {
+#presets,
+label {
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
+	align-items: center
 }
 
-#mercator-filters input[type=range] {
+#presets:focus-within,
+input:focus {
+	border-color: black
+}
+
+#presets>* {
+	border: 0;
+	background: transparent;
+	flex-grow: 1;
+}
+
+#presets>:focus {
+	background: black;
+	color: white
+}
+
+#presets>:first-child {
+	border-radius: 100px 0 0 100px
+}
+
+#presets>:last-child {
+	border-radius: 0 100px 100px 0
+}
+
+label {
+	height: 2rem
+}
+
+label>* {
 	width: 80%;
+	height: 1.5rem;
+	border-radius: 100px;
+	border: 0.25rem solid lightgray;
+}
+
+input[type=range] {
 	-webkit-appearance: none;
 	--gradient: transparent, transparent;
 	--rainbow: hsl(0, 80%, 75%), hsl(30, 80%, 75%), hsl(60, 80%, 75%), hsl(90, 80%, 75%), hsl(120, 80%, 75%), hsl(150, 80%, 75%), hsl(180, 80%, 75%), hsl(210, 80%, 75%), hsl(240, 80%, 75%), hsl(270, 80%, 75%), hsl(300, 80%, 75%), hsl(330, 80%, 75%);
 	background: linear-gradient(90deg, var(--gradient)), linear-gradient(90deg, var(--rainbow));
-	border-radius: 100px;
-	border: 4px solid lightgray;
 }
 
-#mercator-filters input[type=range]:focus{
-	border-color: black
-}
-
-#mercator-filters input[type=range]::-webkit-slider-thumb {
+input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	background: white;
-	width: 16px;
-	height: 16px;
-	border: 4px solid black;
-	border-radius: 8px
+	width: 1rem;
+	height: 1rem;
+	border: 0.25rem solid black;
+	border-radius: 0.5rem
 }
 
-#mercator-filters input[type=range]:focus::-webkit-slider-thumb {
+input[type=range]:focus::-webkit-slider-thumb {
 	border-color: white;
 	background: black;
 }
 
-#mercator-filters #exposure,
-#mercator-filters #fog,
-#mercator-filters #vignette {
+input#exposure,
+input#fog,
+input#vignette {
 	--gradient: black, #8880, white
 }
 
-#mercator-filters #contrast {
+input#contrast {
 	--gradient: gray, #8880
 }
 
-#mercator-filters #temperature {
+input#temperature {
 	--gradient: #88f, #8880, #ff8
 }
 
-#mercator-filters #tint {
+input#tint {
 	--gradient: #f8f, #8880, #8f8
 }
 
-#mercator-filters #sepia {
+input#sepia {
 	--gradient: #8880, #aa8
 }
 
-#mercator-filters #hue, #rotate {
+input#hue,
+input#rotate {
 	background: linear-gradient(90deg, hsl(0, 80%, 75%), hsl(60, 80%, 75%), hsl(120, 80%, 75%), hsl(180, 80%, 75%), hsl(240, 80%, 75%), hsl(300, 80%, 75%), hsl(0, 80%, 75%), hsl(60, 80%, 75%), hsl(120, 80%, 75%), hsl(180, 80%, 75%), hsl(240, 80%, 75%), hsl(300, 80%, 75%), hsl(0, 80%, 75%))
 }
 
-#mercator-filters #saturate {
+input#saturate {
 	--gradient: gray, #8880 50%, blue, magenta
 }
 
-#mercator-filters #blur {
+input#blur {
 	--gradient: #8880, gray
 }
 
-#mercator-filters #scale,
-#mercator-filters #x,
-#mercator-filters #y,
-#mercator-filters #pillarbox,
-#mercator-filters #letterbox
-{
+input#scale,
+input#x,
+input#y,
+input#pillarbox,
+input#letterbox {
 	--gradient: black, white
 }
-
 `
 	form.appendChild(style)
 
@@ -170,7 +212,7 @@ const code = '(' + async function() {
 
 			let label = document.createElement('label')
 
-			label.innerText = slider.title = slider.id = key
+			label.textContent = slider.id = key
 
 			form.appendChild(label)
 			label.appendChild(slider)
@@ -179,26 +221,81 @@ const code = '(' + async function() {
 		})
 	)
 
-	const reset = document.createElement('button')
-	reset.innerText = 'reset'
-	reset.addEventListener('click',event=>{
+
+	const presets_label = document.createElement('label')
+
+	const presets_collection = document.createElement('div')
+
+	presets_collection.id = 'presets'
+
+	const presets = 'reset,concorde,mono,stucco,mocha,deepfry'
+		.split(',')
+		.map(key=>{
+			let preset = document.createElement('button')
+			preset.textContent = preset.id = key
+			return preset
+		})
+
+	presets_label.textContent = 'presets'
+
+	presets_collection.append(...presets)
+	presets_label.append(presets_collection)
+
+	presets_label.addEventListener('click',event=>{
+
+		// Cancel refresh
 		event.preventDefault()
+
+		// Reset all
 		Object.values(sliders).forEach(slider=>{
 			slider.value = 0
 		})
+
+		switch(event.target.id){
+			case 'concorde':
+				sliders.saturate.value = 0.1
+				sliders.contrast.value = 0.1
+				sliders.temperature.value = -0.4
+				sliders.tint.value = 0.2
+				break
+			case 'mono':
+				sliders.saturate.value = -1
+				sliders.contrast.value = -0.1
+				sliders.exposure.value = 0.1
+				sliders.vignette.value = -0.5
+				break
+			case 'stucco':
+				sliders.contrast.value = -0.1
+				sliders.temperature.value = -0.2
+				sliders.tint.value = 0.2
+				sliders.sepia.value = 0.2
+				sliders.saturate.value = 0.25
+				sliders.fog.value = 0.1
+				break
+			case 'mocha':
+				sliders.exposure.value = 0.1
+				sliders.tint.value = -0.75
+				sliders.sepia.value = 1
+				sliders.hue.value = 0.2
+				sliders.vignette.value = 0.3
+				sliders.fog.value = 0.3
+				break
+			case 'deepfry':
+				sliders.exposure.value = 0.3
+				sliders.contrast.value = 1
+				break
+		}
 	})
-	form.appendChild(reset)
 
 	// Create color balance matrix
 
 	const filter = document.createElementNS('http://www.w3.org/2000/svg','filter')
-	filter.id = 'mercator-filters-svg-filter'
+	filter.id = 'mercator-studio-svg-filter'
 	const filter_matrix = document.createElementNS('http://www.w3.org/2000/svg','feColorMatrix')
 	filter_matrix.setAttribute('in','SourceGraphic')
 
 	const previews = document.createElement('div')
 	previews.id = 'previews'
-	form.appendChild(previews)
 
 	// Create preview video
 
@@ -213,13 +310,17 @@ const code = '(' + async function() {
 	const canvas = document.createElement('canvas')
 	previews.appendChild(canvas)
 
-    // Add UI to page
+	// Add UI to page
 
-	filter.appendChild(filter_matrix)
-	form.appendChild(filter)
-	document.body.appendChild(form)
+	filter.append(filter_matrix)
+	form.append(presets_label)
 
-	class mercator_filters_MediaStream extends MediaStream {
+	main.append(form,previews)
+
+	shadow.append(main,filter)
+	document.body.append(host)
+
+	class mercator_studio_MediaStream extends MediaStream {
 		constructor(old_stream) {
 
 			// Copy original stream settings
@@ -266,19 +367,19 @@ const code = '(' + async function() {
 					let temperature = sliders.temperature.value**3
 					let tint = sliders.tint.value**3
 
-                    filter_matrix.setAttribute('values',[
-1+temperature-tint/2,0,0,0,0,
-0,1+tint,0,0,0,
-0,0,1-temperature-tint/2,0,0,
-0,0,0,1,0
-].join(' '))
+					filter_matrix.setAttribute('values',[
+						1+temperature-tint/2,0,0,0,0,
+						0,1+tint,0,0,0,
+						0,0,1-temperature-tint/2,0,0,
+						0,0,0,1,0
+					].join(' '))
 
 					// CSS filters
 
 					canvas_ctx.filter = `
 brightness(${amp**sliders.exposure.value})
 contrast(${amp**sliders.contrast.value})
-url('#mercator-filters-svg-filter')
+url('#mercator-studio-svg-filter')
 sepia(${sliders.sepia.value*100}%)
 hue-rotate(${360*sliders.hue.value}deg)
 saturate(${amp**sliders.saturate.value*100}%)
@@ -373,16 +474,16 @@ blur(${sliders.blur.value*w/32}px)
 		}
 	}
 
-	async function mercator_filters_newGetUserMedia(constraints) {
+	async function mercator_studio_newGetUserMedia(constraints) {
 		if (constraints && constraints.video && !constraints.audio ) {
-			return new mercator_filters_MediaStream(await navigator.mediaDevices.mercator_filters_oldGetUserMedia(constraints))
+			return new mercator_studio_MediaStream(await navigator.mediaDevices.mercator_studio_oldGetUserMedia(constraints))
 		} else {
-			return navigator.mediaDevices.mercator_filters_oldGetUserMedia(constraints)
+			return navigator.mediaDevices.mercator_studio_oldGetUserMedia(constraints)
 		}
 	}
 
-	MediaDevices.prototype.mercator_filters_oldGetUserMedia = MediaDevices.prototype.getUserMedia
-	MediaDevices.prototype.getUserMedia = mercator_filters_newGetUserMedia
+	MediaDevices.prototype.mercator_studio_oldGetUserMedia = MediaDevices.prototype.getUserMedia
+	MediaDevices.prototype.getUserMedia = mercator_studio_newGetUserMedia
 
 } +')()'
 
