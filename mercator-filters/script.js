@@ -75,11 +75,11 @@ input {
 	--rainbow: hsl(0, 80%, 75%), hsl(30, 80%, 75%), hsl(60, 80%, 75%), hsl(90, 80%, 75%), hsl(120, 80%, 75%), hsl(150, 80%, 75%), hsl(180, 80%, 75%), hsl(210, 80%, 75%), hsl(240, 80%, 75%), hsl(270, 80%, 75%), hsl(300, 80%, 75%), hsl(330, 80%, 75%);
 	background: linear-gradient(90deg, var(--gradient)), linear-gradient(90deg, var(--rainbow));
 	border-radius: 100px;
-	border: 4px solid gray;
+	border: 4px solid lightgray;
 }
 
 input:focus{
-	border-color: white
+	border-color: black
 }
 
 input::-webkit-slider-thumb {
@@ -107,7 +107,7 @@ input:focus::-webkit-slider-thumb {
 }
 
 #temperature {
-	--gradient: #4af, #8880, #fa4
+	--gradient: #88f, #8880, #ff8
 }
 
 #tint {
@@ -135,6 +135,7 @@ input:focus::-webkit-slider-thumb {
 {
 	--gradient: black, white
 }
+
 `
 	form.appendChild(style)
 
@@ -206,7 +207,7 @@ input:focus::-webkit-slider-thumb {
 	const canvas = document.createElement('canvas')
 	previews.appendChild(canvas)
 
-	// Add UI to page
+    // Add UI to page
 
 	filter.appendChild(filter_matrix)
 	form.appendChild(filter)
@@ -256,16 +257,15 @@ input:focus::-webkit-slider-thumb {
 
 					// BALANCE
 
-					let temperature = sliders.temperature.value
-					let warm = Math.max(0, temperature)
-					let cool = Math.max(0,-temperature)
-					let tint = sliders.tint.value
-					filter_matrix.setAttribute('values',`
-${1-cool-tint/2} 0 0 0 0
-0 ${1-warm/2} 0 0 0
-0 0 ${1-warm-tint/2} 0 0
-0 0 0 1 0
-`)
+					let temperature = sliders.temperature.value**3
+					let tint = sliders.tint.value**3
+
+                    filter_matrix.setAttribute('values',[
+1+temperature-tint/2,0,0,0,0,
+0,1+tint,0,0,0,
+0,0,1-temperature-tint/2,0,0,
+0,0,0,1,0
+].join(' '))
 
 					// CSS filters
 
