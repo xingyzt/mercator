@@ -14,8 +14,8 @@ Firefox extension pending review.
 
 You don't even see the code. All you see is yourself.
 
-[Available on Greasyfork](https://greasyfork.org/en/scripts/406914-google-meet-matrix-rain)
+[![](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_v2_340x96.png)](https://chrome.google.com/webstore/detail/google-meet-matrix-rain/ihadpecfbccmcbpdlinbcmflaiddfion)
 
-Chrome extension pending review.
+[Available on Greasyfork](https://greasyfork.org/en/scripts/406914-google-meet-matrix-rain)
 
 Firefox extension pending review.
