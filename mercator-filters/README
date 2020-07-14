@@ -1,22 +1,24 @@
-Change how you look on Google Meet!
+Google Meet Mini Studio gives you fine control over your appearance during meetings.
 
 Filters:
-- Exposure
-- Contrast
-- Temperature
-- Tint
-- Sepia
-- Hue rotation
-- Saturation
-- Blur
-- Fog
-- Vignette
+· Exposure & Contrast
+· Temperature & Tint
+· Hue & Saturation
+· Sepia & Blur
+· Fog & Vignette
 
 Transforms:
-- Rotate
-- Scale
-- Horizontal & vertical translate
-- Pillarbox & letterbox crop
+· Rotate & Scale
+· Horizontal & Vertical Translate
+· Pillarbox & Letterbox Crop
+
+Changelog:
+· 1.8.0 Added three presets.
+· 1.7.1 Fixed problem with collapsible UI.
+· 1.7.0 Added color balance tools and refined UI.
+· 1.6.0 Added fog.
+· 1.5.0 Added vignettes.
+· 1.4.0 Converted to extension.
 
 Source code: https://github.com/FlyOrBoom/Mercator
 
