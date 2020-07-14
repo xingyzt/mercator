@@ -271,14 +271,17 @@ input#letterbox {
 				sliders.fog.value = 0.1
 				break
 			case 'mocha':
+				sliders.exposure.value = 0.1
+				sliders.tint.value = -0.75
 				sliders.sepia.value = 1
-				sliders.hue.value = .25
+				sliders.hue.value = 0.2
 				sliders.vignette.value = 0.3
 				sliders.fog.value = 0.3
 				break
 			case 'deepfry':
 				sliders.exposure.value = 0.3
 				sliders.contrast.value = 1
+				break
 		}
 	})
 
