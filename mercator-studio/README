@@ -12,8 +12,15 @@ Transforms:
 · Horizontal & Vertical Translate
 · Pillarbox & Letterbox Crop
 
+Presets:
+· Concorde
+· Mono
+· Stucco
+· Mocha
+· Deepfry
+
 Changelog:
-· 1.8.0 Added three presets.
+· 1.8.0 Added presets. Matched UI with material design.
 · 1.7.1 Fixed problem with collapsible UI.
 · 1.7.0 Added color balance tools and refined UI.
 · 1.6.0 Added fog.
