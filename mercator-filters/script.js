@@ -1,271 +1,275 @@
 async function() {
-    'use strict'
+	'use strict'
 
-    // Create form
+	// Create form
 
-    const form = document.createElement('form')
+	const form = document.createElement('form')
 
-    const style = document.createElement('style')
-    style.innerText = `
-form,form *{
-box-sizing: border-box
-}
-form{
-position: fixed;
-left: 0;
-top: 0;
-width: 480px;
-max-width: 100vw;
-height: 110vh;
-z-index: 9999999;
-background: #fffa;
-backdrop-filter: blur(1rem);
-padding: 1rem;
-transition: transform 200ms;
-transform: translateY(-100vh);
-box-shadow: 0 0 4rem #0004;
-border-bottom-right-radius: 10vh;
+	const style = document.createElement('style')
+	style.innerText = `
+form, form * {
+	box-sizing: border-box
 }
 
-form:hover{
-transform: none;
+form {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 480px;
+	max-width: 100vw;
+	height: 110vh;
+	z-index: 9999999;
+	background: #fffa;
+	backdrop-filter: blur(1rem);
+	padding: 1rem;
+	transition: transform 200ms;
+	transform: translateY(-100vh);
+	box-shadow: 0 0 4rem #0004;
+	border-bottom-right-radius: 10vh;
 }
 
-#previews{
-position:absolute;
-cursor: pointer;
-width: 400px;
-height: calc(10vh - 1rem);
-bottom: 1rem;
-display: flex;
-}
-#previews>*{
-height: 100%;
-width: auto;
-background: magenta;
-}
-#previews>:first-child{
-margin-right: 1rem
+form:hover {
+	transform: none;
 }
 
-form:hover>#previews{
-bottom: calc(10vh + 1rem);
-height: fit-content;
-}
-form:hover>#previews>*{
-width: 50%;
-height: auto;
-}
-
-label{
-display: flex;
-justify-content: space-between;
-align-items: center;
+#previews {
+	position: absolute;
+	cursor: pointer;
+	width: 400px;
+	height: calc(10vh - 1rem);
+	bottom: 1rem;
+	display: flex;
 }
 
-input{
-width: 80%;
--webkit-appearance: none;
---gradient: transparent, transparent;
---rainbow:
-hsl(0,80%,75%),
-hsl(30,80%,75%),
-hsl(60,80%,75%),
-hsl(90,80%,75%),
-hsl(120,80%,75%),
-hsl(150,80%,75%),
-hsl(180,80%,75%),
-hsl(210,80%,75%),
-hsl(240,80%,75%),
-hsl(270,80%,75%),
-hsl(300,80%,75%),
-hsl(330,80%,75%);
-
-background:
-linear-gradient(90deg,var(--gradient)),
-linear-gradient(90deg,var(--rainbow));
-
-border-radius: 100px;
-border: 4px solid gray;
+#previews>* {
+	height: 100%;
+	width: auto;
+	background: magenta;
+	transform: scaleX(-1);
 }
 
-input::-webkit-slider-thumb{
--webkit-appearance: none;
-background:white;
-width: 16px;
-height: 16px;
-border: 4px solid black;
-border-radius: 8px
+#previews>:first-child {
+	margin-right: 1rem;
 }
 
-#exposure, #fog, #vignette {
---gradient: black,#8880,white
-} #contrast {
---gradient: gray, #8880
-} #temperature {
---gradient: #4af, #8880, #fa4
-} #tint {
---gradient: #f8f, #8880, #8f8
-} #sepia {
---gradient: #8880, #aa8
-} #hue, #rotate {
-background: linear-gradient(90deg,hsl(0,80%,75%),
-hsl(60,80%,75%),
-hsl(120,80%,75%),
-hsl(180,80%,75%),
-hsl(240,80%,75%),
-hsl(300,80%,75%),
-hsl(0,80%,75%),
-hsl(60,80%,75%),
-hsl(120,80%,75%),
-hsl(180,80%,75%),
-hsl(240,80%,75%),
-hsl(300,80%,75%),
-hsl(0,80%,75%)
-)
-} #saturate{
---gradient: gray, #8880 50%, blue, magenta
-} #blur{
---gradient: #8880, gray
-} #scale, #x, #y, #pillarbox, #letterbox {
---gradient: black , white
+form:hover>#previews {
+	bottom: calc(10vh + 1rem);
+	height: fit-content;
 }
 
+form:hover>#previews>* {
+	width: 50%;
+	height: auto;
+}
 
+label {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+input {
+	width: 80%;
+	-webkit-appearance: none;
+	--gradient: transparent, transparent;
+	--rainbow: hsl(0, 80%, 75%), hsl(30, 80%, 75%), hsl(60, 80%, 75%), hsl(90, 80%, 75%), hsl(120, 80%, 75%), hsl(150, 80%, 75%), hsl(180, 80%, 75%), hsl(210, 80%, 75%), hsl(240, 80%, 75%), hsl(270, 80%, 75%), hsl(300, 80%, 75%), hsl(330, 80%, 75%);
+	background: linear-gradient(90deg, var(--gradient)), linear-gradient(90deg, var(--rainbow));
+	border-radius: 100px;
+	border: 4px solid gray;
+}
+
+input:focus{
+	border-color: white
+}
+
+input::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	background: white;
+	width: 16px;
+	height: 16px;
+	border: 4px solid black;
+	border-radius: 8px
+}
+
+input:focus::-webkit-slider-thumb {
+	border-color: white;
+	background: black;
+}
+
+#exposure,
+#fog,
+#vignette {
+	--gradient: black, #8880, white
+}
+
+#contrast {
+	--gradient: gray, #8880
+}
+
+#temperature {
+	--gradient: #4af, #8880, #fa4
+}
+
+#tint {
+	--gradient: #f8f, #8880, #8f8
+}
+
+#sepia {
+	--gradient: #8880, #aa8
+}
+
+#hue, #rotate {
+	background: linear-gradient(90deg, hsl(0, 80%, 75%), hsl(60, 80%, 75%), hsl(120, 80%, 75%), hsl(180, 80%, 75%), hsl(240, 80%, 75%), hsl(300, 80%, 75%), hsl(0, 80%, 75%), hsl(60, 80%, 75%), hsl(120, 80%, 75%), hsl(180, 80%, 75%), hsl(240, 80%, 75%), hsl(300, 80%, 75%), hsl(0, 80%, 75%))
+}
+
+#saturate {
+	--gradient: gray, #8880 50%, blue, magenta
+}
+
+#blur {
+	--gradient: #8880, gray
+}
+
+#scale, #x, #y,
+#pillarbox, #letterbox
+{
+	--gradient: black, white
+}
 `
-    form.appendChild(style)
+	form.appendChild(style)
 
-    // Create sliders
+	// Create sliders
 
-    const sliders = Object.fromEntries(
-        'exposure,contrast,temperature,tint,sepia,hue,saturate,blur,fog,vignette,rotate,scale,x,y,pillarbox,letterbox'
-        .split(',')
-        .map( key => {
+	const sliders = Object.fromEntries(
+		'exposure,contrast,temperature,tint,sepia,hue,saturate,blur,fog,vignette,rotate,scale,x,y,pillarbox,letterbox'
+		.split(',')
+		.map( key => {
 
-            let slider = document.createElement('input')
+			let slider = document.createElement('input')
 
-            slider.type = 'range'
+			slider.type = 'range'
 
-            slider.min = [
-                'blur',
-                'sepia',
-                'scale',
-                'pillarbox',
-                'letterbox'
-            ].includes(key) ? 0 : -1
+			slider.min = [
+				'blur',
+				'sepia',
+				'scale',
+				'pillarbox',
+				'letterbox'
+			].includes(key) ? 0 : -1
 
-            slider.max = 1
-            slider.step = 0.01
-            slider.value = 0
+			slider.max = 1
+			slider.step = 0.01
+			slider.value = 0
 
-            let label = document.createElement('label')
+			let label = document.createElement('label')
 
-            label.innerText = slider.title = slider.id = key
+			label.innerText = slider.title = slider.id = key
 
-            form.appendChild(label)
-            label.appendChild(slider)
+			form.appendChild(label)
+			label.appendChild(slider)
 
-            return [key,slider]
-        })
-    )
+			return [key,slider]
+		})
+	)
 
-    const reset = document.createElement('button')
-    reset.innerText = 'reset'
-    reset.addEventListener('click',event=>{
-        Object.values(sliders).forEach(slider=>{
-            slider.value = 0
-        })
-    })
-    form.appendChild(reset)
+	const reset = document.createElement('button')
+	reset.innerText = 'reset'
+	reset.addEventListener('click',event=>{
+		event.preventDefault()
+		Object.values(sliders).forEach(slider=>{
+			slider.value = 0
+		})
+	})
+	form.appendChild(reset)
 
-    // Create color balance matrix
+	// Create color balance matrix
 
-    const filter = document.createElementNS('http://www.w3.org/2000/svg','filter')
-    filter.id = 'mercator-filters-svg-filter'
-    const filter_matrix = document.createElementNS('http://www.w3.org/2000/svg','feColorMatrix')
-    filter_matrix.setAttribute('in','SourceGraphic')
+	const filter = document.createElementNS('http://www.w3.org/2000/svg','filter')
+	filter.id = 'mercator-filters-svg-filter'
+	const filter_matrix = document.createElementNS('http://www.w3.org/2000/svg','feColorMatrix')
+	filter_matrix.setAttribute('in','SourceGraphic')
 
-    const previews = document.createElement('div')
-    previews.id = 'previews'
-    form.appendChild(previews)
+	const previews = document.createElement('div')
+	previews.id = 'previews'
+	form.appendChild(previews)
 
-    // Create preview video
+	// Create preview video
 
-    const video = document.createElement('video')
-    video.setAttribute('playsinline','')
-    video.setAttribute('autoplay','')
-    video.setAttribute('muted','')
-    previews.appendChild(video)
+	const video = document.createElement('video')
+	video.setAttribute('playsinline','')
+	video.setAttribute('autoplay','')
+	video.setAttribute('muted','')
+	previews.appendChild(video)
 
-    // Create canvas
+	// Create canvas
 
-    const canvas = document.createElement('canvas')
-    previews.appendChild(canvas)
+	const canvas = document.createElement('canvas')
+	previews.appendChild(canvas)
 
-    // Add UI to page
+	// Add UI to page
 
-    filter.appendChild(filter_matrix)
-    form.appendChild(filter)
-    document.body.appendChild(form)
+	filter.appendChild(filter_matrix)
+	form.appendChild(filter)
+	document.body.appendChild(form)
 
-    class mercator_filters_MediaStream extends MediaStream {
-        constructor(old_stream) {
+	class mercator_filters_MediaStream extends MediaStream {
+		constructor(old_stream) {
 
-            // Copy original stream settings
+			// Copy original stream settings
 
-            super(old_stream)
+			super(old_stream)
 
-            const constraints = {audio: false, video: true}
+			const constraints = {audio: false, video: true}
 
-            video.srcObject = old_stream
+			video.srcObject = old_stream
 
-            const old_stream_settings = old_stream.getVideoTracks()[0].getSettings()
+			const old_stream_settings = old_stream.getVideoTracks()[0].getSettings()
 
-            const w = old_stream_settings.width
-            const h = old_stream_settings.height
-            canvas.width = w
-            canvas.height = h
-            const canvas_ctx = canvas.getContext('2d')
+			const w = old_stream_settings.width
+			const h = old_stream_settings.height
+			canvas.width = w
+			canvas.height = h
+			const canvas_ctx = canvas.getContext('2d')
 
-            // Amp: for values that can range from 0 to +infinity, amp**value does the mapping.
+			// Amp: for values that can range from 0 to +infinity, amp**value does the mapping.
 
-            const amp = 8
+			const amp = 8
 
-            let time = video.currentTime
+			let time = video.currentTime
 
-            function draw(){
+			function draw(){
 
-                if (time != video.currentTime) {
+				if (time != video.currentTime) {
 
-                    // Reset canvas
+					// Reset canvas
 
-                    canvas_ctx.setTransform(1,0,0,1,0,0)
-                    canvas_ctx.clearRect(0,0,w,h)
+					canvas_ctx.setTransform(1,0,0,1,0,0)
+					canvas_ctx.clearRect(0,0,w,h)
 
-                    canvas_ctx.translate(w/2,h/2)
+					canvas_ctx.translate(w/2,h/2)
 
-                    // Reset values
+					// Reset values
 
-                    sliders.hue.value %= 1
-                    sliders.rotate.value %= 1
+					sliders.hue.value %= 1
+					sliders.rotate.value %= 1
 
 
-                    // BALANCE
+					// BALANCE
 
-                    let temperature = sliders.temperature.value
-                    let warm = Math.max(0, temperature)
-                    let cool = Math.max(0,-temperature)
-                    let tint = sliders.tint.value
-                    filter_matrix.setAttribute('values',`
+					let temperature = sliders.temperature.value
+					let warm = Math.max(0, temperature)
+					let cool = Math.max(0,-temperature)
+					let tint = sliders.tint.value
+					filter_matrix.setAttribute('values',`
 ${1-cool-tint/2} 0 0 0 0
 0 ${1-warm/2} 0 0 0
 0 0 ${1-warm-tint/2} 0 0
 0 0 0 1 0
 `)
 
-                    // CSS filters
+					// CSS filters
 
-                    canvas_ctx.filter = `
+					canvas_ctx.filter = `
 brightness(${amp**sliders.exposure.value})
 contrast(${amp**sliders.contrast.value})
 url('#mercator-filters-svg-filter')
@@ -277,102 +281,102 @@ blur(${sliders.blur.value*w/32}px)
 `
 
 
-                    // Linear transformations: rotation, scaling, translation
+					// Linear transformations: rotation, scaling, translation
 
-                    let rotate = sliders.rotate.value
-                    if (rotate){
+					let rotate = sliders.rotate.value
+					if (rotate){
 
-                        canvas_ctx.rotate(-rotate*2*Math.PI)
+						canvas_ctx.rotate(-rotate*2*Math.PI)
 
-                    }
+					}
 
-                    let scale = amp**sliders.scale.value
-                    if (scale) {
+					let scale = amp**sliders.scale.value
+					if (scale) {
 
-                        canvas_ctx.scale(scale,scale)
+						canvas_ctx.scale(scale,scale)
 
-                    }
+					}
 
-                    canvas_ctx.translate(-sliders.x.value*w,sliders.y.value*h)
+					canvas_ctx.translate(-sliders.x.value*w,sliders.y.value*h)
 
-                    // Apply CSS filters & linear transformations
+					// Apply CSS filters & linear transformations
 
-                    canvas_ctx.translate(-w/2,-h/2)
+					canvas_ctx.translate(-w/2,-h/2)
 
-                    canvas_ctx.drawImage(video,0,0,w,h)
+					canvas_ctx.drawImage(video,0,0,w,h)
 
-                    // Fog: cover the entire image with a single color
+					// Fog: cover the entire image with a single color
 
-                    let fog = sliders.fog.value
-                    if (fog) {
+					let fog = sliders.fog.value
+					if (fog) {
 
-                        let fog_lum = Math.sign(fog)*100
-                        let fog_alpha = Math.abs(fog)
+						let fog_lum = Math.sign(fog)*100
+						let fog_alpha = Math.abs(fog)
 
-                        canvas_ctx.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
-                        canvas_ctx.fillRect(0,0,w,h)
+						canvas_ctx.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
+						canvas_ctx.fillRect(0,0,w,h)
 
-                    }
+					}
 
-                    // Vignette: cover the edges of the image with a single color
+					// Vignette: cover the edges of the image with a single color
 
-                    let vignette = sliders.vignette.value
-                    if (vignette) {
+					let vignette = sliders.vignette.value
+					if (vignette) {
 
-                        let vignette_lum = Math.sign(vignette)*100
-                        let vignette_alpha = Math.abs(vignette)
-                        let vignette_gradient = canvas_ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, ((w/2)**2+(h/2)**2)**(1/2))
+						let vignette_lum = Math.sign(vignette)*100
+						let vignette_alpha = Math.abs(vignette)
+						let vignette_gradient = canvas_ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, ((w/2)**2+(h/2)**2)**(1/2))
 
-                        vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
-                        vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
+						vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
+						vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
 
-                        canvas_ctx.fillStyle = vignette_gradient
-                        canvas_ctx.fillRect(0,0,w,h)
+						canvas_ctx.fillStyle = vignette_gradient
+						canvas_ctx.fillRect(0,0,w,h)
 
-                    }
+					}
 
-                    // Cropping
+					// Cropping
 
-                    let pillarbox = sliders.pillarbox.value*w/2
-                    if (pillarbox) {
+					let pillarbox = sliders.pillarbox.value*w/2
+					if (pillarbox) {
 
-                        canvas_ctx.clearRect(0,0,pillarbox,h)
-                        canvas_ctx.clearRect(w,0,-pillarbox,h)
+						canvas_ctx.clearRect(0,0,pillarbox,h)
+						canvas_ctx.clearRect(w,0,-pillarbox,h)
 
-                    }
+					}
 
-                    let letterbox = sliders.letterbox.value*h/2
-                    if (letterbox) {
+					let letterbox = sliders.letterbox.value*h/2
+					if (letterbox) {
 
-                        canvas_ctx.clearRect(0,0,w,letterbox)
-                        canvas_ctx.clearRect(0,h,w,-letterbox)
+						canvas_ctx.clearRect(0,0,w,letterbox)
+						canvas_ctx.clearRect(0,h,w,-letterbox)
 
-                    }
+					}
 
-                }
+				}
 
-                // Recursive call
+				// Recursive call
 
-                requestAnimationFrame(draw)
+				requestAnimationFrame(draw)
 
-            }
+			}
 
-            draw()
+			draw()
 
-            return canvas.captureStream(30)
+			return canvas.captureStream(30)
 
-        }
-    }
+		}
+	}
 
-    async function mercator_filters_newGetUserMedia(constraints) {
-        if (constraints && constraints.video && !constraints.audio ) {
-            return new mercator_filters_MediaStream(await navigator.mediaDevices.mercator_filters_oldGetUserMedia(constraints))
-        } else {
-            return navigator.mediaDevices.mercator_filters_oldGetUserMedia(constraints)
-        }
-    }
+	async function mercator_filters_newGetUserMedia(constraints) {
+		if (constraints && constraints.video && !constraints.audio ) {
+			return new mercator_filters_MediaStream(await navigator.mediaDevices.mercator_filters_oldGetUserMedia(constraints))
+		} else {
+			return navigator.mediaDevices.mercator_filters_oldGetUserMedia(constraints)
+		}
+	}
 
-    MediaDevices.prototype.mercator_filters_oldGetUserMedia = MediaDevices.prototype.getUserMedia
-    MediaDevices.prototype.getUserMedia = mercator_filters_newGetUserMedia
+	MediaDevices.prototype.mercator_filters_oldGetUserMedia = MediaDevices.prototype.getUserMedia
+	MediaDevices.prototype.getUserMedia = mercator_filters_newGetUserMedia
 
 }
