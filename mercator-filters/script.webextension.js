@@ -25,14 +25,14 @@ const code = '(' + async function() {
 	background: #fffa;
 	backdrop-filter: blur(1rem);
 	padding: 1rem;
-	transition: trans#mercator-filters 200ms;
-	trans#mercator-filters: translateY(-100vh);
+	transition: transform 200ms;
+	transform: translateY(-100vh);
 	box-shadow: 0 0 4rem #0004;
 	border-bottom-right-radius: 10vh;
 }
 
 #mercator-filters:hover {
-	trans#mercator-filters: none;
+	transform-filters: none;
 }
 
 #previews {
@@ -48,7 +48,7 @@ const code = '(' + async function() {
 	height: 100%;
 	width: auto;
 	background: magenta;
-	trans#mercator-filters: scaleX(-1);
+	transform: scaleX(-1);
 }
 
 #previews>:first-child {
