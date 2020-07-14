@@ -1,36 +1,70 @@
 async function() {
     'use strict'
 
-    const canvas = document.createElement('canvas')
-
-
     // Create form
 
     const form = document.createElement('form')
 
     const style = document.createElement('style')
     style.innerText = `
+form,form *{
+box-sizing: border-box
+}
 form{
 position: fixed;
 left: 0;
 top: 0;
-width: 400px;
+width: 480px;
+max-width: 100vw;
+height: 110vh;
 z-index: 9999999;
-background: #fff8;
+background: #fffa;
 backdrop-filter: blur(1rem);
-border-radius: 0 0 1vmin 0;
 padding: 1rem;
-transition: opacity 200ms;
-opacity: .2
+transition: transform 200ms;
+transform: translateY(-100vh);
+box-shadow: 0 0 4rem #0004;
+border-bottom-right-radius: 10vh;
+}
+
+form:hover{
+transform: none;
+}
+
+#previews{
+position:absolute;
+cursor: pointer;
+width: 400px;
+height: calc(10vh - 1rem);
+bottom: 1rem;
+display: flex;
+}
+#previews>*{
+height: 100%;
+width: auto;
+background: magenta;
+}
+#previews>:first-child{
+margin-right: 1rem
+}
+
+form:hover>#previews{
+bottom: calc(10vh + 1rem);
+height: fit-content;
+}
+form:hover>#previews>*{
+width: 50%;
+height: auto;
 }
 
 label{
 display: flex;
-justify-content: space-between
+justify-content: space-between;
+align-items: center;
 }
 
 input{
-width: 300px;
+width: 80%;
 -webkit-appearance: none;
 --gradient: transparent, transparent;
 --rainbow:
@@ -51,96 +85,55 @@ background:
 linear-gradient(90deg,var(--gradient)),
 linear-gradient(90deg,var(--rainbow));
 
-border-radius: 100px
+border-radius: 100px;
+border: 4px solid gray;
 }
 
-input#exposure,
-input#fog,
-input#vignette
-{
+input::-webkit-slider-thumb{
+-webkit-appearance: none;
+background:white;
+width: 16px;
+height: 16px;
+border: 4px solid black;
+border-radius: 8px
+}
+
+#exposure, #fog, #vignette {
 --gradient: black,#8880,white
-}
-
-input#contrast{
+} #contrast {
 --gradient: gray, #8880
-}
-
-input#temperature{
+} #temperature {
 --gradient: #4af, #8880, #fa4
-}
-
-input#tint{
+} #tint {
 --gradient: #f8f, #8880, #8f8
-}
-
-input#sepia{
+} #sepia {
 --gradient: #8880, #aa8
-}
-
-input#hue,
-input#rotate{
-
+} #hue, #rotate {
 background: linear-gradient(90deg,hsl(0,80%,75%),
-hsl(30,80%,75%),
 hsl(60,80%,75%),
-hsl(90,80%,75%),
 hsl(120,80%,75%),
-hsl(150,80%,75%),
 hsl(180,80%,75%),
-hsl(210,80%,75%),
 hsl(240,80%,75%),
-hsl(270,80%,75%),
 hsl(300,80%,75%),
-hsl(330,80%,75%),
 hsl(0,80%,75%),
-hsl(30,80%,75%),
 hsl(60,80%,75%),
-hsl(90,80%,75%),
 hsl(120,80%,75%),
-hsl(150,80%,75%),
 hsl(180,80%,75%),
-hsl(210,80%,75%),
 hsl(240,80%,75%),
-hsl(270,80%,75%),
 hsl(300,80%,75%),
-hsl(330,80%,75%)
+hsl(0,80%,75%)
 )
-}
-
-input#saturate{
+} #saturate{
 --gradient: gray, #8880 50%, blue, magenta
-}
-
-input#blur{
+} #blur{
 --gradient: #8880, gray
-}
-
-input#scale,
-input#x,
-input#y,
-input#pillarbox,
-input#letterbox
-{
+} #scale, #x, #y, #pillarbox, #letterbox {
 --gradient: black , white
-}
-video{
-height: 50px;
-background: magenta;
-cursor: pointer;
-transform: scaleX(-1)
 }
 
 
 `
     form.appendChild(style)
-
-    form.addEventListener('mouseenter',()=>{
-        form.style.opacity = 1
-    })
-
-    form.addEventListener('mouseleave',()=>{
-        form.style.opacity = 0.2
-    })
 
     // Create sliders
 
@@ -176,37 +169,43 @@ transform: scaleX(-1)
         })
     )
 
-
-    // Create preview video
-
-    const video = document.createElement('video')
-    video.style=`
-`
-    video.setAttribute('playsinline','')
-    video.setAttribute('autoplay','')
-
-    video.title = 'reset'
-    video.addEventListener('click',event=>{
-        event.preventDefault()
+    const reset = document.createElement('button')
+    reset.innerText = 'reset'
+    reset.addEventListener('click',event=>{
         Object.values(sliders).forEach(slider=>{
             slider.value = 0
         })
     })
+    form.appendChild(reset)
 
     // Create color balance matrix
 
-    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg')
     const filter = document.createElementNS('http://www.w3.org/2000/svg','filter')
     filter.id = 'mercator-filters-svg-filter'
     const filter_matrix = document.createElementNS('http://www.w3.org/2000/svg','feColorMatrix')
     filter_matrix.setAttribute('in','SourceGraphic')
 
+    const previews = document.createElement('div')
+    previews.id = 'previews'
+    form.appendChild(previews)
+
+    // Create preview video
+
+    const video = document.createElement('video')
+    video.setAttribute('playsinline','')
+    video.setAttribute('autoplay','')
+    video.setAttribute('muted','')
+    previews.appendChild(video)
+
+    // Create canvas
+
+    const canvas = document.createElement('canvas')
+    previews.appendChild(canvas)
+
     // Add UI to page
 
     filter.appendChild(filter_matrix)
-    svg.appendChild(filter)
-    form.appendChild(svg)
-    form.appendChild(video)
+    form.appendChild(filter)
     document.body.appendChild(form)
 
     class mercator_filters_MediaStream extends MediaStream {
@@ -232,35 +231,41 @@ transform: scaleX(-1)
 
             const amp = 8
 
+            let time = video.currentTime
+
             function draw(){
 
-                // Reset canvas
+                if (time != video.currentTime) {
 
-                canvas_ctx.setTransform(1,0,0,1,0,0)
-                canvas_ctx.clearRect(0,0,w,h)
+                    // Reset canvas
 
-                canvas_ctx.translate(w/2,h/2)
+                    canvas_ctx.setTransform(1,0,0,1,0,0)
+                    canvas_ctx.clearRect(0,0,w,h)
 
-                // Reset values
+                    canvas_ctx.translate(w/2,h/2)
 
-                sliders.hue.value %= 1
-                sliders.rotate.value %= 1
+                    // Reset values
+
+                    sliders.hue.value %= 1
+                    sliders.rotate.value %= 1
 
 
-                // BALANCE
+                    // BALANCE
 
-                let temperature = sliders.temperature.value*255
-                let tint = sliders.tint.value*255
-                filter_matrix.setAttribute('value',`
-1 0 0 0 0
-0 1 0 0 0
-0 0 2 0 0
+                    let temperature = sliders.temperature.value
+                    let warm = Math.max(0, temperature)
+                    let cool = Math.max(0,-temperature)
+                    let tint = sliders.tint.value
+                    filter_matrix.setAttribute('values',`
+${1-cool-tint/2} 0 0 0 0
+0 ${1-warm/2} 0 0 0
+0 0 ${1-warm-tint/2} 0 0
 0 0 0 1 0
 `)
 
-                // CSS filters
+                    // CSS filters
 
-                canvas_ctx.filter = `
+                    canvas_ctx.filter = `
 brightness(${amp**sliders.exposure.value})
 contrast(${amp**sliders.contrast.value})
 url('#mercator-filters-svg-filter')
@@ -272,75 +277,77 @@ blur(${sliders.blur.value*w/32}px)
 `
 
 
-                // Linear transformations: rotation, scaling, translation
+                    // Linear transformations: rotation, scaling, translation
 
-                let rotate = sliders.rotate.value
-                if (rotate){
+                    let rotate = sliders.rotate.value
+                    if (rotate){
 
-                    canvas_ctx.rotate(-rotate*2*Math.PI)
+                        canvas_ctx.rotate(-rotate*2*Math.PI)
 
-                }
+                    }
 
-                let scale = amp**sliders.scale.value
-                if (scale) {
+                    let scale = amp**sliders.scale.value
+                    if (scale) {
 
-                    canvas_ctx.scale(scale,scale)
+                        canvas_ctx.scale(scale,scale)
 
-                }
+                    }
 
-                canvas_ctx.translate(-sliders.x.value*w,sliders.y.value*h)
+                    canvas_ctx.translate(-sliders.x.value*w,sliders.y.value*h)
 
-                // Apply CSS filters & linear transformations
+                    // Apply CSS filters & linear transformations
 
-                canvas_ctx.translate(-w/2,-h/2)
+                    canvas_ctx.translate(-w/2,-h/2)
 
-                canvas_ctx.drawImage(video,0,0,w,h)
+                    canvas_ctx.drawImage(video,0,0,w,h)
 
-                // Fog: cover the entire image with a single color
+                    // Fog: cover the entire image with a single color
 
-                let fog = sliders.fog.value
-                if (fog) {
+                    let fog = sliders.fog.value
+                    if (fog) {
 
-                    let fog_lum = Math.sign(fog)*100
-                    let fog_alpha = Math.abs(fog)
+                        let fog_lum = Math.sign(fog)*100
+                        let fog_alpha = Math.abs(fog)
 
-                    canvas_ctx.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
-                    canvas_ctx.fillRect(0,0,w,h)
+                        canvas_ctx.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
+                        canvas_ctx.fillRect(0,0,w,h)
 
-                }
+                    }
 
-                // Vignette: cover the edges of the image with a single color
+                    // Vignette: cover the edges of the image with a single color
 
-                let vignette = sliders.vignette.value
-                if (vignette) {
+                    let vignette = sliders.vignette.value
+                    if (vignette) {
 
-                    let vignette_lum = Math.sign(vignette)*100
-                    let vignette_alpha = Math.abs(vignette)
-                    let vignette_gradient = canvas_ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, ((w/2)**2+(h/2)**2)**(1/2))
+                        let vignette_lum = Math.sign(vignette)*100
+                        let vignette_alpha = Math.abs(vignette)
+                        let vignette_gradient = canvas_ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, ((w/2)**2+(h/2)**2)**(1/2))
 
-                    vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
-                    vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
+                        vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
+                        vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
 
-                    canvas_ctx.fillStyle = vignette_gradient
-                    canvas_ctx.fillRect(0,0,w,h)
+                        canvas_ctx.fillStyle = vignette_gradient
+                        canvas_ctx.fillRect(0,0,w,h)
 
-                }
+                    }
 
-                // Cropping
+                    // Cropping
 
-                let pillarbox = sliders.pillarbox.value*w/2
-                if (pillarbox) {
+                    let pillarbox = sliders.pillarbox.value*w/2
+                    if (pillarbox) {
 
-                    canvas_ctx.clearRect(0,0,pillarbox,h)
-                    canvas_ctx.clearRect(w,0,-pillarbox,h)
+                        canvas_ctx.clearRect(0,0,pillarbox,h)
+                        canvas_ctx.clearRect(w,0,-pillarbox,h)
 
-                }
+                    }
 
-                let letterbox = sliders.letterbox.value*h/2
-                if (letterbox) {
+                    let letterbox = sliders.letterbox.value*h/2
+                    if (letterbox) {
 
-                    canvas_ctx.clearRect(0,0,w,letterbox)
-                    canvas_ctx.clearRect(0,h,w,-letterbox)
+                        canvas_ctx.clearRect(0,0,w,letterbox)
+                        canvas_ctx.clearRect(0,h,w,-letterbox)
+
+                    }
 
                 }
 
