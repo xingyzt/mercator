@@ -18,6 +18,7 @@ async function() {
 	style.textContent = `
 * {
 	box-sizing: border-box;
+	transition: all 200ms;
 }
 
 :focus {
@@ -33,7 +34,6 @@ main {
 	max-width: 100vw;
 	height: auto;
 	min-height: 100vh;
-	overflow: scroll;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -41,8 +41,8 @@ main {
 	transform: translateY(calc(-100% + 3rem));
 	box-shadow: 0 .1rem .25rem #0004;
 	border-radius: 0 0 1rem 0;
-	transition: transform 200ms;
-	padding: 1rem 1rem 0 1rem
+	padding: 1rem 1rem 0 1rem;
+	overflow-y: scroll;
 }
 
 main:hover {
