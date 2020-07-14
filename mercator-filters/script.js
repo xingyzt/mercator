@@ -8,7 +8,7 @@ async function() {
 
 	const style = document.createElement('style')
 	style.innerText = `
-#mercator-filters, form * {
+#mercator-filters, #mercator-filters * {
 	box-sizing: border-box
 }
 
@@ -30,7 +30,7 @@ async function() {
 }
 
 #mercator-filters:hover {
-	transform-filters: none;
+	transform: none;
 }
 
 #previews {
@@ -276,7 +276,6 @@ async function() {
 					canvas_ctx.filter = `
 brightness(${amp**sliders.exposure.value})
 contrast(${amp**sliders.contrast.value})
-url('#mercator-filters-svg-filter')
 url('#mercator-filters-svg-filter')
 sepia(${sliders.sepia.value*100}%)
 hue-rotate(${360*sliders.hue.value}deg)
