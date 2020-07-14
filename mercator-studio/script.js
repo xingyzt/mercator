@@ -38,28 +38,27 @@ main {
 	flex-direction: column;
 	justify-content: space-between;
 	background: white;
-	padding: 1rem;
-	transform: translateY(calc(-100% + 4rem));
-	box-shadow: 0 0 2rem #0002;
+	transform: translateY(calc(-100% + 3rem));
+	box-shadow: 0 .1rem .25rem #0004;
 	border-radius: 0 0 1rem 0;
-	border: 1px solid #aaa;
-	border-top: 0;
-	border-left: 0;
 	transition: transform 200ms;
+	padding: 1rem 1rem 0 1rem
 }
 
 main:hover {
 	transform: none;
 	border-radius: 0;
 	height: 100vh;
+	padding: 1rem;
 }
 
 #previews {
 	margin-top: 1rem;
+	height: 3rem
 }
 
 #previews>* {
-	height: 3rem;
+	height: 100%;
 	width: auto;
 	background: magenta;
 	transform: scaleX(-1);
@@ -67,6 +66,10 @@ main:hover {
 
 #previews>:first-child {
 	margin-right: 1rem;
+}
+
+main:hover>#previews {
+	height: auto
 }
 
 main:hover>#previews>* {
