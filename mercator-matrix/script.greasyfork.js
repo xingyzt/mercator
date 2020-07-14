@@ -10,7 +10,7 @@
 
 // MERCATOR MATRIX is made by Xing in 2020 under the MIT License
 
-async function() {
+(async function() {
 	'use strict'
 
 	const video = document.createElement('video')
@@ -147,4 +147,4 @@ async function() {
 	MediaDevices.prototype.oldGetUserMedia = MediaDevices.prototype.getUserMedia
 	MediaDevices.prototype.getUserMedia = newGetUserMedia
 
-}
+})()

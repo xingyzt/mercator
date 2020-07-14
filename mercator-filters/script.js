@@ -4,14 +4,15 @@ async function() {
 	// Create form
 
 	const form = document.createElement('form')
+	form.id = 'mercator-filters'
 
 	const style = document.createElement('style')
 	style.innerText = `
-form, form * {
+#mercator-filters, form * {
 	box-sizing: border-box
 }
 
-form {
+#mercator-filters {
 	position: fixed;
 	left: 0;
 	top: 0;
@@ -22,14 +23,14 @@ form {
 	background: #fffa;
 	backdrop-filter: blur(1rem);
 	padding: 1rem;
-	transition: transform 200ms;
-	transform: translateY(-100vh);
+	transition: trans#mercator-filters 200ms;
+	trans#mercator-filters: translateY(-100vh);
 	box-shadow: 0 0 4rem #0004;
 	border-bottom-right-radius: 10vh;
 }
 
-form:hover {
-	transform: none;
+#mercator-filters:hover {
+	trans#mercator-filters: none;
 }
 
 #previews {
@@ -45,30 +46,30 @@ form:hover {
 	height: 100%;
 	width: auto;
 	background: magenta;
-	transform: scaleX(-1);
+	trans#mercator-filters: scaleX(-1);
 }
 
 #previews>:first-child {
 	margin-right: 1rem;
 }
 
-form:hover>#previews {
+#mercator-filters:hover>#previews {
 	bottom: calc(10vh + 1rem);
 	height: fit-content;
 }
 
-form:hover>#previews>* {
+#mercator-filters:hover>#previews>* {
 	width: 50%;
 	height: auto;
 }
 
-label {
+#mercator-filters label {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
 
-input {
+#mercator-filters input[type=range] {
 	width: 80%;
 	-webkit-appearance: none;
 	--gradient: transparent, transparent;
@@ -78,11 +79,11 @@ input {
 	border: 4px solid lightgray;
 }
 
-input:focus{
+#mercator-filters input[type=range]:focus{
 	border-color: black
 }
 
-input::-webkit-slider-thumb {
+#mercator-filters input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	background: white;
 	width: 16px;
@@ -91,47 +92,50 @@ input::-webkit-slider-thumb {
 	border-radius: 8px
 }
 
-input:focus::-webkit-slider-thumb {
+#mercator-filters input[type=range]:focus::-webkit-slider-thumb {
 	border-color: white;
 	background: black;
 }
 
-#exposure,
-#fog,
-#vignette {
+#mercator-filters #exposure,
+#mercator-filters #fog,
+#mercator-filters #vignette {
 	--gradient: black, #8880, white
 }
 
-#contrast {
+#mercator-filters #contrast {
 	--gradient: gray, #8880
 }
 
-#temperature {
+#mercator-filters #temperature {
 	--gradient: #88f, #8880, #ff8
 }
 
-#tint {
+#mercator-filters #tint {
 	--gradient: #f8f, #8880, #8f8
 }
 
-#sepia {
+#mercator-filters #sepia {
 	--gradient: #8880, #aa8
 }
 
-#hue, #rotate {
+#mercator-filters #hue, #rotate {
 	background: linear-gradient(90deg, hsl(0, 80%, 75%), hsl(60, 80%, 75%), hsl(120, 80%, 75%), hsl(180, 80%, 75%), hsl(240, 80%, 75%), hsl(300, 80%, 75%), hsl(0, 80%, 75%), hsl(60, 80%, 75%), hsl(120, 80%, 75%), hsl(180, 80%, 75%), hsl(240, 80%, 75%), hsl(300, 80%, 75%), hsl(0, 80%, 75%))
 }
 
-#saturate {
+#mercator-filters #saturate {
 	--gradient: gray, #8880 50%, blue, magenta
 }
 
-#blur {
+#mercator-filters #blur {
 	--gradient: #8880, gray
 }
 
-#scale, #x, #y,
-#pillarbox, #letterbox
+#mercator-filters #scale,
+#mercator-filters #x,
+#mercator-filters #y,
+#mercator-filters #pillarbox,
+#mercator-filters #letterbox
 {
 	--gradient: black, white
 }
