@@ -183,7 +183,7 @@ input#letterbox {
 	--gradient: black, white
 }
 `
-	form.appendChild(style)
+	form.append(style)
 
 	// Create sliders
 
@@ -212,8 +212,8 @@ input#letterbox {
 
 			label.textContent = slider.id = key
 
-			form.appendChild(label)
-			label.appendChild(slider)
+			form.append(label)
+			label.append(slider)
 
 			return [key,slider]
 		})
@@ -301,12 +301,12 @@ input#letterbox {
 	video.setAttribute('playsinline','')
 	video.setAttribute('autoplay','')
 	video.setAttribute('muted','')
-	previews.appendChild(video)
 
 	// Create canvas
 
 	const canvas = document.createElement('canvas')
-	previews.appendChild(canvas)
+	
+	previews.append(video,canvas)
 
 	// Add UI to page
 
@@ -472,15 +472,15 @@ blur(${sliders.blur.value*w/32}px)
 		}
 	}
 
-	async function mercator_studio_newGetUserMedia(constraints) {
+	async function mercator_studio_getUserMedia ( constraints ) {
 		if (constraints && constraints.video && !constraints.audio ) {
-			return new mercator_studio_MediaStream(await navigator.mediaDevices.mercator_studio_oldGetUserMedia(constraints))
+			return new mercator_studio_MediaStream(await navigator.mediaDevices.old_getUserMedia(constraints))
 		} else {
-			return navigator.mediaDevices.mercator_studio_oldGetUserMedia(constraints)
+			return navigator.mediaDevices.old_getUserMedia(constraints)
 		}
 	}
 
-	MediaDevices.prototype.mercator_studio_oldGetUserMedia = MediaDevices.prototype.getUserMedia
-	MediaDevices.prototype.getUserMedia = mercator_studio_newGetUserMedia
+	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
+	MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia
 
 }
