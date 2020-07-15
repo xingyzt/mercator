@@ -1,6 +1,5 @@
 // Mercator Studio is made by Xing in 2020 under the MIT License
-
-const code = '(' + async function() {
+async function mercator_studio () {
 
 	'use strict'
 
@@ -59,10 +58,10 @@ main:hover {
 	height: 100%;
 	width: auto;
 	background: magenta;
-	transform: scaleX(-1);
 }
 #previews>:first-child {
 	margin-right: 1rem;
+	transform: scaleX(-1);
 }
 main:hover>#previews {
 	height: auto
@@ -177,7 +176,7 @@ input#letterbox {
 				input.type = 'text'
 				input.placeholder = 'text'
 
-			}else{
+			} else {
 				input.type = 'range'
 
 				input.min = [
@@ -506,20 +505,41 @@ input#letterbox {
 		}
 	}
 
-	// if the browser is Firefox (stackoverflow.com/questions/7000190)
-	if ( navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ) {
+	// If the browser supports using window.wrappedJSObject to manipulate
+	// global variables. (Firefox)
+
+	if ( window.wrappedJSObject ) {
 	
 		// Has to do this to change a global object (developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts)
-		window.wrappedJSObject.MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia 
+		exportFunction(
+			mercator_studio_getUserMedia,
+			window.navigator,
+			{ defineAs: 'notify' }
+		)
 	
 	} 
 	
 	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
 	MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia
 
-} +')()'
+}
 
-const script = document.createElement('script')
-script.textContent = code
-document.documentElement.appendChild(script)
-script.remove()
+if ( window.wrappedJSObject ) {
+
+	// If the browser supports using window.wrappedJSObject to manipulate
+	// global variables, just do it.
+
+	await mercator_studio()
+
+} else {
+	
+	// Else, inject as a script element
+
+	const code = `(${mercator_studio.toString()})()`
+
+	const script = document.createElement('script')
+	script.textContent = code
+	document.documentElement.appendChild(script)
+	script.remove()
+
+}

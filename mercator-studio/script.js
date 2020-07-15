@@ -1,4 +1,4 @@
-async function() {
+async function mercator_studio () {
 
 	'use strict'
 
@@ -504,11 +504,17 @@ input#letterbox {
 		}
 	}
 
-	// if the browser is Firefox (stackoverflow.com/questions/7000190)
-	if ( navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ) {
+	// If the browser supports using window.wrappedJSObject to manipulate
+	// global variables. (Firefox)
+
+	if ( window.wrappedJSObject ) {
 	
 		// Has to do this to change a global object (developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts)
-		window.wrappedJSObject.MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia 
+		exportFunction(
+			mercator_studio_getUserMedia,
+			window.navigator,
+			{ defineAs: 'notify' }
+		)
 	
 	} 
 	
