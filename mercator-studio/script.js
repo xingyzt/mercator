@@ -57,10 +57,10 @@ main:hover {
 	height: 100%;
 	width: auto;
 	background: magenta;
-	transform: scaleX(-1);
 }
 #previews>:first-child {
 	margin-right: 1rem;
+	transform: scaleX(-1);
 }
 main:hover>#previews {
 	height: auto
@@ -175,7 +175,7 @@ input#letterbox {
 				input.type = 'text'
 				input.placeholder = 'text'
 
-			}else{
+			} else {
 				input.type = 'range'
 
 				input.min = [
