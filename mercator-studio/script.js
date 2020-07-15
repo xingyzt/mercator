@@ -301,7 +301,11 @@ input#letterbox {
 	shadow.append(main,filter)
 	document.body.append(host)
 
+	
+	// Background Blur for Google Meet does this (hello@brownfoxlabs.com)
+	
 	class mercator_studio_MediaStream extends MediaStream {
+		
 		constructor(old_stream) {
 
 			// Copy original stream settings
@@ -500,6 +504,14 @@ input#letterbox {
 		}
 	}
 
+	// if the browser is Firefox (stackoverflow.com/questions/7000190)
+	if ( navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ) {
+	
+		// Has to do this to change a global object (developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts)
+		window.wrappedJSObject.MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia 
+	
+	} 
+	
 	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
 	MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia
 
