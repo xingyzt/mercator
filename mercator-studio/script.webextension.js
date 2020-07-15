@@ -518,7 +518,7 @@ input#letterbox {
 		)
 	
 	} catch ( error ) {
-		console.log( 'N' )
+		console.log( error )
 	}
 	
 	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
