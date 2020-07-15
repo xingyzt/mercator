@@ -1,6 +1,6 @@
 {
   "name": "Google Meet Mini Studio",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "author": "Xing (x-ing.space)",
   "description": "Change how you look on Google Meet with adjustable exposure, blur, vignette, and more!",
   "content_scripts": [

@@ -1,16 +1,17 @@
 // ==UserScript==
-// @name         Google Meet Filters & Transforms
+// @name         Google Meet Mini Studio
 // @namespace    http://tampermonkey.net/
-// @version      1.5
+// @version      1.8.1
 // @description  Change how you look on Google Meet.
 // @author       Xing
 // @match        https://meet.google.com/*
 // @grant        none
 // ==/UserScript==
 
-// MERCATOR FILTERS is made by Xing in 2020 under the MIT License
+// Mercator Studio is made by Xing in 2020 under the MIT License
 
 (async function() {
+	
 	'use strict'
 
 	// Create shadow root
@@ -195,7 +196,7 @@ input#letterbox {
 	--gradient: black, white
 }
 `
-	form.appendChild(style)
+	form.append(style)
 
 	// Create sliders
 
@@ -224,8 +225,8 @@ input#letterbox {
 
 			label.textContent = slider.id = key
 
-			form.appendChild(label)
-			label.appendChild(slider)
+			form.append(label)
+			label.append(slider)
 
 			return [key,slider]
 		})
@@ -313,12 +314,12 @@ input#letterbox {
 	video.setAttribute('playsinline','')
 	video.setAttribute('autoplay','')
 	video.setAttribute('muted','')
-	previews.appendChild(video)
 
 	// Create canvas
 
 	const canvas = document.createElement('canvas')
-	previews.appendChild(canvas)
+	
+	previews.append(video,canvas)
 
 	// Add UI to page
 
@@ -359,6 +360,28 @@ input#letterbox {
 
 				if (time != video.currentTime) {
 
+					// Get values
+
+					sliders.hue.value %= 1
+					sliders.rotate.value %= 1
+					
+					let exposure    = amp**sliders.exposure.value
+					let contrast    = amp**sliders.contrast.value
+					let temperature = sliders.temperature.value**3
+					let tint        = sliders.tint.value**3
+					let sepia       = sliders.sepia.value*100 + '%'
+					let hue         = 360*sliders.hue.value + 'deg'
+					let saturate    = amp**sliders.saturate.value*100 + '%'
+					let blur        = sliders.blur.value*w/32 + 'px'
+					let fog         = sliders.fog.value
+					let vignette    = sliders.vignette.value
+					let rotate      = -sliders.rotate.value*2*Math.PI
+					let scale       = amp**sliders.scale.value
+					let move_x      = -sliders.x.value*w
+					let move_y      = sliders.y.value*h
+					let pillarbox   = sliders.pillarbox.value*w/2
+					let letterbox   = sliders.letterbox.value*h/2
+			
 					// Reset canvas
 
 					canvas_ctx.setTransform(1,0,0,1,0,0)
@@ -366,16 +389,7 @@ input#letterbox {
 
 					canvas_ctx.translate(w/2,h/2)
 
-					// Reset values
-
-					sliders.hue.value %= 1
-					sliders.rotate.value %= 1
-
-
-					// BALANCE
-
-					let temperature = sliders.temperature.value**3
-					let tint = sliders.tint.value**3
+					// Color balance
 
 					filter_matrix.setAttribute('values',[
 						1+temperature-tint/2,0,0,0,0,
@@ -385,35 +399,36 @@ input#letterbox {
 					].join(' '))
 
 					// CSS filters
-
-					canvas_ctx.filter = `
-brightness(${amp**sliders.exposure.value})
-contrast(${amp**sliders.contrast.value})
-url('#mercator-studio-svg-filter')
-sepia(${sliders.sepia.value*100}%)
-hue-rotate(${360*sliders.hue.value}deg)
-saturate(${amp**sliders.saturate.value*100}%)
-blur(${sliders.blur.value*w/32}px)
-`
-
+					
+					canvas_ctx.filter = (`
+						brightness(${exposure})
+						contrast(${contrast})
+						url('#mercator-studio-svg-filter')
+						sepia(${sepia})
+						hue-rotate(${hue})
+						saturate(${saturate})
+						blur(${blur})
+					`)
 
 					// Linear transformations: rotation, scaling, translation
 
-					let rotate = sliders.rotate.value
-					if (rotate){
-
-						canvas_ctx.rotate(-rotate*2*Math.PI)
-
+					if ( rotate ) {
+					
+						canvas_ctx.rotate(rotate)
+						
 					}
 
-					let scale = amp**sliders.scale.value
-					if (scale) {
-
+					if ( scale-1 ) {
+						
 						canvas_ctx.scale(scale,scale)
-
+						
 					}
+					
+					if ( move_x || move_y ) {
 
-					canvas_ctx.translate(-sliders.x.value*w,sliders.y.value*h)
+						canvas_ctx.translate(move_x,move_y)
+						
+					}
 
 					// Apply CSS filters & linear transformations
 
@@ -423,21 +438,18 @@ blur(${sliders.blur.value*w/32}px)
 
 					// Fog: cover the entire image with a single color
 
-					let fog = sliders.fog.value
-					if (fog) {
-
+					if ( fog ) {
+						
 						let fog_lum = Math.sign(fog)*100
 						let fog_alpha = Math.abs(fog)
 
 						canvas_ctx.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
 						canvas_ctx.fillRect(0,0,w,h)
-
 					}
-
+					
 					// Vignette: cover the edges of the image with a single color
-
-					let vignette = sliders.vignette.value
-					if (vignette) {
+					
+					if ( vignette ) {
 
 						let vignette_lum = Math.sign(vignette)*100
 						let vignette_alpha = Math.abs(vignette)
@@ -448,51 +460,44 @@ blur(${sliders.blur.value*w/32}px)
 
 						canvas_ctx.fillStyle = vignette_gradient
 						canvas_ctx.fillRect(0,0,w,h)
-
+						
 					}
 
-					// Cropping
-
-					let pillarbox = sliders.pillarbox.value*w/2
-					if (pillarbox) {
+					// Pillarbox: crop width
+					
+					if ( pillarbox ) {
 
 						canvas_ctx.clearRect(0,0,pillarbox,h)
 						canvas_ctx.clearRect(w,0,-pillarbox,h)
-
+						
 					}
-
-					let letterbox = sliders.letterbox.value*h/2
-					if (letterbox) {
-
+					
+					// Letterbox: crop height
+					
+					if ( letterbox ) {
+						
 						canvas_ctx.clearRect(0,0,w,letterbox)
 						canvas_ctx.clearRect(0,h,w,-letterbox)
-
+						
 					}
-
 				}
-
 				// Recursive call
-
 				requestAnimationFrame(draw)
-
 			}
-
 			draw()
-
 			return canvas.captureStream(30)
-
 		}
 	}
 
-	async function mercator_studio_newGetUserMedia(constraints) {
+	async function mercator_studio_getUserMedia ( constraints ) {
 		if (constraints && constraints.video && !constraints.audio ) {
-			return new mercator_studio_MediaStream(await navigator.mediaDevices.mercator_studio_oldGetUserMedia(constraints))
+			return new mercator_studio_MediaStream(await navigator.mediaDevices.old_getUserMedia(constraints))
 		} else {
-			return navigator.mediaDevices.mercator_studio_oldGetUserMedia(constraints)
+			return navigator.mediaDevices.old_getUserMedia(constraints)
 		}
 	}
 
-	MediaDevices.prototype.mercator_studio_oldGetUserMedia = MediaDevices.prototype.getUserMedia
-	MediaDevices.prototype.getUserMedia = mercator_studio_newGetUserMedia
+	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
+	MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia
 
 })()

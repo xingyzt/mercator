@@ -1,13 +1,13 @@
 // ==UserScript==
-// @name         Google Meet Filters & Transforms
+// @name         Google Meet Mini Studio
 // @namespace    http://tampermonkey.net/
-// @version      1.5
+// @version      1.8.1
 // @description  Change how you look on Google Meet.
 // @author       Xing
 // @match        https://meet.google.com/*
 // @grant        none
 // ==/UserScript==
 
-// MERCATOR FILTERS is made by Xing in 2020 under the MIT License
+// Mercator Studio is made by Xing in 2020 under the MIT License
 
 ({{script.js}})()
