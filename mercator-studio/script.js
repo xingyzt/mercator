@@ -1,4 +1,5 @@
-async function() {
+( async function() {
+	
 	'use strict'
 
 	// Create shadow root
@@ -347,6 +348,28 @@ input#letterbox {
 
 				if (time != video.currentTime) {
 
+					// Get values
+
+					sliders.hue.value %= 1
+					sliders.rotate.value %= 1
+					
+					let exposure    = amp**sliders.exposure.value
+					let contrast    = amp**sliders.contrast.value
+					let temperature = sliders.temperature.value**3
+					let tint        = sliders.tint.value**3
+					let sepia       = sliders.sepia.value*100 + '%'
+					let hue         = 360*sliders.hue.value + 'deg'
+					let saturate    = amp**sliders.saturate.value*100 + '%'
+					let blur        = sliders.blur.value*w/32 + 'px'
+					let fog         = sliders.fog.value
+					let vignette    = sliders.vignette.value
+					let rotate      = -sliders.rotate.value*2*Math.PI
+					let scale       = amp**sliders.scale.value
+					let move_x      = -sliders.x.value*w
+					let move_y      = sliders.y.value*h
+					let pillarbox   = sliders.pillarbox.value*w/2
+					let letterbox   = sliders.letterbox.value*h/2
+			
 					// Reset canvas
 
 					canvas_ctx.setTransform(1,0,0,1,0,0)
@@ -354,16 +377,8 @@ input#letterbox {
 
 					canvas_ctx.translate(w/2,h/2)
 
-					// Reset values
+					// Color balance
 
-					sliders.hue.value %= 1
-					sliders.rotate.value %= 1
-
-
-					// BALANCE
-
-					let temperature = sliders.temperature.value**3
-					let tint = sliders.tint.value**3
 
 					filter_matrix.setAttribute('values',[
 						1+temperature-tint/2,0,0,0,0,
@@ -373,102 +388,66 @@ input#letterbox {
 					].join(' '))
 
 					// CSS filters
-
-					canvas_ctx.filter = `
-brightness(${amp**sliders.exposure.value})
-contrast(${amp**sliders.contrast.value})
-url('#mercator-studio-svg-filter')
-sepia(${sliders.sepia.value*100}%)
-hue-rotate(${360*sliders.hue.value}deg)
-saturate(${amp**sliders.saturate.value*100}%)
-blur(${sliders.blur.value*w/32}px)
-`
-
+					
+					canvas_ctx.filter = (`
+						brightness	(${exposure})
+						contrast	(${contrast})
+						url('#mercator-studio-svg-filter')
+						sepia	(${sepia})
+						hue-rotate	(${hue})
+						saturate	(${saturate})
+						blur	(${blur})
+					`)
 
 					// Linear transformations: rotation, scaling, translation
 
-					let rotate = sliders.rotate.value
-					if (rotate){
+					let rotate = 
+					canvas_ctx.rotate(rotate)
 
-						canvas_ctx.rotate(-rotate*2*Math.PI)
+					let scale = 
+					canvas_ctx.scale(scale,scale)
 
-					}
-
-					let scale = amp**sliders.scale.value
-					if (scale) {
-
-						canvas_ctx.scale(scale,scale)
-
-					}
-
-					canvas_ctx.translate(-sliders.x.value*w,sliders.y.value*h)
+					canvas_ctx.translate()
 
 					// Apply CSS filters & linear transformations
 
-					canvas_ctx.translate(-w/2,-h/2)
+					canvas_ctx.translate(move_x,move_y)
 
 					canvas_ctx.drawImage(video,0,0,w,h)
 
 					// Fog: cover the entire image with a single color
 
-					let fog = sliders.fog.value
 					if (fog) {
-
 						let fog_lum = Math.sign(fog)*100
 						let fog_alpha = Math.abs(fog)
 
 						canvas_ctx.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
 						canvas_ctx.fillRect(0,0,w,h)
-
-					}
-
+						
 					// Vignette: cover the edges of the image with a single color
 
-					let vignette = sliders.vignette.value
-					if (vignette) {
+					let vignette_lum = Math.sign(vignette)*100
+					let vignette_alpha = Math.abs(vignette)
+					let vignette_gradient = canvas_ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, ((w/2)**2+(h/2)**2)**(1/2))
 
-						let vignette_lum = Math.sign(vignette)*100
-						let vignette_alpha = Math.abs(vignette)
-						let vignette_gradient = canvas_ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, ((w/2)**2+(h/2)**2)**(1/2))
+					vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
+					vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
 
-						vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
-						vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
-
-						canvas_ctx.fillStyle = vignette_gradient
-						canvas_ctx.fillRect(0,0,w,h)
-
-					}
+					canvas_ctx.fillStyle = vignette_gradient
+					canvas_ctx.fillRect(0,0,w,h)
 
 					// Cropping
 
-					let pillarbox = sliders.pillarbox.value*w/2
-					if (pillarbox) {
-
-						canvas_ctx.clearRect(0,0,pillarbox,h)
-						canvas_ctx.clearRect(w,0,-pillarbox,h)
-
-					}
-
-					let letterbox = sliders.letterbox.value*h/2
-					if (letterbox) {
-
-						canvas_ctx.clearRect(0,0,w,letterbox)
-						canvas_ctx.clearRect(0,h,w,-letterbox)
-
-					}
-
+					canvas_ctx.clearRect(0,0,pillarbox,h)
+					canvas_ctx.clearRect(w,0,-pillarbox,h)
+					canvas_ctx.clearRect(0,0,w,letterbox)
+					canvas_ctx.clearRect(0,h,w,-letterbox)
 				}
-
 				// Recursive call
-
 				requestAnimationFrame(draw)
-
 			}
-
 			draw()
-
 			return canvas.captureStream(30)
-
 		}
 	}
 
@@ -483,4 +462,4 @@ blur(${sliders.blur.value*w/32}px)
 	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
 	MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia
 
-}
+} ) ()
