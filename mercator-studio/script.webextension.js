@@ -1,4 +1,5 @@
 // Mercator Studio is made by Xing in 2020 under the MIT License
+
 async function mercator_studio () {
 
 	'use strict'
@@ -505,37 +506,37 @@ input#letterbox {
 		}
 	}
 
-	// If the browser supports using window.wrappedJSObject to manipulate
+	// If the browser supports using exportFunction to manipulate
 	// global variables. (Firefox)
-
-	if ( window.wrappedJSObject ) {
 	
+	try{	
 		// Has to do this to change a global object (developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts)
 		exportFunction(
 			mercator_studio_getUserMedia,
-			window.navigator,
-			{ defineAs: 'notify' }
+			window.MediaDevices.prototype,
+			{ defineAs: 'getUserMedia' }
 		)
 	
-	} 
+	} catch ( error ) {
+		console.log( 'N' )
+	}
 	
 	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
 	MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia
 
 }
 
-if ( window.wrappedJSObject ) {
+if ( typeof exportFunction != 'undefined' ) {
 
-	// If the browser supports using window.wrappedJSObject to manipulate
-	// global variables, just do it.
-
-	await mercator_studio()
+	console.log('firefox')
+	mercator_studio().catch( error => {
+		console.log(error)
+	})
 
 } else {
-	
-	// Else, inject as a script element
 
-	const code = '(' + mercator_studio.toString() +')()'
+	console.log('not firefox')
+	const code = '(' + mercator_studio.toString() + ')()'
 
 	const script = document.createElement('script')
 	script.textContent = code
