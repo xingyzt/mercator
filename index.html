@@ -16,5 +16,14 @@
 		<h2>Mercator Studio by Xing</h2>
 		<video></video>
 		<script src='mercator-studio/script.greasyfork.js'></script>
+		<script>
+const video = document.querySelector('video')
+navigator.mediaDevices.getUserMedia({
+	video: true
+}).then(function(stream) {
+	video.src = window.URL.createObjectURL(stream);
+	video.play()
+})
+		</script>
 	</body>
 </html>
