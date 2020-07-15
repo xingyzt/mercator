@@ -2,7 +2,7 @@ import os
 for _dir in [
 	_file.name
 	for _file in os.scandir()
-	if _file.is_dir() and _file.name[0] != '.'
+	if _file.is_dir() and _file.name[0:8] == 'mercator'
 ]:
 	with open(_dir+'/script.js') as script:
 		script_source = script.read()[:-1]
