@@ -485,7 +485,16 @@ input#letterbox {
 		}
 	}
 
-	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
-	MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia
+	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.
+	
+	MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia 
+
+	// if the browser is Firefox (stackoverflow.com/questions/7000190)
+	if ( navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ) {
+	
+		// Has to do this to change a global object (developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts)
+		window.wrappedJSObject.MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia 
+	
+	} 
 
 }
