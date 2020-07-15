@@ -63,7 +63,7 @@ main:hover {
 }
 #previews {
 	margin-top: 1rem;
-	height: 3rem
+	height: 3rem;
 }
 #previews>* {
 	height: 100%;
@@ -74,8 +74,7 @@ main:hover {
 	margin-right: 1rem;
 }
 main:hover>#previews {
-	height: auto
-	transform: scaleX(-1);
+	height: auto;
 }
 main:hover>#previews>* {
 	height: auto;
