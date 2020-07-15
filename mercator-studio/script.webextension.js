@@ -61,10 +61,10 @@ main:hover {
 }
 #previews>:first-child {
 	margin-right: 1rem;
-	transform: scaleX(-1);
 }
 main:hover>#previews {
 	height: auto
+	transform: scaleX(-1);
 }
 main:hover>#previews>* {
 	height: auto;
@@ -535,7 +535,7 @@ if ( window.wrappedJSObject ) {
 	
 	// Else, inject as a script element
 
-	const code = `(${mercator_studio.toString()})()`
+	const code = '(' + mercator_studio.toString() +')()'
 
 	const script = document.createElement('script')
 	script.textContent = code

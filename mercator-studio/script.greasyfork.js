@@ -72,10 +72,10 @@ main:hover {
 }
 #previews>:first-child {
 	margin-right: 1rem;
-	transform: scaleX(-1);
 }
 main:hover>#previews {
 	height: auto
+	transform: scaleX(-1);
 }
 main:hover>#previews>* {
 	height: auto;
