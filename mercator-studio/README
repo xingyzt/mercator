@@ -1,5 +1,9 @@
 Google Meet Mini Studio gives you fine control over your appearance during meetings.
 
+Text input:
+· Auto-adjusts size to fit any length of text onto the screen.
+· Emoji support!
+
 Filters:
 · Exposure & Contrast
 · Temperature & Tint
@@ -20,6 +24,7 @@ Presets:
 · Deepfry
 
 Changelog:
+· 1.9.0 Added text.
 · 1.8.0 Added presets. Matched UI with material design.
 · 1.7.1 Fixed problem with collapsible UI.
 · 1.7.0 Added color balance tools and refined UI.
