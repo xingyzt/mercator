@@ -1,4 +1,4 @@
-( async function() {
+async function() {
 	
 	'use strict'
 
@@ -379,7 +379,6 @@ input#letterbox {
 
 					// Color balance
 
-
 					filter_matrix.setAttribute('values',[
 						1+temperature-tint/2,0,0,0,0,
 						0,1+tint,0,0,0,
@@ -390,58 +389,85 @@ input#letterbox {
 					// CSS filters
 					
 					canvas_ctx.filter = (`
-						brightness	(${exposure})
-						contrast	(${contrast})
+						brightness(${exposure})
+						contrast(${contrast})
 						url('#mercator-studio-svg-filter')
-						sepia	(${sepia})
-						hue-rotate	(${hue})
-						saturate	(${saturate})
-						blur	(${blur})
+						sepia(${sepia})
+						hue-rotate(${hue})
+						saturate(${saturate})
+						blur(${blur})
 					`)
 
 					// Linear transformations: rotation, scaling, translation
 
-					let rotate = 
-					canvas_ctx.rotate(rotate)
+					if ( rotate ) {
+					
+						canvas_ctx.rotate(rotate)
+						
+					}
 
-					let scale = 
-					canvas_ctx.scale(scale,scale)
+					if ( scale-1 ) {
+						
+						canvas_ctx.scale(scale,scale)
+						
+					}
+					
+					if ( move_x || move_y ) {
 
-					canvas_ctx.translate()
+						canvas_ctx.translate(move_x,move_y)
+						
+					}
 
 					// Apply CSS filters & linear transformations
 
-					canvas_ctx.translate(move_x,move_y)
+					canvas_ctx.translate(-w/2,-h/2)
 
 					canvas_ctx.drawImage(video,0,0,w,h)
 
 					// Fog: cover the entire image with a single color
 
-					if (fog) {
+					if ( fog ) {
+						
 						let fog_lum = Math.sign(fog)*100
 						let fog_alpha = Math.abs(fog)
 
 						canvas_ctx.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
 						canvas_ctx.fillRect(0,0,w,h)
-						
+					}
+					
 					// Vignette: cover the edges of the image with a single color
+					
+					if ( vignette ) {
 
-					let vignette_lum = Math.sign(vignette)*100
-					let vignette_alpha = Math.abs(vignette)
-					let vignette_gradient = canvas_ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, ((w/2)**2+(h/2)**2)**(1/2))
+						let vignette_lum = Math.sign(vignette)*100
+						let vignette_alpha = Math.abs(vignette)
+						let vignette_gradient = canvas_ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, ((w/2)**2+(h/2)**2)**(1/2))
 
-					vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
-					vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
+						vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
+						vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
 
-					canvas_ctx.fillStyle = vignette_gradient
-					canvas_ctx.fillRect(0,0,w,h)
+						canvas_ctx.fillStyle = vignette_gradient
+						canvas_ctx.fillRect(0,0,w,h)
+						
+					}
 
-					// Cropping
+					// Pillarbox: crop width
+					
+					if ( pillarbox ) {
 
-					canvas_ctx.clearRect(0,0,pillarbox,h)
-					canvas_ctx.clearRect(w,0,-pillarbox,h)
-					canvas_ctx.clearRect(0,0,w,letterbox)
-					canvas_ctx.clearRect(0,h,w,-letterbox)
+						canvas_ctx.clearRect(0,0,pillarbox,h)
+						canvas_ctx.clearRect(w,0,-pillarbox,h)
+						
+					}
+					
+					// Letterbox: crop height
+					
+					if ( letterbox ) {
+						
+						canvas_ctx.clearRect(0,0,w,letterbox)
+						canvas_ctx.clearRect(0,h,w,-letterbox)
+						
+					}
 				}
 				// Recursive call
 				requestAnimationFrame(draw)
@@ -462,4 +488,4 @@ input#letterbox {
 	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
 	MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia
 
-} ) ()
+}
