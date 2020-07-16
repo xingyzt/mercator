@@ -6,8 +6,6 @@ Change how you look on Google Meet with adjustable exposure, blur, vignette, and
 
 [![Available in the Chrome Web Store](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_v2_340x96.png)](https://chrome.google.com/webstore/detail/google-meet-filters-trans/ohcmmfphdpigpccfppacepjhamgcffjh)
 
-[![Get the addon for Firefox](https://ffp4g1ylyit3jdyti1hqcvtb-wpengine.netdna-ssl.com/addons/files/2015/11/get-the-addon.png)](https://addons.mozilla.org/en-US/firefox/addon/mercator-studio/)
-
 [Available on Greasyfork](https://greasyfork.org/en/scripts/406944-google-meet-filters-transforms)
 
 ## Mercator Matrix &mdash; Google Meet Matrix Rain
