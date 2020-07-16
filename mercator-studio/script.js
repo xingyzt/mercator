@@ -1,15 +1,15 @@
 // ==UserScript==
-// @name         Google Meet Studio Mini
-// @version      1.10.5
-// @description  Change how you look on Google Meet.
-// @author       Xing <dev@x-ing.space> (https://x-ing.space)
-// @copyright    2020, Xing (https://x-ing.space)
-// @license      MIT License; https://x-ing.space/mercator/LICENSE
-// @namespace    https://x-ing.space
-// @homepageURL  https://x-ing.space/mercator
-// @icon         https://x-ing.space/mercator/icon.png
-// @match        https://meet.google.com/*
-// @grant        none
+// @name	Google Meet Studio Mini
+// @version	1.10.5
+// @description	Change how you look on Google Meet.
+// @author	Xing <dev@x-ing.space> (https://x-ing.space)
+// @copyright	2020, Xing (https://x-ing.space)
+// @license	MIT License; https://x-ing.space/mercator/LICENSE
+// @namespace	https://x-ing.space
+// @homepageURL	https://x-ing.space/mercator
+// @icon	https://x-ing.space/mercator/icon.png
+// @match	https://meet.google.com/*
+// @grant	none
 // ==/UserScript==
 
 ( async function mercator_studio () {
@@ -45,6 +45,8 @@
 
 	const style = document.createElement('style')
 
+	const font_family = `'Google Sans', Roboto, RobotDraft, Helvetica, sans-serif, serif`
+
 	style.textContent = `
 * {
 	box-sizing: border-box;
@@ -79,7 +81,7 @@ main {
 	border-radius: 0 0 .75rem 0;
 	padding: 1rem 1rem 0 1rem;
 	overflow: hidden scroll;
-	font-family: 'Google Sans', Roboto, RobotDraft, Helvetica, sans-serif, serif;
+	font-family: ${font_family};
 	font-size: 1rem;
 	cursor: pointer;
 }
@@ -108,7 +110,7 @@ main.focus {
 #previews>canvas {
 	height: 100%;
 	width: auto;
-	background-image: linear-gradient(90deg,			
+	background-image: linear-gradient(90deg,
 		hsl( 18, 100%, 68%) 16.7%,	hsl(-10, 100%, 80%) 16.7%,
 		hsl(-10, 100%, 80%) 33.3%,	hsl(  5,  90%, 72%) 33.3%,
 		hsl(  5,  90%, 72%) 50%,	hsl( 48, 100%, 75%) 50%,
@@ -186,6 +188,7 @@ label>:focus {
 input[type=text] {
 	text-align: center;
 	font-family: inherit;
+	font-weight: bold;
 }
 input[type=range] {
 	-webkit-appearance: none;
@@ -282,6 +285,21 @@ input#letterbox {
 			return [key,input]
 		})
 	)
+
+
+	form.addEventListener('wheel',event=>{
+		if ( event.target.type=='range' ) {
+			event.preventDefault()
+			const slider = event.target
+			const width = slider.getBoundingClientRect().width
+			const dx = -event.deltaX
+			const dy = event.deltaY
+			const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
+			const range = slider.max - slider.min
+			let old_val = Number(slider.value)
+			slider.value = old_val + ratio*range
+		}
+	})
 
 	const presets_label = document.createElement('label')
 
@@ -388,6 +406,19 @@ input#letterbox {
 	shadow.append(main,filter)
 	document.body.append(host)
 
+	function polynomial_map(value,degree) {
+		return (Number(value)+1)**degree
+	}
+
+	function percentage(value) {
+		return Number(value)*100+'%'
+	}
+
+	function signed_pow(value,power){
+		let number = Number(value)
+		return Math.sign(number)*Math.abs(Number(number))**power
+	}
+
 
 	// Background Blur for Google Meet does this (hello@brownfoxlabs.com)
 
@@ -430,23 +461,23 @@ input#letterbox {
 					inputs.hue.value %= 1
 					inputs.rotate.value %= 1
 
-					let exposure	= (inputs.exposure.value+1)**2*100 + '%'
-					let contrast	= (inputs.contrast.value+1)**2*100 + '%'
-					let temperature = inputs.temperature.value**3
-					let tint	= inputs.tint.value**3
-					let sepia	= inputs.sepia.value*100 + '%'
-					let hue	= 360*inputs.hue.value + 'deg'
-					let saturate	= amp**inputs.saturate.value*100 + '%'
-					let blur	= inputs.blur.value*w/32 + 'px'
-					let fog	= inputs.fog.value
-					let vignette	= inputs.vignette.value
-					let rotate	= inputs.rotate.value*2*Math.PI
-					let scale	= (inputs.scale.value+1)**2
-					let move_x	= inputs.x.value*w
-					let move_y	= inputs.y.value*h
-					let pillarbox	= inputs.pillarbox.value*w/2
-					let letterbox	= inputs.letterbox.value*h/2
-					let text	= inputs.text.value
+					let exposure	= percentage(polynomial_map(inputs.exposure.value,2))
+					let contrast	= percentage(polynomial_map(inputs.contrast.value,3))
+					let temperature = signed_pow(inputs.temperature.value,2)
+					let tint	= signed_pow(inputs.tint.value,2)
+					let sepia	= percentage(inputs.sepia.value)
+					let hue	= 360*Number(inputs.hue.value) + 'deg'
+					let saturate	= percentage(amp**inputs.saturate.value)
+					let blur	= Number(inputs.blur.value)*w/16 + 'px'
+					let fog	= Number(inputs.fog.value)
+					let vignette	= Number(inputs.vignette.value)
+					let rotate	= Number(inputs.rotate.value)*2*Math.PI
+					let scale	= polynomial_map(inputs.scale.value,2)
+					let move_x	= Number(inputs.x.value)*w
+					let move_y	= Number(inputs.y.value)*h
+					let pillarbox	= Number(inputs.pillarbox.value)*w/2
+					let letterbox	= Number(inputs.letterbox.value)*h/2
+					let text	= inputs.text.value.toString()
 
 					// Reset canvas
 
@@ -504,7 +535,7 @@ input#letterbox {
 
 					if ( text ) {
 
-						canvas_ctx.font = `bold ${w}px sans-serif`
+						canvas_ctx.font = `bold ${w}px ${font_family}`
 						const vw = 0.9*(w-2*pillarbox)
 						const vh = 0.9*(h-2*letterbox)
 
@@ -517,9 +548,9 @@ input#letterbox {
 
 						//log.textContent = font_size
 
-						canvas_ctx.font = `bold ${font_size}px sans-serif`
+						canvas_ctx.font = `bold ${font_size}px ${font_family}`
 
-						canvas_ctx.lineWidth = font_size/10
+						canvas_ctx.lineWidth = font_size/8
 						canvas_ctx.strokeStyle = 'black'
 						canvas_ctx.fillStyle = 'white'
 						canvas_ctx.strokeText(text,...center)
