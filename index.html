@@ -9,7 +9,7 @@
 		<meta name='viewport' content='width=device-width, initial-scale=1'>
 		<meta property="og:image" content='pics/1.9.0-promo-sliders.jpg'>
 		<style>
-html,body{
+html{
 	margin: 0;
 	background: #eee
 }
@@ -177,6 +177,8 @@ play.addEventListener('click',()=>{
 		video.play()
 		video.style.display = 'block'
 		play.remove()
+		document.body.classList.add('highlight')
+		document.querySelector('aside').shadowRoot.querySelector('main').classList.add('focus')
 	})
 })
 		</script>
