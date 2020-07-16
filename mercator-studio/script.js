@@ -1,4 +1,16 @@
-async function mercator_studio () {
+// ==UserScript==
+// @name         Google Meet Studio Mini 
+// @namespace    http://tampermonkey.net/
+// @version      1.10.0
+// @description  Change how you look on Google Meet.
+// @author       Xing
+// @match        https://meet.google.com/*
+// @grant        none
+// ==/UserScript==
+
+// Mercator Studio is made by Xing in 2020 under the MIT License
+
+( async function mercator_studio () {
 
 	'use strict'
 
@@ -12,7 +24,10 @@ async function mercator_studio () {
 
 	const main = document.createElement('main')
 	main.addEventListener('click',event=>{
-		if(!main.classList.contains('focus')&&event.target!==collapse){
+		if (
+			!main.classList.contains('focus')
+			&& event.target !== collapse
+		) {
 			main.classList.add('focus')
 		}
 	})
@@ -245,21 +260,6 @@ input#letterbox {
 			return [key,input]
 		})
 	)
-
-	form.addEventListener('wheel',event=>{
-		if ( event.target.type = 'range' ) {
-			let slider = event.target
-			console.log(slider)
-			event.preventDefault()
-			slider.focus()
-			const slider_width = slider.getBoundingClientRect().width
-			const slider_range = slider.max - slider.min
-			const delta = event.deltaX/slider_width*slider_range
-			slider.value = slider.value + 0.01
-			console.log(delta,slider.value)
-		}
-	})
-
 
 	const presets_label = document.createElement('label')
 
@@ -570,22 +570,7 @@ input#letterbox {
 		}
 	}
 
-	// If the browser supports using exportFunction to manipulate
-	// global variables. (Firefox)
-
-	try{
-		// Has to do this to change a global object (developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts)
-		exportFunction(
-			mercator_studio_getUserMedia,
-			window.MediaDevices.prototype,
-			{ defineAs: 'getUserMedia' }
-		)
-
-	} catch ( error ) {
-		console.log( error )
-	}
-
 	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
 	MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia
 
-}
+} ) ()
