@@ -5,6 +5,7 @@
 // @author       Xing
 // @match        https://meet.google.com/*
 // @grant        none
+// @namespace    http://x-ing.space
 // ==/UserScript==
 
 // Mercator Studio is made by Xing in 2020 under the MIT License
