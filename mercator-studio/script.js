@@ -45,7 +45,7 @@
 
 	const style = document.createElement('style')
 
-    const font_family = `'Google Sans', Roboto, RobotDraft, Helvetica, sans-serif, serif`
+	const font_family = `'Google Sans', Roboto, RobotDraft, Helvetica, sans-serif, serif`
 
 	style.textContent = `
 * {
@@ -188,7 +188,7 @@ label>:focus {
 input[type=text] {
 	text-align: center;
 	font-family: inherit;
-    font-weight: bold;
+	font-weight: bold;
 }
 input[type=range] {
 	-webkit-appearance: none;
@@ -274,11 +274,12 @@ input#letterbox {
 				input.step = 'any'
 				input.value = 0
 				input.range = input.max - input.min
-			
+				input.velocity = 0
+
 				input.addEventListener('keydown',event => {
 					const slider = event.target
+					const step = slider.range/50
 					const old_val = Number(slider.value)
-					const step = Number(slider.range)/10
 					switch(event.key){
 						case 'ArrowRight':
 						case 'ArrowUp':
@@ -313,9 +314,8 @@ input#letterbox {
 			const dx = -event.deltaX
 			const dy = event.deltaY
 			const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
-			const range = slider.max - slider.min
 			let old_val = Number(slider.value)
-			slider.value = old_val + ratio*range
+			slider.value = old_val + ratio*slider.range
 		}
 	})
 
