@@ -45,7 +45,7 @@
 
 	const style = document.createElement('style')
 
-	const font_family = `'Google Sans', Roboto, RobotDraft, Helvetica, sans-serif, serif`
+    const font_family = `'Google Sans', Roboto, RobotDraft, Helvetica, sans-serif, serif`
 
 	style.textContent = `
 * {
@@ -188,7 +188,7 @@ label>:focus {
 input[type=text] {
 	text-align: center;
 	font-family: inherit;
-	font-weight: bold;
+    font-weight: bold;
 }
 input[type=range] {
 	-webkit-appearance: none;
@@ -287,19 +287,19 @@ input#letterbox {
 	)
 
 
-	form.addEventListener('wheel',event=>{
-		if ( event.target.type=='range' ) {
-			event.preventDefault()
-			const slider = event.target
-			const width = slider.getBoundingClientRect().width
-			const dx = -event.deltaX
-			const dy = event.deltaY
-			const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
-			const range = slider.max - slider.min
-			let old_val = Number(slider.value)
-			slider.value = old_val + ratio*range
-		}
-	})
+    form.addEventListener('wheel',event=>{
+        if ( event.target.type=='range' ) {
+            event.preventDefault()
+            const slider = event.target
+            const width = slider.getBoundingClientRect().width
+            const dx = -event.deltaX
+            const dy = event.deltaY
+            const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
+            const range = slider.max - slider.min
+            let old_val = Number(slider.value)
+            slider.value = old_val + ratio*range
+        }
+    })
 
 	const presets_label = document.createElement('label')
 
@@ -406,18 +406,18 @@ input#letterbox {
 	shadow.append(main,filter)
 	document.body.append(host)
 
-	function polynomial_map(value,degree) {
-		return (Number(value)+1)**degree
-	}
+    function polynomial_map(value,degree) {
+        return (Number(value)+1)**degree
+    }
 
-	function percentage(value) {
-		return Number(value)*100+'%'
-	}
+    function percentage(value) {
+        return Number(value)*100+'%'
+    }
 
-	function signed_pow(value,power){
-		let number = Number(value)
-		return Math.sign(number)*Math.abs(Number(number))**power
-	}
+    function signed_pow(value,power){
+        let number = Number(value)
+        return Math.sign(number)*Math.abs(Number(number))**power
+    }
 
 
 	// Background Blur for Google Meet does this (hello@brownfoxlabs.com)
@@ -481,7 +481,6 @@ input#letterbox {
 
 					// Reset canvas
 
-					canvas_ctx.setTransform(1,0,0,1,0,0)
 					canvas_ctx.clearRect(0,0,w,h)
 
 					canvas_ctx.translate(w/2,h/2)
@@ -532,6 +531,8 @@ input#letterbox {
 					canvas_ctx.translate(-w/2,-h/2)
 
 					canvas_ctx.drawImage(video,0,0,w,h)
+
+					canvas_ctx.setTransform(1,0,0,1,0,0)
 
 					if ( text ) {
 
