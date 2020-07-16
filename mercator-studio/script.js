@@ -41,7 +41,7 @@ main {
 	box-shadow: 0 .1rem .25rem #0004;
 	border-radius: 0 0 1rem 0;
 	padding: 1rem 1rem 0 1rem;
-	overflow-y: scroll;
+	overflow: hidden scroll;
 }
 main:hover {
 	transform: none;

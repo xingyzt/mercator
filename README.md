@@ -1,6 +1,6 @@
 Mercator Scripts are small Javascript programs that alters the camera feed for Google Meet.
 
-## Mercator Studio &mdash; Google Meet Mini Studio
+## Mercator Studio &mdash; Google Meet Studio Mini
 
 Change how you look on Google Meet with adjustable exposure, blur, vignette, and more!
 

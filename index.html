@@ -8,13 +8,63 @@
 		<meta name='description' content='A camera-feed-editing extension for Google Meet'>
 		<meta name='viewport' content='width=device-width, initial-scale=1'/>
 		<style>
+html,body{
+	margin: 0;
+	background: #eee
+}
+main{
+	margin-right: 1rem;
+	margin-left: auto;
+	width: 64ch;
+	max-width: calc(100vw - 2rem);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	right: 0
+}
+video{
+	background: #ccc;
+	border-radius: 1rem;
+	width: auto;
+	height: auto;
+}
+main>*{
+	font-weight: normal ;
+	width: inherit;
+	max-width: inherit; 
+	margin-bottom: 1rem;
+	line-height: 1.4rem;
+}
+a{
+	display: flex;
+	align-items: center;
+	border-radius: 1ch;
+	border: .1rem solid #aaa;
+	font-family: sans-serif;
+	color: black;
+	text-decoration: none;
+	width: 30ch;
+	height: 2rem;
+	padding: 1rem;
+	text-align: center;
+	transition: background 200ms;
+}
+a:hover{
+	background: #ddd
 
+}
 		</style>
 	</head>
 	<body>
-		<h1>Google Meet Studio Mini</h1>
-		<h2>Mercator Studio by Xing</h2>
-		<video width='800' height='450' autoplay></video>
+		<main>
+			<img src='icon.svg' width='128' height='128' alt='Google Meet Studio Mini logo'>
+			<h1>Google Meet Studio Mini</h1>
+			<h2>Mercator Studio by Xing</h2>
+			<a href='https://chrome.google.com/webstore/detail/ohcmmfphdpigpccfppacepjhamgcffjh'>Available on the Chrome Webstore</a>
+			<a href='https://greasyfork.org/en/scripts/406944'>Available for all browsers on Greasyfork</a>
+			<video width='800' height='450' autoplay></video>
+		</main>
 		<script src='mercator-studio/script.greasyfork.js'></script>
 		<script>
 const video = document.querySelector('video')

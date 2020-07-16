@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Google Meet Mini Studio
+// @name         Google Meet Studio Mini 
 // @namespace    http://tampermonkey.net/
 // @version      1.9.0
 // @description  Change how you look on Google Meet.
