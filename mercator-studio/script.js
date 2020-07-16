@@ -271,7 +271,7 @@ input#letterbox {
 				].includes(key) ? 0 : -1
 
 				input.max = 1
-				input.step = 0.00001
+				input.step = 'any'
 				input.value = 0
 			}
 
@@ -287,19 +287,19 @@ input#letterbox {
 	)
 
 
-    form.addEventListener('wheel',event=>{
-        if ( event.target.type=='range' ) {
-            event.preventDefault()
-            const slider = event.target
-            const width = slider.getBoundingClientRect().width
-            const dx = -event.deltaX
-            const dy = event.deltaY
-            const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
-            const range = slider.max - slider.min
-            let old_val = Number(slider.value)
-            slider.value = old_val + ratio*range
-        }
-    })
+	form.addEventListener('wheel',event=>{
+		if ( event.target.type=='range' ) {
+			event.preventDefault()
+			const slider = event.target
+			const width = slider.getBoundingClientRect().width
+			const dx = -event.deltaX
+			const dy = event.deltaY
+			const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
+			const range = slider.max - slider.min
+			let old_val = Number(slider.value)
+			slider.value = old_val + ratio*range
+		}
+	})
 
 	const presets_label = document.createElement('label')
 
@@ -406,18 +406,18 @@ input#letterbox {
 	shadow.append(main,filter)
 	document.body.append(host)
 
-    function polynomial_map(value,degree) {
-        return (Number(value)+1)**degree
-    }
+	function polynomial_map(value,degree) {
+		return (Number(value)+1)**degree
+	}
 
-    function percentage(value) {
-        return Number(value)*100+'%'
-    }
+	function percentage(value) {
+		return Number(value)*100+'%'
+	}
 
-    function signed_pow(value,power){
-        let number = Number(value)
-        return Math.sign(number)*Math.abs(Number(number))**power
-    }
+	function signed_pow(value,power){
+		let number = Number(value)
+		return Math.sign(number)*Math.abs(Number(number))**power
+	}
 
 
 	// Background Blur for Google Meet does this (hello@brownfoxlabs.com)
