@@ -48,6 +48,11 @@
 	box-sizing: border-box;
 	transition: all 200ms;
 }
+@media (prefers-reduced-motion) {
+	* {
+		transition: all 0s;
+	}
+}
 :focus {
 	outline: 0;
 }
