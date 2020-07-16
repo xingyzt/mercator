@@ -1,14 +1,16 @@
 // ==UserScript==
 // @name         Google Meet Studio Mini
-// @version      1.10.4
+// @version      1.10.5
 // @description  Change how you look on Google Meet.
-// @author       Xing
+// @author       Xing <dev@x-ing.space> (https://x-ing.space)
+// @copyright    2020, Xing (https://x-ing.space)
+// @license      MIT License; https://x-ing.space/mercator/LICENSE
+// @namespace    https://x-ing.space
+// @homepageURL  https://x-ing.space/mercator
+// @icon         https://x-ing.space/mercator/icon.png
 // @match        https://meet.google.com/*
 // @grant        none
-// @namespace    http://x-ing.space
 // ==/UserScript==
-
-// Mercator Studio is made by Xing in 2020 under the MIT License
 
 ( async function mercator_studio () {
 
