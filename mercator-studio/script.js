@@ -157,10 +157,11 @@ label>:hover,
 	border: 0.25rem solid gray;
 }
 #presets>:hover{
-	background: #000c;
+	background: #0003;
 }
 #presets>:focus{
 	background: black;
+	color: white;
 }
 #presets:focus-within,
 #collapse:focus,
