@@ -437,7 +437,7 @@ input#letterbox {
 					let blur	= inputs.blur.value*w/32 + 'px'
 					let fog	= inputs.fog.value
 					let vignette	= inputs.vignette.value
-					let rotate	= -inputs.rotate.value*2*Math.PI
+					let rotate	= inputs.rotate.value*2*Math.PI
 					let scale	= amp**inputs.scale.value
 					let move_x	= inputs.x.value*w
 					let move_y	= inputs.y.value*h
