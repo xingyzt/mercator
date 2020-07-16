@@ -432,7 +432,7 @@ input#letterbox {
 					let vignette	= inputs.vignette.value
 					let rotate	= -inputs.rotate.value*2*Math.PI
 					let scale	= amp**inputs.scale.value
-					let move_x	= -inputs.x.value*w
+					let move_x	= inputs.x.value*w
 					let move_y	= inputs.y.value*h
 					let pillarbox	= inputs.pillarbox.value*w/2
 					let letterbox	= inputs.letterbox.value*h/2
