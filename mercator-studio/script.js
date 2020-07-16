@@ -19,7 +19,6 @@
 	// Create shadow root
 
 	const host = document.createElement('aside')
-
 	const shadow = host.attachShadow({mode: 'open'})
 
 	// Create form
@@ -42,11 +41,8 @@
 	})
 
 	const form = document.createElement('form')
-
 	const style = document.createElement('style')
-
-    const font_family = `'Google Sans', Roboto, RobotDraft, Helvetica, sans-serif, serif`
-
+	const font_family = `'Google Sans', Roboto, RobotDraft, Helvetica, sans-serif, serif`
 	style.textContent = `
 * {
 	box-sizing: border-box;
@@ -62,6 +58,9 @@
 }
 :focus {
 	outline: 0;
+}
+canvas{
+	filter: url(#filter)
 }
 main {
 	z-index: 99999;
@@ -251,17 +250,12 @@ input#letterbox {
 		'exposure,contrast,temperature,tint,sepia,hue,saturate,blur,fog,vignette,rotate,scale,x,y,pillarbox,letterbox,text'
 		.split(',')
 		.map( key => {
-
 			let input = document.createElement('input')
-
 			if ( key == 'text' ) {
-
 				input.type = 'text'
 				input.placeholder = 'text'
-
 			} else {
 				input.type = 'range'
-
 				input.min = [
 					'blur',
 					'sepia',
@@ -269,19 +263,16 @@ input#letterbox {
 					'pillarbox',
 					'letterbox'
 				].includes(key) ? 0 : -1
-
 				input.max = 1
 				input.step = 0.00001
 				input.value = 0
 			}
 
 			let label = document.createElement('label')
-
 			label.textContent = input.id = key
 
 			form.append(label)
 			label.append(input)
-
 			return [key,input]
 		})
 	)
@@ -302,11 +293,8 @@ input#letterbox {
     })
 
 	const presets_label = document.createElement('label')
-
 	const presets_collection = document.createElement('div')
-
 	presets_collection.id = 'presets'
-
 	const presets = 'reset,concorde,mono,stucco,mocha,deepfry'
 		.split(',')
 		.map(key=>{
@@ -314,14 +302,12 @@ input#letterbox {
 			preset.textContent = preset.id = key
 			return preset
 		})
-
 	presets_label.textContent = 'presets'
 
 	presets_collection.append(...presets)
 	presets_label.append(presets_collection)
 
 	presets_label.addEventListener('click',event=>{
-
 		// Cancel refresh
 		event.preventDefault()
 
@@ -369,10 +355,13 @@ input#letterbox {
 
 	// Create color balance matrix
 
-	const filter = document.createElementNS('http://www.w3.org/2000/svg','filter')
-	filter.id = 'mercator-studio-svg-filter'
-	const filter_matrix = document.createElementNS('http://www.w3.org/2000/svg','feColorMatrix')
-	filter_matrix.setAttribute('in','SourceGraphic')
+	const svgNS = 'http://www.w3.org/2000/svg'
+	const svg = document.createElementNS(svgNS,'svg')
+	const filter = document.createElementNS(svgNS,'filter')
+	filter.id = 'filter'
+	const filter_matrix = document.createElementNS(svgNS,'feColorMatrix')
+	filter.append(filter_matrix)
+	svg.append(filter)
 
 	const previews = document.createElement('div')
 	previews.id = 'previews'
@@ -397,28 +386,27 @@ input#letterbox {
 	previews.append(video,canvas,h1)
 
 	// Add UI to page
-
-	filter.append(filter_matrix)
 	form.append(presets_label)
 
 	main.append(collapse,form,previews)
 
-	shadow.append(main,filter)
+	shadow.append(main,svg)
 	document.body.append(host)
 
-    function polynomial_map(value,degree) {
-        return (Number(value)+1)**degree
-    }
+	function polynomial_map(value,degree) {
+		return (Number(value)+1)**degree
+	}
 
-    function percentage(value) {
-        return Number(value)*100+'%'
-    }
+	function percentage(value) {
+		return Number(value)*100+'%'
+	}
 
-    function signed_pow(value,power){
-        let number = Number(value)
-        return Math.sign(number)*Math.abs(Number(number))**power
-    }
+	function signed_pow(value,power){
+		let number = Number(value)
+		return Math.sign(number)*Math.abs(Number(number))**power
+	}
 
+	const amp = 8
 
 	// Background Blur for Google Meet does this (hello@brownfoxlabs.com)
 
@@ -430,8 +418,6 @@ input#letterbox {
 
 			super(old_stream)
 
-			const constraints = {audio: false, video: true}
-
 			video.srcObject = old_stream
 
 			const old_stream_settings = old_stream.getVideoTracks()[0].getSettings()
@@ -441,20 +427,20 @@ input#letterbox {
 			const center = [w/2,h/2]
 			canvas.width = w
 			canvas.height = h
-			const canvas_ctx = canvas.getContext('2d')
+			const context = canvas.getContext('2d')
 
 			// Amp: for values that can range from 0 to +infinity, amp**value does the mapping.
 
-			const amp = 8
-
 			let time = video.currentTime
 
-			canvas_ctx.textAlign = 'center'
-			canvas_ctx.textBaseline = 'middle'
+			context.textAlign = 'center'
+			context.textBaseline = 'middle'
 
 			function draw(){
 
 				if (time != video.currentTime) {
+					time = video.currentTime
+					context.clearRect(0,0,w,h)
 
 					// Get values
 
@@ -479,12 +465,6 @@ input#letterbox {
 					let letterbox	= Number(inputs.letterbox.value)*h/2
 					let text	= inputs.text.value.toString()
 
-					// Reset canvas
-
-					canvas_ctx.clearRect(0,0,w,h)
-
-					canvas_ctx.translate(w/2,h/2)
-
 					// Color balance
 
 					filter_matrix.setAttribute('values',[
@@ -496,10 +476,10 @@ input#letterbox {
 
 					// CSS filters
 
-					canvas_ctx.filter = (`
+					context.filter = (`
 						brightness(${exposure})
 						contrast(${contrast})
-						url('#mercator-studio-svg-filter')
+						url(#filter)
 						sepia(${sepia})
 						hue-rotate(${hue})
 						saturate(${saturate})
@@ -508,55 +488,48 @@ input#letterbox {
 
 					// Linear transformations: rotation, scaling, translation
 
+					context.translate(...center)
+
 					if ( rotate ) {
-
-						canvas_ctx.rotate(rotate)
-
+						context.rotate(rotate)
 					}
 
 					if ( scale-1 ) {
-
-						canvas_ctx.scale(scale,scale)
-
+						context.scale(scale,scale)
 					}
 
 					if ( move_x || move_y ) {
-
-						canvas_ctx.translate(move_x,move_y)
-
+						context.translate(move_x,move_y)
 					}
+
+					context.translate(-w/2,-h/2)
 
 					// Apply CSS filters & linear transformations
 
-					canvas_ctx.translate(-w/2,-h/2)
+					context.drawImage(video,0,0,w,h)
+					
+					// Apply text
 
-					canvas_ctx.drawImage(video,0,0,w,h)
-
-					canvas_ctx.setTransform(1,0,0,1,0,0)
+					context.setTransform(1,0,0,1,0,0)
 
 					if ( text ) {
-
-						canvas_ctx.font = `bold ${w}px ${font_family}`
+						context.font = `bold ${w}px ${font_family}`
 						const vw = 0.9*(w-2*pillarbox)
 						const vh = 0.9*(h-2*letterbox)
 
-						const metrics = canvas_ctx.measureText(text)
+						const metrics = context.measureText(text)
 						const mw = metrics.width
 						const mh = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
-						const m0w = canvas_ctx.measureText('0').width
+						const m0w = context.measureText('0').width
 
 						const font_size = Math.min(vw**2/mw,(vh**2)/m0w)
+						context.font = `bold ${font_size}px ${font_family}`
 
-						//log.textContent = font_size
-
-						canvas_ctx.font = `bold ${font_size}px ${font_family}`
-
-						canvas_ctx.lineWidth = font_size/8
-						canvas_ctx.strokeStyle = 'black'
-						canvas_ctx.fillStyle = 'white'
-						canvas_ctx.strokeText(text,...center)
-						canvas_ctx.fillText(text,...center)
-
+						context.lineWidth = font_size/8
+						context.strokeStyle = 'black'
+						context.fillStyle = 'white'
+						context.strokeText(text,...center)
+						context.fillText(text,...center)
 					}
 
 					// Fog: cover the entire image with a single color
@@ -566,8 +539,8 @@ input#letterbox {
 						let fog_lum = Math.sign(fog)*100
 						let fog_alpha = Math.abs(fog)
 
-						canvas_ctx.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
-						canvas_ctx.fillRect(0,0,w,h)
+						context.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
+						context.fillRect(0,0,w,h)
 					}
 
 					// Vignette: cover the edges of the image with a single color
@@ -576,7 +549,7 @@ input#letterbox {
 
 						let vignette_lum = Math.sign(vignette)*100
 						let vignette_alpha = Math.abs(vignette)
-						let vignette_gradient = canvas_ctx.createRadialGradient(
+						let vignette_gradient = context.createRadialGradient(
 							...center, 0,
 							...center, Math.sqrt((w/2)**2+(h/2)**2)
 						)
@@ -584,8 +557,8 @@ input#letterbox {
 						vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
 						vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
 
-						canvas_ctx.fillStyle = vignette_gradient
-						canvas_ctx.fillRect(0,0,w,h)
+						context.fillStyle = vignette_gradient
+						context.fillRect(0,0,w,h)
 
 					}
 
@@ -593,8 +566,8 @@ input#letterbox {
 
 					if ( pillarbox ) {
 
-						canvas_ctx.clearRect(0,0,pillarbox,h)
-						canvas_ctx.clearRect(w,0,-pillarbox,h)
+						context.clearRect(0,0,pillarbox,h)
+						context.clearRect(w,0,-pillarbox,h)
 
 					}
 
@@ -602,10 +575,12 @@ input#letterbox {
 
 					if ( letterbox ) {
 
-						canvas_ctx.clearRect(0,0,w,letterbox)
-						canvas_ctx.clearRect(0,h,w,-letterbox)
+						context.clearRect(0,0,w,letterbox)
+						context.clearRect(0,h,w,-letterbox)
 
 					}
+				}else{
+					console.log(true)
 				}
 				// Recursive call
 				requestAnimationFrame(draw)
