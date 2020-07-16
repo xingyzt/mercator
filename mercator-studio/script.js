@@ -59,9 +59,6 @@
 :focus {
 	outline: 0;
 }
-canvas{
-	filter: url(#filter)
-}
 main {
 	z-index: 99999;
 	position: fixed;
