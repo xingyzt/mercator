@@ -102,7 +102,13 @@ main.focus {
 #previews>canvas{
 	height: 100%;
 	width: auto;
-	background: magenta;
+	background-image: linear-gradient(90deg,			
+		hsl( 18, 100%, 68%) 16.7%,	hsl(-10, 100%, 80%) 16.7%,
+		hsl(-10, 100%, 80%) 33.3%,	hsl(  5,  90%, 72%) 33.3%,
+		hsl(  5,  90%, 72%) 50%,	hsl( 48, 100%, 75%) 50%,
+		hsl( 48, 100%, 75%) 66.7%,	hsl( 36, 100%, 70%) 66.7%,
+		hsl( 36, 100%, 70%) 83.3%,	hsl( 20,  90%, 70%) 83.3%
+	);
 	margin-right: 1rem;
 }
 #previews>h1{
