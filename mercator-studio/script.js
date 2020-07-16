@@ -1,7 +1,6 @@
 // ==UserScript==
 // @name         Google Meet Studio Mini 
-// @namespace    http://tampermonkey.net/
-// @version      1.10.0
+// @version      1.10.1
 // @description  Change how you look on Google Meet.
 // @author       Xing
 // @match        https://meet.google.com/*
