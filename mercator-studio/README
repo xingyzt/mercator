@@ -24,7 +24,7 @@ Somewhat nice presets:
 
 Changelog:
 · 1.10.1 UI color & accessibility tweaks.
-· 1.10.0 Click to expand / collapse, instead of hover. Added support for Firefox.
+· 1.10.0 Click to expand / collapse, instead of hover. Added extension for Firefox.
 · 1.9.0 Added text & emoji input.
 · 1.8.0 Added presets. Matched UI with material design.
 · 1.7.1 Fixed problem with collapsible UI.
@@ -33,6 +33,8 @@ Changelog:
 · 1.5.0 Added vignettes.
 · 1.4.0 Converted to Chrome extension.
 
-Source code: https://github.com/FlyOrBoom/Mercator
+Source code: https://github.com/FlyOrBoom/mercator
+
+Extensions: https://x-ing.space/mercator
 
 (C) Xing 2020, MIT License
