@@ -7,7 +7,7 @@
 		{
 			"run_at": "document_end",
 			"matches": ["https://meet.google.com/*"],
-			"js": ["script.webextension.js"]
+			"js": ["injector.js"]
 		}
 	],
 	"page_action": {
