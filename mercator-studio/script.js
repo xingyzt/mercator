@@ -279,7 +279,7 @@ input#letterbox {
 					const slider = event.target
 					const old_val = Number(slider.value)
 					const step = Number(slider.range)/10
-					switCh(event.key){
+					switch(event.key){
 						case 'ArrowRight':
 						case 'ArrowUp':
 							slider.value = old_val + step
