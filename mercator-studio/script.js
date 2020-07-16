@@ -185,6 +185,7 @@ label>:focus {
 }
 input[type=text] {
 	text-align: center;
+	font-family: inherit;
 }
 input[type=range] {
 	-webkit-appearance: none;
