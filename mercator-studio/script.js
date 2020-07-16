@@ -48,6 +48,9 @@
 	box-sizing: border-box;
 	transition: all 200ms;
 }
+*:not(input) {
+	user-select: none;
+}
 @media (prefers-reduced-motion) {
 	* {
 		transition: all 0s;
