@@ -81,7 +81,7 @@ button{
 	font-family: inherit;
 	font-size: .8rem;
 }
-main #collapse{
+main #collapse {
 	background: white;
 	cursor: pointer;
 	margin-bottom: .5rem;
@@ -99,7 +99,7 @@ main.focus {
 	display: flex;
 }
 #previews>video,
-#previews>canvas{
+#previews>canvas {
 	height: 100%;
 	width: auto;
 	background-image: linear-gradient(90deg,			
@@ -111,7 +111,7 @@ main.focus {
 	);
 	margin-right: 1rem;
 }
-#previews>h1{
+#previews>h1 {
 	flex-grow: 1;
 	font-size: 1rem;
 	font-weight: normal;
@@ -119,7 +119,10 @@ main.focus {
 	color: #444;
 	line-height: 1.5rem;
 }
-.focus>#previews>h1{
+:hover>#previews>h1 {
+	transform: translateY(.1rem) /* Tiny nudge downwards */
+}
+.focus>#previews>h1 {
 	display: none;
 }
 .focus>#previews {
@@ -162,10 +165,10 @@ label>:hover,
 #collapse:hover {
 	border: 0.25rem solid gray;
 }
-#presets>:hover{
+#presets>:hover {
 	background: #0003;
 }
-#presets>:focus{
+#presets>:focus {
 	background: black;
 	color: white;
 }
