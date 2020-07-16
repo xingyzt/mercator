@@ -430,8 +430,8 @@ input#letterbox {
 					inputs.hue.value %= 1
 					inputs.rotate.value %= 1
 
-					let exposure	= amp**inputs.exposure.value
-					let contrast	= amp**inputs.contrast.value
+					let exposure	= (inputs.exposure.value+1)**2*100 + '%'
+					let contrast	= (inputs.contrast.value+1)**2*100 + '%'
 					let temperature = inputs.temperature.value**3
 					let tint	= inputs.tint.value**3
 					let sepia	= inputs.sepia.value*100 + '%'
@@ -441,7 +441,7 @@ input#letterbox {
 					let fog	= inputs.fog.value
 					let vignette	= inputs.vignette.value
 					let rotate	= inputs.rotate.value*2*Math.PI
-					let scale	= amp**inputs.scale.value
+					let scale	= (inputs.scale.value+1)**2
 					let move_x	= inputs.x.value*w
 					let move_y	= inputs.y.value*h
 					let pillarbox	= inputs.pillarbox.value*w/2
