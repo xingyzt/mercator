@@ -23,7 +23,7 @@ Somewhat nice presets:
 · Deepfry
 
 Changelog:
-· 1.10.1 UI color & accessibility tweaks.
+· 1.10.2 UI color & accessibility tweaks.
 · 1.10.0 Click to expand / collapse, instead of hover. Added extension for Firefox.
 · 1.9.0 Added text & emoji input.
 · 1.8.0 Added presets. Matched UI with material design.
@@ -35,6 +35,6 @@ Changelog:
 
 Source code: https://github.com/FlyOrBoom/mercator
 
-Extensions: https://x-ing.space/mercator
+Available for other browsers: https://x-ing.space/mercator
 
 (C) Xing 2020, MIT License
