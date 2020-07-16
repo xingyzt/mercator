@@ -107,7 +107,7 @@ main.focus {
 	font-weight: normal;
 	text-align: center;
 	color: #444;
-	line-height: 1.5rem
+	line-height: 1.5rem;
 }
 .focus>#previews>h1{
 	display: none;
@@ -123,11 +123,11 @@ main.focus {
 label {
 	display: flex;
 	justify-content: space-between;
-	align-items: center
+	align-items: center;
 }
 #presets:focus-within,
 input:focus {
-	border-color: black
+	border-color: black;
 }
 #presets>* {
 	border: 0;
@@ -136,16 +136,16 @@ input:focus {
 }
 #presets>:focus {
 	background: black;
-	color: white
+	color: white;
 }
 #presets>:first-child {
-	border-radius: 100px 0 0 100px
+	border-radius: 100px 0 0 100px;
 }
 #presets>:last-child {
-	border-radius: 0 100px 100px 0
+	border-radius: 0 100px 100px 0;
 }
 label {
-	height: 2rem
+	height: 2rem;
 }
 label>*{
 	width: 80%;
@@ -163,7 +163,7 @@ label>*:hover,
 	border: 0.25rem solid gray;
 }
 input[type=text] {
-	text-align: center
+	text-align: center;
 }
 input[type=range] {
 	-webkit-appearance: none;
@@ -177,7 +177,7 @@ input[type=range]::-webkit-slider-thumb {
 	width: 1rem;
 	height: 1rem;
 	border: 0.25rem solid black;
-	border-radius: 0.5rem
+	border-radius: 0.5rem;
 }
 input[type=range]:focus::-webkit-slider-thumb {
 	border-color: white;
@@ -322,7 +322,6 @@ input#letterbox {
 				inputs.fog.value = 0.3
 				break
 			case 'deepfry':
-				inputs.exposure.value = 0.3
 				inputs.contrast.value = 1
 				break
 		}
