@@ -128,7 +128,7 @@ main.focus {
 	line-height: 1.5rem;
 }
 :hover>#previews>h1 {
-	transform: translateY(.1rem) /* Tiny nudge downwards */
+	transform: translateY(.1rem); /* Tiny nudge downwards */
 }
 .focus>#previews>h1 {
 	display: none;
@@ -496,15 +496,15 @@ input#letterbox {
 
 					// CSS filters
 
-					canvas_ctx.filter = (`
+					canvas_ctx.filter = `
 						brightness(${exposure})
 						contrast(${contrast})
-						url('#mercator-studio-svg-filter')
+						url(#mercator-studio-svg-filter')
 						sepia(${sepia})
 						hue-rotate(${hue})
 						saturate(${saturate})
 						blur(${blur})
-					`)
+					`
 
 					// Linear transformations: rotation, scaling, translation
 
