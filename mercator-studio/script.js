@@ -11,6 +11,18 @@ async function mercator_studio () {
 	// Create form
 
 	const main = document.createElement('main')
+	main.addEventListener('click',event=>{
+		if(!main.classList.contains('focus')&&event.target!==collapse){
+			main.classList.add('focus')
+		}
+	})
+
+	const collapse = document.createElement('button')
+	collapse.textContent = '↑ collapse ↑'
+	collapse.id = 'collapse'
+	collapse.addEventListener('click',()=>{
+		main.classList.remove('focus')
+	})
 
 	const form = document.createElement('form')
 
@@ -39,32 +51,56 @@ main {
 	background: white;
 	transform: translateY(calc(-100% + 3rem));
 	box-shadow: 0 .1rem .25rem #0004;
-	border-radius: 0 0 1rem 0;
+	border-radius: 0 0 .75rem 0;
 	padding: 1rem 1rem 0 1rem;
 	overflow: hidden scroll;
+	font-family: 'Google Sans', Roboto, RobotDraft, Helvetica, sans-serif, serif;
+	font-size: 1rem;
+	cursor: pointer;
 }
-main:hover {
+button{
+	font-family: inherit;
+	font-size: .8rem;
+}
+main #collapse{
+	background: #eee;
+	cursor: pointer;
+	margin-bottom: .5rem;
+}
+main.focus {
 	transform: none;
 	border-radius: 0;
 	height: 100vh;
 	padding: 1rem;
+	cursor: default;
 }
 #previews {
 	margin-top: 1rem;
 	height: 3rem;
+	display: flex;
 }
-#previews>* {
+#previews>video,
+#previews>canvas{
 	height: 100%;
 	width: auto;
 	background: magenta;
-}
-#previews>:first-child {
 	margin-right: 1rem;
 }
-main:hover>#previews {
+#previews>h1{
+	flex-grow: 1;
+	font-size: 1rem;
+	font-weight: normal;
+	text-align: center;
+	color: #444;
+	line-height: 1.5rem
+}
+.focus>#previews>h1{
+	display: none;
+}
+.focus>#previews {
 	height: auto;
 }
-main:hover>#previews>* {
+.focus>#previews>* {
 	height: auto;
 	width: calc(50% - .5rem);
 }
@@ -96,11 +132,20 @@ input:focus {
 label {
 	height: 2rem
 }
-label>* {
+label>*{
 	width: 80%;
+}
+label>*,
+#collapse {
 	height: 1.5rem;
 	border-radius: 100px;
 	border: 0.25rem solid lightgray;
+}
+label>*:hover,
+#collapse:hover {
+	height: 1.5rem;
+	border-radius: 100px;
+	border: 0.25rem solid gray;
 }
 input[type=text] {
 	text-align: center
@@ -228,7 +273,9 @@ input#letterbox {
 
 		// Reset all
 		Object.values(inputs).forEach(input=>{
-			input.value = 0
+			if ( input.id !== 'text') {
+				input.value = 0
+			}
 		})
 
 		switch(event.target.id){
@@ -288,23 +335,29 @@ input#letterbox {
 
 	const canvas = document.createElement('canvas')
 
-	previews.append(video,canvas)
+	// Create title
+
+	const h1 = document.createElement('h1')
+
+	h1.textContent = '↓ Google Meet Studio Mini ↓'
+
+	previews.append(video,canvas,h1)
 
 	// Add UI to page
 
 	filter.append(filter_matrix)
 	form.append(presets_label)
 
-	main.append(form,previews)
+	main.append(collapse,form,previews)
 
 	shadow.append(main,filter)
 	document.body.append(host)
 
-	
+
 	// Background Blur for Google Meet does this (hello@brownfoxlabs.com)
-	
+
 	class mercator_studio_MediaStream extends MediaStream {
-		
+
 		constructor(old_stream) {
 
 			// Copy original stream settings
@@ -505,19 +558,19 @@ input#letterbox {
 
 	// If the browser supports using exportFunction to manipulate
 	// global variables. (Firefox)
-	
-	try{	
+
+	try{
 		// Has to do this to change a global object (developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Sharing_objects_with_page_scripts)
 		exportFunction(
 			mercator_studio_getUserMedia,
 			window.MediaDevices.prototype,
 			{ defineAs: 'getUserMedia' }
 		)
-	
+
 	} catch ( error ) {
 		console.log( error )
 	}
-	
+
 	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
 	MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia
 
