@@ -83,7 +83,7 @@ button{
 	font-size: .8rem;
 }
 main #collapse{
-	background: #eee;
+	background: white;
 	cursor: pointer;
 	margin-bottom: .5rem;
 }
@@ -130,18 +130,10 @@ label {
 	justify-content: space-between;
 	align-items: center;
 }
-#presets:focus-within,
-input:focus {
-	border-color: black;
-}
 #presets>* {
 	border: 0;
 	background: transparent;
 	flex-grow: 1;
-}
-#presets>:focus {
-	background: black;
-	color: white;
 }
 #presets>:first-child {
 	border-radius: 100px 0 0 100px;
@@ -161,11 +153,17 @@ label>*,
 	border-radius: 100px;
 	border: 0.25rem solid lightgray;
 }
-label>*:hover,
+label>:hover,
 #collapse:hover {
-	height: 1.5rem;
-	border-radius: 100px;
 	border: 0.25rem solid gray;
+}
+#presets>:hover{
+	background: lightgray
+}
+#presets:focus-within,
+#collapse:focus,
+label>:focus {
+	border-color: black;
 }
 input[type=text] {
 	text-align: center;
