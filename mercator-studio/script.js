@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Google Meet Studio Mini 
+// @name         Google Meet Studio Mini
 // @version      1.10.4
 // @description  Change how you look on Google Meet.
 // @author       Xing
