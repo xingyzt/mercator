@@ -231,7 +231,7 @@ input#letterbox {
 				].includes(key) ? 0 : -1
 
 				input.max = 1
-				input.step = 0.01
+				input.step = 0.00001
 				input.value = 0
 			}
 
@@ -245,6 +245,20 @@ input#letterbox {
 			return [key,input]
 		})
 	)
+
+	form.addEventListener('wheel',event=>{
+		if ( event.target.type = 'range' ) {
+			let slider = event.target
+			console.log(slider)
+			event.preventDefault()
+			slider.focus()
+			const slider_width = slider.getBoundingClientRect().width
+			const slider_range = slider.max - slider.min
+			const delta = event.deltaX/slider_width*slider_range
+			slider.value = slider.value + 0.01
+			console.log(delta,slider.value)
+		}
+	})
 
 
 	const presets_label = document.createElement('label')
