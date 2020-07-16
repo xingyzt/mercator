@@ -7,7 +7,7 @@
 		<meta name='author' content='Xing'>
 		<meta name='description' content='A camera-feed-editing extension for Google Meet'>
 		<meta name='viewport' content='width=device-width, initial-scale=1'>
-		<meta property="og:image" content='pics/1.9.0-promo.sliders.jpg'>
+		<meta property="og:image" content='pics/1.9.0-promo-sliders.jpg'>
 		<style>
 html,body{
 	margin: 0;
@@ -37,19 +37,25 @@ main>*{
 	margin-bottom: 1rem;
 	line-height: 1.4rem;
 }
-a{
+h1 {
+	margin-bottom: .5rem;
+}
+#install{
+	display: flex;
+}
+#install>a{
 	border-radius: 1ch;
 	border: .1rem solid #aaa;
 	font-family: sans-serif;
 	color: black;
 	text-decoration: none;
-	width: 30ch;
 	padding: 1rem;
 	text-align: center;
 	transition: background 200ms;
+	margin: 1rem;
 }
 a:hover{
-	background: #ddd
+	background: white
 
 }
 		</style>
@@ -59,9 +65,11 @@ a:hover{
 			<img src='icon.svg' width='128' height='128' alt='Google Meet Studio Mini logo'>
 			<h1>Google Meet Studio Mini</h1>
 			<h2>Mercator Studio by Xing</h2>
-			<a href='https://chrome.google.com/webstore/detail/ohcmmfphdpigpccfppacepjhamgcffjh'>Available on the Chrome Web Store</a>
-			<a href='https://addons.mozilla.org/en-US/firefox/addon/mercator-studio/'>Available as a Firefox Addon</a>
-			<a href='https://greasyfork.org/en/scripts/406944'>Available on Greasyfork</a>
+			<section id='install'>
+				<a href='https://chrome.google.com/webstore/detail/ohcmmfphdpigpccfppacepjhamgcffjh'>Chrome extension</a>
+				<a href='https://addons.mozilla.org/en-US/firefox/addon/mercator-studio/'>Firefox addon</a>
+				<a href='https://greasyfork.org/en/scripts/406944'>Greasyfork script</a>
+			</section>
 			<video width='800' height='450' autoplay></video>
 		</main>
 		<script src='mercator-studio/script.js'></script>
