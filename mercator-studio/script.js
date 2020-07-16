@@ -273,7 +273,25 @@ input#letterbox {
 				input.max = 1
 				input.step = 'any'
 				input.value = 0
+				input.range = input.max - input.min
+			
+				input.addEventListener('keydown',event => {
+					const slider = event.target
+					const old_val = Number(slider.value)
+					const step = Number(slider.range)/10
+					switCh(event.key){
+						case 'ArrowRight':
+						case 'ArrowUp':
+							slider.value = old_val + step
+							break
+						case 'ArrowLeft':
+						case 'ArrowDown':
+							slider.value = old_val - step
+							break
+					}
+				})
 			}
+
 
 			let label = document.createElement('label')
 
