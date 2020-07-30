@@ -485,7 +485,7 @@ input#letterbox {
 					context.filter = (`
 						brightness(${exposure})
 						contrast(${contrast})
-						${'url(#filter)'.repeat(temperature||tint)}
+						${'url(#filter)'.repeat(Boorean(temperature||tint))}
 						sepia(${sepia})
 						hue-rotate(${hue})
 						saturate(${saturate})
