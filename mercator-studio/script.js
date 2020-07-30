@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Google Meet Studio Mini
-// @version	1.10.5
+// @version	1.10.6
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2020, Xing (https://x-ing.space)
@@ -292,7 +292,7 @@ input#letterbox {
 	const presets_label = document.createElement('label')
 	const presets_collection = document.createElement('div')
 	presets_collection.id = 'presets'
-	const presets = 'reset,concorde,mono,stucco,mocha,deepfry'
+	const presets = 'reset,concorde,mono,stucco,matcha,deepfry'
 		.split(',')
 		.map(key=>{
 			let preset = document.createElement('button')
@@ -336,7 +336,7 @@ input#letterbox {
 				inputs.saturate.value = 0.25
 				inputs.fog.value = 0.1
 				break
-			case 'mocha':
+			case 'matcha':
 				inputs.exposure.value = 0.1
 				inputs.tint.value = -0.75
 				inputs.sepia.value = 1
@@ -435,7 +435,9 @@ input#letterbox {
 
 			function draw(){
 
-				if (time != video.currentTime) {
+				// Avoid drawing the frame frame over and over, unless it's the preview stripes
+				if ( !video.srcObject || time != video.currentTime) {
+					
 					time = video.currentTime
 					context.clearRect(0,0,w,h)
 
@@ -487,26 +489,37 @@ input#letterbox {
 
 					context.translate(...center)
 
-					if ( rotate ) {
-						context.rotate(rotate)
-					}
+					if ( rotate ) context.rotate(rotate)
 
-					if ( scale-1 ) {
-						context.scale(scale,scale)
-					}
+					if ( scale-1 ) context.scale(scale,scale)
 
-					if ( move_x || move_y ) {
-						context.translate(move_x,move_y)
-					}
+					if ( move_x || move_y ) context.translate(move_x,move_y)
 
 					context.translate(-w/2,-h/2)
 
 					// Apply CSS filters & linear transformations
 
-					context.drawImage(video,0,0,w,h)
+					if (video.srcObject) {
+						// Draw video
+						canvas_ctx.drawImage(video,0,0,w,h)
+					} else {
+						// Draw preview stripes if video doesn't exist
+						canvas_ctx.fillStyle = 'hsl( 20, 100%, 68%)'
+						canvas_ctx.fillRect(0*w/6,0,w/6,h)
+						canvas_ctx.fillStyle = 'hsl( 10, 100%, 80%)'
+						canvas_ctx.fillRect(1*w/6,0,w/6,h)
+						canvas_ctx.fillStyle = 'hsl( 18, 100%, 68%)'
+						canvas_ctx.fillRect(2*w/6,0,w/6,h)
+						canvas_ctx.fillStyle = 'hsl(  5,  90%, 72%)'
+						canvas_ctx.fillRect(3*w/6,0,w/6,h)
+						canvas_ctx.fillStyle = 'hsl( 48, 100%, 75%)'
+						canvas_ctx.fillRect(4*w/6,0,w/6,h)
+						canvas_ctx.fillStyle = 'hsl( 36, 100%, 70%)'
+						canvas_ctx.fillRect(5*w/6,0,w/6,h)
+					}					
 					
-					// Apply text
-
+					// Apply text without transforms
+					
 					context.setTransform(1,0,0,1,0,0)
 
 					if ( text ) {
@@ -532,7 +545,6 @@ input#letterbox {
 					// Fog: cover the entire image with a single color
 
 					if ( fog ) {
-
 						let fog_lum = Math.sign(fog)*100
 						let fog_alpha = Math.abs(fog)
 
@@ -543,7 +555,6 @@ input#letterbox {
 					// Vignette: cover the edges of the image with a single color
 
 					if ( vignette ) {
-
 						let vignette_lum = Math.sign(vignette)*100
 						let vignette_alpha = Math.abs(vignette)
 						let vignette_gradient = context.createRadialGradient(
@@ -562,28 +573,31 @@ input#letterbox {
 					// Pillarbox: crop width
 
 					if ( pillarbox ) {
-
 						context.clearRect(0,0,pillarbox,h)
 						context.clearRect(w,0,-pillarbox,h)
-
 					}
 
 					// Letterbox: crop height
 
 					if ( letterbox ) {
-
 						context.clearRect(0,0,w,letterbox)
 						context.clearRect(0,h,w,-letterbox)
-
 					}
-				}else{
-					console.log(true)
 				}
+				
 				// Recursive call
 				requestAnimationFrame(draw)
 			}
 			draw()
-			return canvas.captureStream(30)
+			const new_stream = canvas.captureStream(30)
+			new_stream.addEventListener('inactive',() => {
+				old_stream.getTracks().forEach(track => {
+					track.stop()
+				})
+				canvas_ctx.clearRect(0,0,w,h)
+				video.srcObject = null
+			})
+			return new_stream
 		}
 	}
 
