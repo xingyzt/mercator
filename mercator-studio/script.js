@@ -512,7 +512,7 @@ input#letterbox {
 						context.drawImage(video,0,0,w,h)
 					} else {
 						// Draw preview stripes if video doesn't exist
-						'20, 100%, 68%; 10,100%,80%; 18, 100%, 68%; 5, 90%, 72%; 48, 100%, 75%; 36, 100%, 70%'
+						'18, 100%, 68%; -10,100%,80%; 5, 90%, 72%; 48, 100%, 75%; 36, 100%, 70%; 20, 90%, 70%'
 							.split(';')
 							.forEach((color,index)=>{
 								context.fillStyle = `hsl(${color})`
