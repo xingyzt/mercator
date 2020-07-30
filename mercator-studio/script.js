@@ -501,21 +501,21 @@ input#letterbox {
 
 					if (video.srcObject) {
 						// Draw video
-						canvas_ctx.drawImage(video,0,0,w,h)
+						context.drawImage(video,0,0,w,h)
 					} else {
 						// Draw preview stripes if video doesn't exist
-						canvas_ctx.fillStyle = 'hsl( 20, 100%, 68%)'
-						canvas_ctx.fillRect(0*w/6,0,w/6,h)
-						canvas_ctx.fillStyle = 'hsl( 10, 100%, 80%)'
-						canvas_ctx.fillRect(1*w/6,0,w/6,h)
-						canvas_ctx.fillStyle = 'hsl( 18, 100%, 68%)'
-						canvas_ctx.fillRect(2*w/6,0,w/6,h)
-						canvas_ctx.fillStyle = 'hsl(  5,  90%, 72%)'
-						canvas_ctx.fillRect(3*w/6,0,w/6,h)
-						canvas_ctx.fillStyle = 'hsl( 48, 100%, 75%)'
-						canvas_ctx.fillRect(4*w/6,0,w/6,h)
-						canvas_ctx.fillStyle = 'hsl( 36, 100%, 70%)'
-						canvas_ctx.fillRect(5*w/6,0,w/6,h)
+						context.fillStyle = 'hsl( 20, 100%, 68%)'
+						context.fillRect(0*w/6,0,w/6,h)
+						context.fillStyle = 'hsl( 10, 100%, 80%)'
+						context.fillRect(1*w/6,0,w/6,h)
+						context.fillStyle = 'hsl( 18, 100%, 68%)'
+						context.fillRect(2*w/6,0,w/6,h)
+						context.fillStyle = 'hsl(  5,  90%, 72%)'
+						context.fillRect(3*w/6,0,w/6,h)
+						context.fillStyle = 'hsl( 48, 100%, 75%)'
+						context.fillRect(4*w/6,0,w/6,h)
+						context.fillStyle = 'hsl( 36, 100%, 70%)'
+						context.fillRect(5*w/6,0,w/6,h)
 					}					
 					
 					// Apply text without transforms
@@ -594,7 +594,7 @@ input#letterbox {
 				old_stream.getTracks().forEach(track => {
 					track.stop()
 				})
-				canvas_ctx.clearRect(0,0,w,h)
+				context.clearRect(0,0,w,h)
 				video.srcObject = null
 			})
 			return new_stream
