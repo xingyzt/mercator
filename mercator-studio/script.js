@@ -353,6 +353,7 @@ input#letterbox {
 				break
 			case 'deepfry':
 				inputs.contrast.value = 1
+				inputs.saturate.value = 1
 				break
 		}
 	})
