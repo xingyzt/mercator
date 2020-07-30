@@ -184,7 +184,7 @@ label>:focus {
 input[type=text] {
 	text-align: center;
 	font-family: inherit;
-    font-weight: bold;
+	font-weight: bold;
 }
 input[type=range] {
 	-webkit-appearance: none;
@@ -282,19 +282,19 @@ input#letterbox {
 	)
 
 
-    form.addEventListener('wheel',event=>{
-        if ( event.target.type=='range' ) {
-            event.preventDefault()
-            const slider = event.target
-            const width = slider.getBoundingClientRect().width
-            const dx = -event.deltaX
-            const dy = event.deltaY
-            const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
-            const range = slider.max - slider.min
-            let old_val = Number(slider.value)
-            slider.value = old_val + ratio*range
-        }
-    })
+	form.addEventListener('wheel',event=>{
+		if ( event.target.type=='range' ) {
+			event.preventDefault()
+			const slider = event.target
+			const width = slider.getBoundingClientRect().width
+			const dx = -event.deltaX
+			const dy = event.deltaY
+			const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
+			const range = slider.max - slider.min
+			let old_val = Number(slider.value)
+			slider.value = old_val + ratio*range
+		}
+	})
 
 	const presets_label = document.createElement('label')
 	const presets_collection = document.createElement('div')
