@@ -247,6 +247,7 @@ input#letterbox {
 		'exposure,contrast,temperature,tint,sepia,hue,saturate,blur,fog,vignette,rotate,scale,x,y,pillarbox,letterbox,text'
 		.split(',')
 		.map( key => {
+
 			let input = document.createElement('input')
 			if ( key == 'text' ) {
 				input.type = 'text'
@@ -265,11 +266,17 @@ input#letterbox {
 				input.value = 0
 			}
 
-			let label = document.createElement('label')
-			label.textContent = input.id = key
+			if (
+				!['temperature','tint'].includes(key)
+				|| !navigator.userAgent.includes('Firefox')
+			) {
+				// Disable the SVG filters for Firefox
+				let label = document.createElement('label')
+				label.textContent = input.id = key
 
-			form.append(label)
-			label.append(input)
+				form.append(label)
+				label.append(input)
+			}
 			return [key,input]
 		})
 	)
@@ -478,7 +485,7 @@ input#letterbox {
 					context.filter = (`
 						brightness(${exposure})
 						contrast(${contrast})
-						url(#filter)
+						${'url(#filter)'.repeat(temperature||tint)}
 						sepia(${sepia})
 						hue-rotate(${hue})
 						saturate(${saturate})

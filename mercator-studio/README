@@ -37,5 +37,6 @@ Changelog:
 Source code: https://github.com/FlyOrBoom/mercator
 
 Available for other browsers: https://x-ing.space/mercator
+(Note: due to a bug, temperature & tint don't work on Firefox)
 
 (C) Xing 2020, MIT License
