@@ -23,7 +23,7 @@ Somewhat nice presets:
 · Deepfry
 
 Changelog:
-· 1.10.6 Turns off camera in sync; Partial Firefox support.
+· 1.10.7 Turns off camera in sync; Partial Firefox support.
 · 1.10.5 Added scroll input for the range sliders. Increased max blur.
 · 1.10.4 UI color & accessibility tweaks.
 · 1.10.0 Changed to click to open panel. Added support for Firefox.
