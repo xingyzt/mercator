@@ -37,11 +37,11 @@
 	collapse.textContent = '↑ collapse ↑'
 	collapse.id = 'collapse'
 	collapse.addEventListener('click',()=>{
-		main.classList.remove(‘focus’)
+		main.classList.remove('focus')
 	})
 
-	const form = document.createElement(‘form’)
-	const style = document.createElement(‘style’)
+	const form = document.createElement('form')
+	const style = document.createElement('style')
 	const font_family = `'Google Sans', Roboto, RobotDraft, Helvetica, sans-serif, serif`
 	style.textContent = `
 * {
@@ -248,12 +248,12 @@ input#letterbox {
 		.split(',')
 		.map( key => {
 
-			let input = document.createElement(‘input’)
-			if ( key == ‘text’ ) {
-				input.type = ‘text’
-				input.placeholder = ‘text’
+			let input = document.createElement('input')
+			if ( key == 'text' ) {
+				input.type = 'text'
+				input.placeholder = 'text'
 			} else {
-				input.type = ‘range’
+				input.type = 'range'
 				input.min = [
 					'blur',
 					'sepia',
@@ -268,10 +268,10 @@ input#letterbox {
 
 			if (
 				!['temperature','tint'].includes(key)
-				|| !navigator.userAgent.includes(‘Firefox’)
+				|| !navigator.userAgent.includes('Firefox')
 			) {
 				// Disable the SVG filters for Firefox
-				let label = document.createElement(‘label’)
+				let label = document.createElement('label')
 				label.textContent = input.id = key
 
 				form.append(label)
@@ -308,7 +308,7 @@ input#letterbox {
 		})
 	presets_label.textContent = 'presets'
 
-	presets_collection.append(…presets)
+	presets_collection.append(...presets)
 	presets_label.append(presets_collection)
 
 	presets_label.addEventListener('click',event=>{
@@ -317,25 +317,25 @@ input#letterbox {
 
 		// Reset all
 		Object.values(inputs).forEach(input=>{
-			if ( input.id !== ‘text’) {
+			if ( input.id !== 'text') {
 				input.value = 0
 			}
 		})
 
 		switch(event.target.id){
-			case ‘concorde’:
+			case 'concorde':
 				inputs.saturate.value = 0.1
 				inputs.contrast.value = 0.1
 				inputs.temperature.value = -0.4
 				inputs.tint.value = 0.2
 				break
-			case ‘mono’:
+			case 'mono':
 				inputs.saturate.value = -1
 				inputs.contrast.value = -0.1
 				inputs.exposure.value = 0.1
 				inputs.vignette.value = -0.5
 				break
-			case ‘stucco’:
+			case 'stucco':
 				inputs.contrast.value = -0.1
 				inputs.temperature.value = -0.2
 				inputs.tint.value = 0.2
@@ -343,7 +343,7 @@ input#letterbox {
 				inputs.saturate.value = 0.25
 				inputs.fog.value = 0.1
 				break
-			case ‘matcha’:
+			case 'matcha':
 				inputs.exposure.value = 0.1
 				inputs.tint.value = -0.75
 				inputs.sepia.value = 1
@@ -351,7 +351,7 @@ input#letterbox {
 				inputs.vignette.value = 0.3
 				inputs.fog.value = 0.3
 				break
-			case ‘deepfry’:
+			case 'deepfry':
 				inputs.contrast.value = 1
 				inputs.saturate.value = 1
 				break
@@ -360,33 +360,33 @@ input#letterbox {
 
 	// Create color balance matrix
 
-	const svgNS = ‘http://www.w3.org/2000/svg’
-	const svg = document.createElementNS(svgNS,’svg’)
-	const filter = document.createElementNS(svgNS,’filter’)
-	filter.id = ‘filter’
-	const filter_matrix = document.createElementNS(svgNS,’feColorMatrix’)
+	const svgNS = 'http://www.w3.org/2000/svg'
+	const svg = document.createElementNS(svgNS,'svg')
+	const filter = document.createElementNS(svgNS,'filter')
+	filter.id = 'filter'
+	const filter_matrix = document.createElementNS(svgNS,'feColorMatrix')
 	filter.append(filter_matrix)
 	svg.append(filter)
 
-	const previews = document.createElement(‘div’)
-	previews.id = ‘previews’
+	const previews = document.createElement('div')
+	previews.id = 'previews'
 
 	// Create preview video
 
-	const video = document.createElement(‘video’)
-	video.setAttribute(‘playsinline’,’')
-	video.setAttribute(‘autoplay’,’')
-	video.setAttribute(‘muted’,’')
+	const video = document.createElement('video')
+	video.setAttribute('playsinline','')
+	video.setAttribute('autoplay','')
+	video.setAttribute('muted','')
 
 	// Create canvas
 
-	const canvas = document.createElement(‘canvas’)
+	const canvas = document.createElement('canvas')
 
 	// Create title
 
-	const h1 = document.createElement(‘h1’)
+	const h1 = document.createElement('h1')
 
-	h1.textContent = ‘↓ Google Meet Studio Mini ↓’
+	h1.textContent = '↓ Google Meet Studio Mini ↓'
 
 	previews.append(video,canvas,h1)
 
@@ -403,7 +403,7 @@ input#letterbox {
 	}
 
 	function percentage(value) {
-		return Number(value)*100+’%’
+		return Number(value)*100+'%'
 	}
 
 	function signed_pow(value,power){
@@ -432,18 +432,18 @@ input#letterbox {
 			const center = [w/2,h/2]
 			canvas.width = w
 			canvas.height = h
-			const context = canvas.getContext(‘2d’)
+			const context = canvas.getContext('2d')
 
 			// Amp: for values that can range from 0 to +infinity, amp**value does the mapping.
 
 			let time = video.currentTime
 
-			context.textAlign = ‘center’
-			context.textBaseline = ‘middle’
+			context.textAlign = 'center'
+			context.textBaseline = 'middle'
 
 			function draw(){
 
-				// Avoid drawing the frame frame over and over, unless it’s the preview stripes
+				// Avoid drawing the frame frame over and over, unless it's the preview stripes
 				if ( !video.srcObject || time != video.currentTime) {
 
 					time = video.currentTime
@@ -459,9 +459,9 @@ input#letterbox {
 					let temperature = signed_pow(inputs.temperature.value,2)
 					let tint	= signed_pow(inputs.tint.value,2)
 					let sepia	= percentage(inputs.sepia.value)
-					let hue	= 360*Number(inputs.hue.value) + ‘deg’
+					let hue	= 360*Number(inputs.hue.value) + 'deg'
 					let saturate	= percentage(amp**inputs.saturate.value)
-					let blur	= Number(inputs.blur.value)*w/16 + ‘px’
+					let blur	= Number(inputs.blur.value)*w/16 + 'px'
 					let fog	= Number(inputs.fog.value)
 					let vignette	= Number(inputs.vignette.value)
 					let rotate	= Number(inputs.rotate.value)*2*Math.PI
@@ -474,12 +474,12 @@ input#letterbox {
 
 					// Color balance
 
-					filter_matrix.setAttribute(‘values’,[
+					filter_matrix.setAttribute('values',[
 						1+temperature-tint/2,0,0,0,0,
 						0,1+tint,0,0,0,
 						0,0,1-temperature-tint/2,0,0,
 						0,0,0,1,0
-					].join(‘ ‘))
+					].join(' '))
 
 					// CSS filters
 
@@ -495,7 +495,7 @@ input#letterbox {
 
 					// Linear transformations: rotation, scaling, translation
 
-					context.translate(…center)
+					context.translate(...center)
 
 					if ( rotate ) context.rotate(rotate)
 
@@ -532,16 +532,16 @@ input#letterbox {
 						const metrics = context.measureText(text)
 						const mw = metrics.width
 						const mh = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
-						const m0w = context.measureText(‘0’).width
+						const m0w = context.measureText('0').width
 
 						const font_size = Math.min(vw**2/mw,(vh**2)/m0w)
 						context.font = `bold ${font_size}px ${font_family}`
 
 						context.lineWidth = font_size/8
-						context.strokeStyle = ‘black’
-						context.fillStyle = ‘white’
-						context.strokeText(text,…center)
-						context.fillText(text,…center)
+						context.strokeStyle = 'black'
+						context.fillStyle = 'white'
+						context.strokeText(text,...center)
+						context.fillText(text,...center)
 					}
 
 					// Fog: cover the entire image with a single color
@@ -560,8 +560,8 @@ input#letterbox {
 						let vignette_lum = Math.sign(vignette)*100
 						let vignette_alpha = Math.abs(vignette)
 						let vignette_gradient = context.createRadialGradient(
-							…center, 0,
-							…center, Math.sqrt((w/2)**2+(h/2)**2)
+							...center, 0,
+							...center, Math.sqrt((w/2)**2+(h/2)**2)
 						)
 
 						vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
