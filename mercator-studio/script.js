@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Google Meet Studio Mini
-// @version	1.10.7
+// @version	1.10.8
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2020, Xing (https://x-ing.space)
@@ -281,7 +281,6 @@ input#letterbox {
 		})
 	)
 
-
     form.addEventListener('wheel',event=>{
         if ( event.target.type=='range' ) {
             event.preventDefault()
@@ -293,6 +292,13 @@ input#letterbox {
             const range = slider.max - slider.min
             let old_val = Number(slider.value)
             slider.value = old_val + ratio*range
+        }
+    })
+
+    form.addEventListener('dblclick',event=>{
+        if ( event.target.type=='range' ) {
+            event.preventDefault()
+            event.target.value = 0
         }
     })
 
