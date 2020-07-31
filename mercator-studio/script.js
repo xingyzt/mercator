@@ -520,29 +520,10 @@ input#letterbox {
 						})
 					}
 
-					// Apply text without transforms
+					// Clear transforms & filters
 
 					context.setTransform(1,0,0,1,0,0)
-
-					if ( text ) {
-						context.font = `bold ${w}px ${font_family}`
-						const vw = 0.9*(w-2*pillarbox)
-						const vh = 0.9*(h-2*letterbox)
-
-						const metrics = context.measureText(text)
-						const mw = metrics.width
-						const mh = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
-						const m0w = context.measureText('0').width
-
-						const font_size = Math.min(vw**2/mw,(vh**2)/m0w)
-						context.font = `bold ${font_size}px ${font_family}`
-
-						context.lineWidth = font_size/8
-						context.strokeStyle = 'black'
-						context.fillStyle = 'white'
-						context.strokeText(text,...center)
-						context.fillText(text,...center)
-					}
+					context.filter = 'brightness(1)'
 
 					// Fog: cover the entire image with a single color
 
@@ -585,6 +566,30 @@ input#letterbox {
 						context.clearRect(0,0,w,letterbox)
 						context.clearRect(0,h,w,-letterbox)
 					}
+
+					// Text:
+
+					if ( text ) {
+						const vw = 0.9*(w-2*pillarbox)
+						const vh = 0.9*(h-2*letterbox)
+
+						context.font = `bold ${vw}px ${font_family}`
+
+						const metrics = context.measureText(text)
+						const mw = metrics.width
+						const mh = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
+						const m0w = context.measureText('0').width
+
+						const font_size = Math.min(vw**2/mw,(vh**2)/m0w)
+						context.font = `bold ${font_size}px ${font_family}`
+
+						context.lineWidth = font_size/8
+						context.strokeStyle = 'black'
+						context.fillStyle = 'white'
+						context.strokeText(text,...center)
+						context.fillText(text,...center)
+					}
+
 				}
 
 				// Recursive call
