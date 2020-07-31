@@ -1,6 +1,6 @@
 {
 	"name": "Google Meet Studio Mini",
-	"version": "1.10.7",
+	"version": "1.10.8",
 	"author": "Xing (x-ing.space)",
 	"description": "Change how you look on Google Meet with adjustable exposure, vignette, emojis, and more!",
 	"content_scripts": [
