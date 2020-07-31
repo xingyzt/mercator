@@ -22,6 +22,8 @@ Somewhat nice presets:
 · Matcha
 · Deepfry
 
+Scroll or drag the sliders to adjust, and right click on them to reset.
+
 Changelog:
 · 1.10.8 Right click to individually reset; Text scales correctly.
 · 1.10.7 Turns off camera in sync; Partial Firefox support.
