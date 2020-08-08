@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name	Google Meet Studio Mini
+// @name	Mercator Studio for Google Meet
 // @version	1.11.0
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
@@ -162,7 +162,7 @@ label>*{
 label>*,
 #collapse {
 	height: 1.5rem;
-	border-radius: 100px;
+	border-radius: 0.75rem;
 	border: 0.25rem solid lightgray;
 }
 label>:hover,
@@ -181,10 +181,12 @@ label>:hover,
 label>:focus {
 	border-color: black;
 }
-input[type=text] {
+textarea {
 	text-align: center;
 	font-family: inherit;
 	font-weight: bold;
+	resize: none;
+	line-height: 1;
 }
 input[type=range] {
 	-webkit-appearance: none;
@@ -266,6 +268,7 @@ input#letterbox {
 				input.step = 0.00001
 				input.value = 0
 			}
+			input.classList.add('input')
 
 			if (
 				!['temperature','tint'].includes(key)
@@ -395,7 +398,7 @@ input#letterbox {
 
 	const h1 = document.createElement('h1')
 
-	h1.textContent = '↓ Google Meet Studio Mini ↓'
+	h1.textContent = '↓ Mercator Studio ↓'
 
 	previews.append(video,canvas,h1)
 
