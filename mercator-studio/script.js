@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Google Meet Studio Mini
-// @version	1.10.8
+// @version	1.11.0
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2020, Xing (https://x-ing.space)
@@ -248,11 +248,12 @@ input#letterbox {
 		.split(',')
 		.map( key => {
 
-			let input = document.createElement('input')
+			let input
 			if ( key == 'text' ) {
-				input.type = 'text'
+				input = document.createElement('textarea')
 				input.placeholder = 'text'
 			} else {
+				input = document.createElement('input')
 				input.type = 'range'
 				input.min = [
 					'blur',
@@ -478,7 +479,7 @@ input#letterbox {
 					let move_y	= Number(inputs.y.value)*h
 					let pillarbox	= Number(inputs.pillarbox.value)*w/2
 					let letterbox	= Number(inputs.letterbox.value)*h/2
-					let text	= inputs.text.value.toString()
+					let text	= inputs.text.value.split('\n')
 
 					// Color balance
 
@@ -578,24 +579,43 @@ input#letterbox {
 					// Text:
 
 					if ( text ) {
+
+						// Find out the font size that just fits
+
 						const vw = 0.9*(w-2*pillarbox)
 						const vh = 0.9*(h-2*letterbox)
 
 						context.font = `bold ${vw}px ${font_family}`
 
-						const metrics = context.measureText(text)
-						const mw = metrics.width
-						const mh = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
-						const m0w = context.measureText('0').width
+						let char_metrics = context.measureText('0')
+						let char_width = char_metrics.width
+						let line_height = char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent
+						let text_width = text.reduce(
+							(max_width,current_line)=>Math.max(
+								max_width,
+								context.measureText(current_line).width
+							), 0 // Accumulator starts at 0
+						)
 
-						const font_size = Math.min(vw**2/mw,(vh**2)/m0w)
+						const font_size = Math.min(vw**2/text_width,vh**2/line_height/text.length)
+
+						// Found the font size. Time to draw!
+
 						context.font = `bold ${font_size}px ${font_family}`
+
+						char_metrics = context.measureText('0')
+						line_height = 1.5 * ( char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent )
 
 						context.lineWidth = font_size/8
 						context.strokeStyle = 'black'
 						context.fillStyle = 'white'
-						context.strokeText(text,...center)
-						context.fillText(text,...center)
+
+						text.forEach((line,index)=>{
+							let x = center[0]
+							let y = center[1] + line_height * ( index - text.length/2 + 0.5)
+							context.strokeText(line, x, y)
+							context.fillText(line, x, y)
+						})
 					}
 
 				}
