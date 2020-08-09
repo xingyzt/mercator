@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.11.0
+// @version	1.11.1
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2020, Xing (https://x-ing.space)
@@ -157,7 +157,7 @@ label {
 	height: 2rem;
 }
 label>*{
-	width: 80%;
+	width: calc(100% - 6.5rem);
 }
 label>*,
 #collapse {
@@ -253,7 +253,7 @@ input#letterbox {
 			let input
 			if ( key == 'text' ) {
 				input = document.createElement('textarea')
-				input.placeholder = 'text'
+				input.placeholder = '🌈 Write text here 🌦️'
 			} else {
 				input = document.createElement('input')
 				input.type = 'range'
