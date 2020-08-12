@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.12.0
+// @version	1.13.0
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2020, Xing (https://x-ing.space)
@@ -288,6 +288,19 @@ input#letterbox {
 		})
 	)
 
+	const values = Object.fromEntries(
+		Object.entries(inputs)
+		.map(entry=>[
+			entry[0],
+			entry[1].valueAsNumber || entry[1].value
+		])
+	)
+
+	function update_values (input,value) {
+		values[input.id] = input.value = Number(value) || value.toString()
+		window.localStorage.setItem('mercator-studio-values',JSON.stringify(values))
+	}
+
 	// Scroll to change values
 	form.addEventListener('wheel',event=>{
 		if ( event.target.type=='range' ) {
@@ -298,7 +311,7 @@ input#letterbox {
 			const dy = event.deltaY
 			const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
 			const range = slider.max - slider.min
-			slider.value = slider.valueAsNumber + ratio*range
+			update_values( slider, slider.valueAsNumber + ratio*range )
 		}
 	})
 
@@ -306,9 +319,11 @@ input#letterbox {
 	form.addEventListener('contextmenu',event=>{
 		if ( event.target.type=='range' ) {
 			event.preventDefault()
-			event.target.value = 0
+			update_values( event.target, 0 )
 		}
 	})
+
+	form.addEventListener('input',event=>update_values(event.target,event.target.value))
 
 	const presets_label = document.createElement('label')
 	const presets_collection = document.createElement('div')
@@ -483,13 +498,6 @@ input#letterbox {
 					inputs.hue.value %= 1
 					inputs.rotate.value %= 1
 
-					const values = Object.fromEntries(
-						Object.entries(inputs)
-						.map(entry=>[
-							entry[0],
-							entry[1].valueAsNumber || entry[1].value
-						])
-					)
 					let v = values
 
 					let exposure	= percentage(polynomial_map(v.exposure,2))
@@ -644,7 +652,6 @@ input#letterbox {
 						})
 					}
 
-					window.localStorage.setItem('mercator-studio-values',JSON.stringify(values))
 				}
 
 				// Recursive call
