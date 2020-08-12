@@ -468,8 +468,8 @@ input#letterbox {
 
 					let exposure	= percentage(polynomial_map(inputs.exposure.value,2))
 					let contrast	= percentage(polynomial_map(inputs.contrast.value,3))
-					let temperature = signed_pow(inputs.temperature.value,2)
-					let tint	= signed_pow(inputs.tint.value,2)
+					let temperature = 2**inputs.temperature.valueAsNumber
+					let tint	= 2**inputs.tint.valueAsNumber
 					let sepia	= percentage(inputs.sepia.value)
 					let hue	= 360*Number(inputs.hue.value) + 'deg'
 					let saturate	= percentage(amp**inputs.saturate.value)
@@ -487,9 +487,9 @@ input#letterbox {
 					// Color balance
 
 					filter_matrix.setAttribute('values',[
-						1+temperature-tint/2,0,0,0,0,
+						temperature-tint/2,0,0,0,0,
 						0,1+tint,0,0,0,
-						0,0,1-temperature-tint/2,0,0,
+						0,0,1/temperature-tint/2,0,0,
 						0,0,0,1,0
 					].join(' '))
 
