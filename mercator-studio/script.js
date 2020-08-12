@@ -487,9 +487,9 @@ input#letterbox {
 					// Color balance
 
 					filter_matrix.setAttribute('values',[
-						temperature-tint/2,0,0,0,0,
-						0,1+tint,0,0,0,
-						0,0,1/temperature-tint/2,0,0,
+						temperature/tint,0,0,0,0,
+						0,tint,0,0,0,
+						0,0,1/temperature/tint,0,0,
 						0,0,0,1,0
 					].join(' '))
 
