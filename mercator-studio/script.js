@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.11.1
+// @version	1.12
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2020, Xing (https://x-ing.space)
@@ -295,8 +295,7 @@ input#letterbox {
 			const dy = event.deltaY
 			const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
 			const range = slider.max - slider.min
-			let old_val = Number(slider.value)
-			slider.value = old_val + ratio*range
+			slider.value = slider.valueAsNumber + ratio*range
 		}
 	})
 
@@ -376,8 +375,17 @@ input#letterbox {
 	const svg = document.createElementNS(svgNS,'svg')
 	const filter = document.createElementNS(svgNS,'filter')
 	filter.id = 'filter'
-	const filter_matrix = document.createElementNS(svgNS,'feColorMatrix')
-	filter.append(filter_matrix)
+	const component_transfer = document.createElementNS(svgNS,'feComponentTransfer')
+	const components = Object.fromEntries(
+		['r','g','b'].map(hue=>{
+			const func = document.createElementNS(svgNS,'feFunc'+hue.toUpperCase())
+			func.setAttribute('type','table')
+			func.setAttribute('tableValues','0 1')
+			return [hue,func]
+		})
+	)
+	component_transfer.append(...Object.values(components))
+	filter.append(component_transfer)
 	svg.append(filter)
 
 	const previews = document.createElement('div')
@@ -411,16 +419,22 @@ input#letterbox {
 	document.body.append(host)
 
 	function polynomial_map(value,degree) {
-		return (Number(value)+1)**degree
+		return (value+1)**degree
+	}
+
+	function polynomial_table(factor){
+		return Array(32).fill(0).map(
+			(value,index)=>
+			Math.pow(index/31,2**factor)
+		).join(' ')
 	}
 
 	function percentage(value) {
-		return Number(value)*100+'%'
+		return value*100+'%'
 	}
 
 	function signed_pow(value,power){
-		let number = Number(value)
-		return Math.sign(number)*Math.abs(Number(number))**power
+		return Math.sign(value)*Math.abs(value)**power
 	}
 
 	const amp = 8
@@ -466,32 +480,37 @@ input#letterbox {
 					inputs.hue.value %= 1
 					inputs.rotate.value %= 1
 
-					let exposure	= percentage(polynomial_map(inputs.exposure.value,2))
-					let contrast	= percentage(polynomial_map(inputs.contrast.value,3))
-					let temperature = 2**inputs.temperature.valueAsNumber
-					let tint	= 2**inputs.tint.valueAsNumber
-					let sepia	= percentage(inputs.sepia.value)
-					let hue	= 360*Number(inputs.hue.value) + 'deg'
-					let saturate	= percentage(amp**inputs.saturate.value)
-					let blur	= Number(inputs.blur.value)*w/16 + 'px'
-					let fog	= Number(inputs.fog.value)
-					let vignette	= Number(inputs.vignette.value)
-					let rotate	= Number(inputs.rotate.value)*2*Math.PI
-					let scale	= polynomial_map(inputs.scale.value,2)
-					let move_x	= Number(inputs.x.value)*w
-					let move_y	= Number(inputs.y.value)*h
-					let pillarbox	= Number(inputs.pillarbox.value)*w/2
-					let letterbox	= Number(inputs.letterbox.value)*h/2
-					let text	= inputs.text.value.split('\n')
+					let i = Object.fromEntries(
+						Object.entries(inputs)
+						.map(entry=>[
+							entry[0],
+							entry[1].valueAsNumber || entry[1].value
+						])
+					)
+
+					let exposure	= percentage(polynomial_map(i.exposure,2))
+					let contrast	= percentage(polynomial_map(i.contrast,3))
+					let temperature = i.temperature
+					let tint	= i.tint
+					let sepia	= percentage(i.sepia)
+					let hue	= 360*i.hue+ 'deg'
+					let saturate	= percentage(amp**i.saturate)
+					let blur	= i.blur*w/16 + 'px'
+					let fog	= i.fog
+					let vignette	= i.vignette
+					let rotate	= i.rotate*2*Math.PI
+					let scale	= polynomial_map(i.scale,2)
+					let move_x	= i.x*w
+					let move_y	= i.y*h
+					let pillarbox	= i.pillarbox*w/2
+					let letterbox	= i.letterbox*h/2
+					let text	= i.text.split('\n')
 
 					// Color balance
 
-					filter_matrix.setAttribute('values',[
-						temperature/tint,0,0,0,0,
-						0,tint,0,0,0,
-						0,0,1/temperature/tint,0,0,
-						0,0,0,1,0
-					].join(' '))
+					components.r.setAttribute('tableValues',polynomial_table(-temperature+tint/2))
+					components.g.setAttribute('tableValues',polynomial_table(-tint))
+					components.b.setAttribute('tableValues',polynomial_table( temperature+tint/2))
 
 					// CSS filters
 
