@@ -245,6 +245,8 @@ input#letterbox {
 
 	// Create inputs
 
+	const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values'))
+
 	const inputs = Object.fromEntries(
 		'exposure,contrast,temperature,tint,sepia,hue,saturate,blur,fog,vignette,rotate,scale,x,y,pillarbox,letterbox,text'
 		.split(',')
@@ -269,6 +271,7 @@ input#letterbox {
 				input.value = 0
 			}
 			input.classList.add('input')
+			if ( saved_values ) input.value = saved_values[key]
 
 			if (
 				!['temperature','tint'].includes(key)
@@ -480,31 +483,32 @@ input#letterbox {
 					inputs.hue.value %= 1
 					inputs.rotate.value %= 1
 
-					let i = Object.fromEntries(
+					const values = Object.fromEntries(
 						Object.entries(inputs)
 						.map(entry=>[
 							entry[0],
 							entry[1].valueAsNumber || entry[1].value
 						])
 					)
+					let v = values
 
-					let exposure	= percentage(polynomial_map(i.exposure,2))
-					let contrast	= percentage(polynomial_map(i.contrast,3))
-					let temperature = i.temperature
-					let tint	= i.tint
-					let sepia	= percentage(i.sepia)
-					let hue	= 360*i.hue+ 'deg'
-					let saturate	= percentage(amp**i.saturate)
-					let blur	= i.blur*w/16 + 'px'
-					let fog	= i.fog
-					let vignette	= i.vignette
-					let rotate	= i.rotate*2*Math.PI
-					let scale	= polynomial_map(i.scale,2)
-					let move_x	= i.x*w
-					let move_y	= i.y*h
-					let pillarbox	= i.pillarbox*w/2
-					let letterbox	= i.letterbox*h/2
-					let text	= i.text.split('\n')
+					let exposure	= percentage(polynomial_map(v.exposure,2))
+					let contrast	= percentage(polynomial_map(v.contrast,3))
+					let temperature = v.temperature
+					let tint	= v.tint
+					let sepia	= percentage(v.sepia)
+					let hue	= 360*v.hue+ 'deg'
+					let saturate	= percentage(amp**v.saturate)
+					let blur	= v.blur*w/16 + 'px'
+					let fog	= v.fog
+					let vignette	= v.vignette
+					let rotate	= v.rotate*2*Math.PI
+					let scale	= polynomial_map(v.scale,2)
+					let move_x	= v.x*w
+					let move_y	= v.y*h
+					let pillarbox	= v.pillarbox*w/2
+					let letterbox	= v.letterbox*h/2
+					let text	= v.text.split('\n')
 
 					// Color balance
 
@@ -640,6 +644,7 @@ input#letterbox {
 						})
 					}
 
+					window.localStorage.setItem('mercator-studio-values',JSON.stringify(values))
 				}
 
 				// Recursive call
