@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.13.0
+// @version	1.13.1
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2020, Xing (https://x-ing.space)
@@ -297,33 +297,34 @@ input#letterbox {
 	)
 
 	function update_values (input,value) {
-		values[input.id] = input.value = Number(value) || value.toString()
+		values[input.id] = input.value = value
 		window.localStorage.setItem('mercator-studio-values',JSON.stringify(values))
 	}
 
 	// Scroll to change values
 	form.addEventListener('wheel',event=>{
-		if ( event.target.type=='range' ) {
-			event.preventDefault()
-			const slider = event.target
-			const width = slider.getBoundingClientRect().width
-			const dx = -event.deltaX
-			const dy = event.deltaY
-			const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
-			const range = slider.max - slider.min
-			update_values( slider, slider.valueAsNumber + ratio*range )
-		}
+		if ( event.target.type !== 'range' ) return
+		event.preventDefault()
+		const slider = event.target
+		const width = slider.getBoundingClientRect().width
+		const dx = -event.deltaX
+		const dy = event.deltaY
+		const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
+		const range = slider.max - slider.min
+		update_values( slider, slider.valueAsNumber + ratio*range )
 	})
 
 	// Right click to individually reset
 	form.addEventListener('contextmenu',event=>{
-		if ( event.target.type=='range' ) {
-			event.preventDefault()
-			update_values( event.target, 0 )
-		}
+		if ( event.target.type !== 'range' ) return
+		event.preventDefault()
+		update_values( event.target, 0 )
 	})
 
-	form.addEventListener('input',event=>update_values(event.target,event.target.value))
+	form.addEventListener('input',event=>{
+		const input = event.target
+		update_values( input, input.id === 'text' ? input.value.toString() : input.valueAsNumber )
+	})
 
 	const presets_label = document.createElement('label')
 	const presets_collection = document.createElement('div')
@@ -340,51 +341,53 @@ input#letterbox {
 	presets_collection.append(...presets)
 	presets_label.append(presets_collection)
 
+	function get_preset_values ( preset_name ) { 
+		switch(preset_name){
+			case 'concorde': return {
+				saturate: 0.1,
+				contrast: 0.1,
+				temperature: -0.4,
+				tint: 0.2,
+			}
+			case 'mono': return {
+				saturate: -1,
+				contrast: -0.1,
+				exposure: 0.1,
+				vignette: -0.5,
+			}
+			case 'stucco': return {
+				contrast: -0.1,
+				temperature: -0.2,
+				tint: 0.2,
+				sepia: 0.2,
+				saturate: 0.25,
+				fog: 0.1,
+			}
+			case 'matcha': return {
+				exposure: 0.1,
+				tint: -0.75,
+				sepia: 1,
+				hue: 0.2,
+				vignette: 0.3,
+				fog: 0.3,
+			}
+			case 'deepfry': return {
+				contrast: 1,
+				saturate: 1,
+			}
+		}
+	}
+
 	presets_label.addEventListener('click',event=>{
 		// Cancel refresh
 		event.preventDefault()
 
+		const preset_values = get_preset_values(event.target.id)
 		// Reset all
 		Object.values(inputs).forEach(input=>{
-			if ( input.id !== 'text') {
-				input.value = 0
-			}
+			update_values(input, input.id === 'text' ? '' : preset_values ? preset_values[input.id] || 0 : 0)
 		})
 
-		switch(event.target.id){
-			case 'concorde':
-				inputs.saturate.value = 0.1
-				inputs.contrast.value = 0.1
-				inputs.temperature.value = -0.4
-				inputs.tint.value = 0.2
-				break
-			case 'mono':
-				inputs.saturate.value = -1
-				inputs.contrast.value = -0.1
-				inputs.exposure.value = 0.1
-				inputs.vignette.value = -0.5
-				break
-			case 'stucco':
-				inputs.contrast.value = -0.1
-				inputs.temperature.value = -0.2
-				inputs.tint.value = 0.2
-				inputs.sepia.value = 0.2
-				inputs.saturate.value = 0.25
-				inputs.fog.value = 0.1
-				break
-			case 'matcha':
-				inputs.exposure.value = 0.1
-				inputs.tint.value = -0.75
-				inputs.sepia.value = 1
-				inputs.hue.value = 0.2
-				inputs.vignette.value = 0.3
-				inputs.fog.value = 0.3
-				break
-			case 'deepfry':
-				inputs.contrast.value = 1
-				inputs.saturate.value = 1
-				break
-		}
 	})
 
 	// Create color balance matrix
