@@ -42,7 +42,7 @@
 
 	const form = document.createElement('form')
 	const style = document.createElement('style')
-	const font_family = `'Google Sans', Roboto, RobotDraft, Helvetica, sans-serif, serif`
+	const font_family = `"Google Sans", Roboto, RobotDraft, Helvetica, sans-serif, serif`
 	style.textContent = `
 * {
 	box-sizing: border-box;
