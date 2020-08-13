@@ -323,7 +323,7 @@ input#letterbox {
 
 	form.addEventListener('input',event=>{
 		const input = event.target
-		update_values( input, input.id === 'text' ? input.value.toString() : input.valueAsNumber )
+		update_values( input, input.id === 'text' ? input.value + '' : input.valueAsNumber )
 	})
 
 	const presets_label = document.createElement('label')
