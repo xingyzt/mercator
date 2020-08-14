@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.13.3
+// @version	1.14.0
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2020, Xing (https://x-ing.space)
@@ -323,7 +323,37 @@ input#letterbox {
 
 	form.addEventListener('input',event=>{
 		const input = event.target
-		update_values( input, input.id === 'text' ? input.value + '' : input.valueAsNumber )
+		update_values(
+			input,
+			input.id === 'text' ?
+				( input.value + '' )
+				.replace(/\\sqrt/g,'√')
+				.replace(/\\pm/g,'±')
+				.replace(/\\times/g,'×')
+				.replace(/\\cdot/g,'·')
+				.replace(/\\over/g,'∕')
+				.replace(
+					/(\^|\_)(\d+)/g, // Numbers starting with ^ (superscript) or _ (subscript)
+					(_,sign,number) =>
+					number.split('').map(
+						digit =>
+						String.fromCharCode(
+							digit.charCodeAt(0)
+							+ (
+								sign === '_' ? 8272 :	/* Difference in character codes
+											 * between subscript numbers and
+											 * their regular equivalents.
+											 */
+								digit === '1' ? 136 :	/* Superscript 1, 2 & 3 are in 
+											 * separate ranges.
+											 */
+								'23'.includes(digit) ? 128 : 8256
+							)
+						)
+					).join('')
+				)
+			: input.valueAsNumber
+		)
 	})
 
 	const presets_label = document.createElement('label')
@@ -521,31 +551,6 @@ input#letterbox {
 					let letterbox	= v.letterbox*h/2
 					let text	= (
 						v.text
-						.replace(/\\sqrt/g,'√')
-						.replace(/\\pm/g,'±')
-						.replace(/\\times/g,'×')
-						.replace(/\\cdot/g,'·')
-						.replace(/\\over/g,'∕')
-						.replace(
-							/(\^|\_)([\d\+\-\=\(\)]+)/g, // Numbers starting with ^ (superscript) or _ (subscript)
-							(_,sign,number) =>
-							number.split('').map(
-								digit =>
-								String.fromCharCode(
-									digit.charCodeAt(0)
-									+ (
-										sign === '_' ? 8272 :	/* Difference in character codes
-													 * between subscript numbers and
-													 * their regular equivalents.
-													 */
-										digit === '1' ? 136 :	/* Superscript 1, 2 & 3 are in 
-													 * separate ranges.
-													 */
-										'23'.includes(digit) ? 128 : 8256
-									)
-								)
-							).join('')
-						)
 						.split('\n')
 					)
 

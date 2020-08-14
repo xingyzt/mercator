@@ -2,6 +2,7 @@ Mercator Studio gives you fine control over your appearance on Google Meet.
 
 Write text & emoji in front of your face:
 · Auto-adjusts size to fit any length of text onto the screen.
+· Supports \sqrt (√), \times (×), \cdot (·), \pm (±), ^12 (¹²), and _42 (₄₂)
 
 Precisely adjust lighting and colors:
 · Exposure & Contrast
@@ -25,6 +26,7 @@ Somewhat nice presets:
 Scroll or drag the sliders to adjust, and right click on them to reset.
 
 Changelog:
+· 1.14.0 Added math input.
 · 1.13.3 Preserve values across sessions.
 · 1.12.0 Luminance-preserving temperature & tint.
 · 1.11.0 Multiline text input. Rebranded as Mercator Studio for Google Meet.
