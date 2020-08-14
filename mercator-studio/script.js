@@ -535,7 +535,7 @@ input#letterbox {
 										digit === '1' ? 136 :	/* Superscript 1, 2 & 3 are in 
 													 * separate ranges.
 													 */
-										0 < digit < 4 ? 128 : 8256
+										'23'.includes(digit) ? 128 : 8256
 									)
 								)
 							).join('')
