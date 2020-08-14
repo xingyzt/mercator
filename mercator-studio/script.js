@@ -524,17 +524,20 @@ input#letterbox {
 							/(\^|\_)(\d+)/g, // Numbers starting with ^ (superscript) or _ (subscript)
 							(_,sign,number) =>
 							number.split('').map(
-								digit => 
-								digit.charCodeAt(0) + (
-									digit,
-									sign === '_' ? 8272 :	/* Difference in character codes
-												 * between subscript numbers and
-												 * their regular equivalents.
-												 */
-									digit === 1 ? 136 :	/* Superscript 1, 2 & 3 are in 
-												 * separate ranges.
-												 */
-									0 < digit < 4 ? 128 : 8256
+								digit =>
+								String.fromCharCode(
+									digit.charCodeAt(0)
+									+ (
+										digit,
+										sign === '_' ? 8272 :	/* Difference in character codes
+													 * between subscript numbers and
+													 * their regular equivalents.
+													 */
+										digit === 1 ? 136 :	/* Superscript 1, 2 & 3 are in 
+													 * separate ranges.
+													 */
+										0 < digit < 4 ? 128 : 8256
+									)
 								)
 							).join('')
 						)
