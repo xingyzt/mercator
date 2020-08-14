@@ -457,7 +457,7 @@ input#letterbox {
 	function signed_pow(value,power){
 		return Math.sign(value)*Math.abs(value)**power
 	}
-
+	
 	const amp = 8
 
 	// Background Blur for Google Meet does this (hello@brownfoxlabs.com)
@@ -519,7 +519,27 @@ input#letterbox {
 					let move_y	= v.y*h
 					let pillarbox	= v.pillarbox*w/2
 					let letterbox	= v.letterbox*h/2
-					let text	= v.text.split('\n')
+					let text	= (
+						v.text.replace(
+							/(\^|\_)(\d+)/g, // Numbers starting with ^ (superscript) or _ (subscript)
+							(_,sign,number) =>
+							number.split('').map(
+								digit => 
+								digit.charCodeAt(0) + (
+									digit,
+									sign === '_' ? 8272 :	/* Difference in character codes
+												 * between subscript numbers and
+												 * their regular equivalents.
+												 */
+									digit === 1 ? 136 :	/* Superscript 1, 2 & 3 are in 
+												 * separate ranges.
+												 */
+									0 < digit < 4 ? 128 : 8256
+								)
+							).join('')
+						)
+						.split('\n')
+					)
 
 					// Color balance
 
