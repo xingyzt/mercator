@@ -521,13 +521,13 @@ input#letterbox {
 					let letterbox	= v.letterbox*h/2
 					let text	= (
 						v.text
-						.replaceAll('\sqrt','√')
-						.replaceAll('\pm','±')
-						.replaceAll('\times','×')
-						.replaceAll('\cdot','·')
-						.replaceAll('\over','∕')
-						.replaceAll(
-							/(\^|\_)([\d\+\-\=\(\)]+)/, // Numbers starting with ^ (superscript) or _ (subscript)
+						.replace(/\\sqrt/g,'√')
+						.replace(/\\pm/g,'±')
+						.replace(/\\times/g,'×')
+						.replace(/\\cdot/g,'·')
+						.replace(/\\over/g,'∕')
+						.replace(
+							/(\^|\_)([\d\+\-\=\(\)]+)/g, // Numbers starting with ^ (superscript) or _ (subscript)
 							(_,sign,number) =>
 							number.split('').map(
 								digit =>
