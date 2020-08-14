@@ -521,7 +521,7 @@ input#letterbox {
 					let letterbox	= v.letterbox*h/2
 					let text	= (
 						v.text.replace(
-							/(\^|\_)(\d+)/g, // Numbers starting with ^ (superscript) or _ (subscript)
+							/(\^|\_)([\d\+\-\=\(\)]+)/g, // Numbers starting with ^ (superscript) or _ (subscript)
 							(_,sign,number) =>
 							number.split('').map(
 								digit =>
