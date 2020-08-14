@@ -520,8 +520,14 @@ input#letterbox {
 					let pillarbox	= v.pillarbox*w/2
 					let letterbox	= v.letterbox*h/2
 					let text	= (
-						v.text.replace(
-							/(\^|\_)([\d\+\-\=\(\)]+)/g, // Numbers starting with ^ (superscript) or _ (subscript)
+						v.text
+						.replaceAll('\sqrt','√')
+						.replaceAll('\pm','±')
+						.replaceAll('\times','×')
+						.replaceAll('\cdot','·')
+						.replaceAll('\over','∕')
+						.replaceAll(
+							/(\^|\_)([\d\+\-\=\(\)]+)/, // Numbers starting with ^ (superscript) or _ (subscript)
 							(_,sign,number) =>
 							number.split('').map(
 								digit =>
