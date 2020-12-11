@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.14.1
+// @version	1.15.0
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2020, Xing (https://x-ing.space)
@@ -39,6 +39,13 @@
 	collapse.id = 'collapse'
 	collapse.addEventListener('click',()=>{
 		main.classList.remove('focus')
+	})
+	
+	const minimize = document.createElement('button')
+	minimize.id = 'minimize'
+	minimize.addEventListener('click',e=>{
+		e.stopPropagation()
+		main.classList.toggle('minimize')
 	})
 
 	const form = document.createElement('form')
@@ -97,6 +104,39 @@ main.focus {
 	height: 100vh;
 	padding: 1rem;
 	cursor: default;
+}
+main.minimize {
+	width: 1rem;
+	padding-right: 0;
+	overflow: hidden;
+}
+#minimize {
+	font-family: inherit;
+	font-size: .5rem;
+	font-weight: bold;
+	color: #444;
+	margin-left: -1rem;
+	flex: 0 0 1rem;
+	width: 1rem;
+	text-align: center;
+	border: 0;
+	background: white;
+	cursor: pointer;
+	overflow-wrap: anywhere;
+}
+#minimize::before{
+	content: '◀';
+	transition: inherit;
+}
+#minimize:hover::before,
+.minimize #minimize::before{
+	margin-left: -2px;
+}
+.minimize #minimize::before{
+	content: '▶'
+}
+.minimize #minimize:hover::before{
+	margin-left: 0;
 }
 #previews {
 	margin-top: 1rem;
@@ -460,7 +500,7 @@ input#letterbox {
 
 	h1.textContent = '↓ Mercator Studio ↓'
 
-	previews.append(video,canvas,h1)
+	previews.append(minimize,video,canvas,h1)
 
 	// Add UI to page
 	form.append(presets_label)
