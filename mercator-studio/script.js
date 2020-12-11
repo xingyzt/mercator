@@ -43,6 +43,7 @@
 	
 	const minimize = document.createElement('button')
 	minimize.id = 'minimize'
+	minimize.title = 'toggle super tiny mode'
 	minimize.addEventListener('click',e=>{
 		e.stopPropagation()
 		main.classList.toggle('minimize')
@@ -84,7 +85,7 @@ main {
 	box-shadow: 0 .1rem .25rem #0004;
 	border-radius: 0 0 .75rem 0;
 	padding: 1rem 1rem 0 1rem;
-	overflow: hidden scroll;
+	overflow: hidden;
 	font-family: ${font_family};
 	font-size: 1rem;
 	cursor: pointer;
@@ -104,11 +105,14 @@ main.focus {
 	height: 100vh;
 	padding: 1rem;
 	cursor: default;
+	overflow: hidden scroll;
+}
+main.focus #minimize{
+	display: none;
 }
 main.minimize {
 	width: 1rem;
 	padding-right: 0;
-	overflow: hidden;
 }
 #minimize {
 	font-family: inherit;
