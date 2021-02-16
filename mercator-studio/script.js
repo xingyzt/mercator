@@ -15,8 +15,6 @@
 ( async function mercator_studio () {
 
 	'use strict'
-    let freeze = false;
-    let freezeinit = false;
 	// Create shadow root
 
 	const host = document.createElement('aside')
@@ -293,28 +291,44 @@ input#letterbox {
 
 	const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values'))
 
+	let freeze = {
+		state: false,
+		init: false,
+		image: document.createElement('img'),
+	}
+
+
 	const inputs = Object.fromEntries(
-		'exposure,contrast,temperature,tint,sepia,hue,saturate,blur,fog,vignette,rotate,scale,x,y,pillarbox,letterbox,text'
+		'exposure,contrast,temperature,tint,sepia,hue,saturate,blur,fog,vignette,rotate,scale,x,y,pillarbox,letterbox,freeze,text'
 		.split(',')
 		.map( key => {
 
 			let input
-			if ( key == 'text' ) {
-				input = document.createElement('textarea')
-				input.placeholder = '🌈 Write text here 🌦️'
-			} else {
-				input = document.createElement('input')
-				input.type = 'range'
-				input.min = [
-					'blur',
-					'sepia',
-					'scale',
-					'pillarbox',
-					'letterbox'
-				].includes(key) ? 0 : -1
-				input.max = 1
-				input.step = 0.00001
-				input.value = 0
+			switch (key){
+				case 'text':
+					input = document.createElement('textarea')
+					input.placeholder = '🌈 Write text here 🌦️'
+				break
+				case 'freeze':
+					input = document.createElement('input')
+					input.type = 'checkbox'
+					input.addEventListener('change',_=>{
+						freeze.state = freeze.init = input.checked
+					})
+				break
+				default:
+					input = document.createElement('input')
+					input.type = 'range'
+					input.min = [
+						'blur',
+						'sepia',
+						'scale',
+						'pillarbox',
+						'letterbox'
+					].includes(key) ? 0 : -1
+					input.max = 1
+					input.step = 0.00001
+					input.value = 0
 			}
 			input.classList.add('input')
 			if ( saved_values ) input.value = saved_values[key]
@@ -333,29 +347,7 @@ input#letterbox {
 			return [key,input]
 		})
 	)
-    const imgElement = document.createElement('img')
-    imgElement.id = 'imgElement'
-    imgElement.style= 'display:none;'
 
-    const freezeCheckbox = document.createElement('input')
-    freezeCheckbox.type= 'checkbox'
-    freezeCheckbox.id = 'freezeCheckbox'
-
-    const labelFreeze = document.createElement('label')
-    labelFreeze.textContent = "freeze"
-
-    form.append(labelFreeze)
-    labelFreeze.append(freezeCheckbox)
-    form.append(imgElement)
-
-    freezeCheckbox.addEventListener('change', () => {
-    	if (freezeCheckbox.checked) {
-        	freezeinit=true;
-        	freeze = true
-    	} else {
-        	freeze = false
-    	}
-    })
 
 	const values = Object.fromEntries(
 		Object.entries(inputs)
@@ -622,7 +614,6 @@ input#letterbox {
 						v.text
 						.split('\n')
 					)
-                    let data = "";
 
 					// Color balance
 
@@ -758,16 +749,15 @@ input#letterbox {
 						})
 					}
 
-                    if ( freezeinit ) {
-                        data = canvas.toDataURL('image/png');
-                        imgElement.setAttribute('src', data);
-                        freezeinit = false
-                    }
-					
-                    if ( freeze ) {
-                        context.drawImage(imgElement,0,0,w,h)
-                        // video.srcObject = data
-                    }
+					if ( freeze.init ) {
+						let data = canvas.toDataURL('image/png')
+						freeze.image.setAttribute('src', data)
+						freeze.init = false
+					}	
+							
+					if ( freeze.state ) {
+						context.drawImage(freeze.image,0,0,w,h)
+					}
 
 				}
 

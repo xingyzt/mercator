@@ -26,6 +26,7 @@ Somewhat nice presets:
 Scroll or drag the sliders to adjust, and right click on them to reset.
 
 Changelog:
+· 1.16.0 Added freeze feature (thanks @napsav)
 · 1.15.0 Added toggle to super tiny mode.
 · 1.14.1 Added math auto-convert.
 · 1.13.3 Preserve values across sessions.
@@ -49,4 +50,4 @@ Source code: https://github.com/FlyOrBoom/mercator
 Available for other browsers: https://x-ing.space/mercator
 Unfortunately, temperature & tint filters don't work in Firefox.
 
-(C) Xing 2020, MIT License
+(C) Xing 2021, MIT License
