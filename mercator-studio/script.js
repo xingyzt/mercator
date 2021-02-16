@@ -15,7 +15,8 @@
 ( async function mercator_studio () {
 
 	'use strict'
-
+    let freeze = false;
+    let freezeinit = false;
 	// Create shadow root
 
 	const host = document.createElement('aside')
@@ -40,7 +41,7 @@
 	collapse.addEventListener('click',()=>{
 		main.classList.remove('focus')
 	})
-	
+
 	const minimize = document.createElement('button')
 	minimize.id = 'minimize'
 	minimize.title = 'toggle super tiny mode'
@@ -332,6 +333,29 @@ input#letterbox {
 			return [key,input]
 		})
 	)
+    const imgElement = document.createElement('img')
+    imgElement.id = 'imgElement'
+    imgElement.style= 'display:none;'
+
+    const freezeCheckbox = document.createElement('input')
+    freezeCheckbox.type= 'checkbox'
+    freezeCheckbox.id = 'freezeCheckbox'
+
+    const labelFreeze = document.createElement('label')
+    labelFreeze.textContent = "freeze"
+
+    form.append(labelFreeze)
+    labelFreeze.append(freezeCheckbox)
+    form.append(imgElement)
+
+    freezeCheckbox.addEventListener('change', () => {
+    	if (freezeCheckbox.checked) {
+        	freezeinit=true;
+        	freeze = true
+    	} else {
+        	freeze = false
+    	}
+    })
 
 	const values = Object.fromEntries(
 		Object.entries(inputs)
@@ -389,7 +413,7 @@ input#letterbox {
 											 * between subscript numbers and
 											 * their regular equivalents.
 											 */
-								digit === '1' ? 136 :	/* Superscript 1, 2 & 3 are in 
+								digit === '1' ? 136 :	/* Superscript 1, 2 & 3 are in
 											 * separate ranges.
 											 */
 								'23'.includes(digit) ? 128 : 8256
@@ -416,9 +440,9 @@ input#letterbox {
 	presets_collection.append(...presets)
 	presets_label.append(presets_collection)
 
-	function get_preset_values ( preset_name ) { 
+	function get_preset_values ( preset_name ) {
 		switch(preset_name){
-			case 'concorde': return { 
+			case 'concorde': return {
 				contrast: 0.1,
 				temperature: -0.25,
 				tint: -0.05,
@@ -532,7 +556,7 @@ input#letterbox {
 	function signed_pow(value,power){
 		return Math.sign(value)*Math.abs(value)**power
 	}
-	
+
 	const amp = 8
 
 	// Background Blur for Google Meet does this (hello@brownfoxlabs.com)
@@ -598,6 +622,7 @@ input#letterbox {
 						v.text
 						.split('\n')
 					)
+                    let data = "";
 
 					// Color balance
 
@@ -732,6 +757,17 @@ input#letterbox {
 							context.fillText(line, x, y)
 						})
 					}
+
+                    if ( freezeinit ) {
+                        data = canvas.toDataURL('image/png');
+                        imgElement.setAttribute('src', data);
+                        freezeinit = false
+                    }
+					
+                    if ( freeze ) {
+                        context.drawImage(imgElement,0,0,w,h)
+                        // video.srcObject = data
+                    }
 
 				}
 
