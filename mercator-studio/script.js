@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.16.0
+// @version	1.16.2
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
-// @copyright	2020, Xing (https://x-ing.space)
+// @copyright	2021, Xing (https://x-ing.space)
 // @license	MIT License; https://x-ing.space/mercator/LICENSE
 // @namespace	https://x-ing.space
 // @homepageURL	https://x-ing.space/mercator
@@ -291,12 +291,13 @@ input#letterbox {
 
 	const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values'))
 
-	let freeze = {
+	const freeze = {
 		state: false,
 		init: false,
 		image: document.createElement('img'),
+		canvas: document.createElement('canvas'),
 	}
-
+	freeze.context = freeze.canvas.getContext('2d')
 
 	const inputs = Object.fromEntries(
 		'exposure,contrast,temperature,tint,sepia,hue,saturate,blur,fog,vignette,rotate,scale,x,y,pillarbox,letterbox,freeze,text'
@@ -568,8 +569,8 @@ input#letterbox {
 			const w = old_stream_settings.width
 			const h = old_stream_settings.height
 			const center = [w/2,h/2]
-			canvas.width = w
-			canvas.height = h
+			canvas.width = freeze.canvas.width = w
+			canvas.height = freeze.canvas.height = h
 			const context = canvas.getContext('2d')
 
 			// Amp: for values that can range from 0 to +infinity, amp**value does the mapping.
@@ -615,6 +616,9 @@ input#letterbox {
 						.split('\n')
 					)
 
+					// Clear transforms & filters
+
+
 					// Color balance
 
 					components.r.setAttribute('tableValues',polynomial_table(-temperature+tint/2))
@@ -632,7 +636,6 @@ input#letterbox {
 						saturate(${saturate})
 						blur(${blur})
 					`)
-
 					// Linear transformations: rotation, scaling, translation
 
 					context.translate(...center)
@@ -647,7 +650,15 @@ input#letterbox {
 
 					// Apply CSS filters & linear transformations
 
-					if (video.srcObject) {
+					if ( freeze.init ) {
+						freeze.context.drawImage(video,0,0,w,h)
+						let data = freeze.canvas.toDataURL('image/png')
+						freeze.image.setAttribute('src', data)
+						freeze.init = false
+					} else if ( freeze.state ) {
+						// Draw frozen image
+						context.drawImage(freeze.image,0,0,w,h)
+					} else if (video.srcObject) {
 						// Draw video
 						context.drawImage(video,0,0,w,h)
 					} else {
@@ -659,6 +670,7 @@ input#letterbox {
 								context.fillRect(index*w/6,0,w/6,h)
 						})
 					}
+
 
 					// Clear transforms & filters
 
@@ -748,17 +760,6 @@ input#letterbox {
 							context.fillText(line, x, y)
 						})
 					}
-
-					if ( freeze.init ) {
-						let data = canvas.toDataURL('image/png')
-						freeze.image.setAttribute('src', data)
-						freeze.init = false
-					}	
-							
-					if ( freeze.state ) {
-						context.drawImage(freeze.image,0,0,w,h)
-					}
-
 				}
 
 				// Recursive call
