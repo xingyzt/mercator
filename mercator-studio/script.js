@@ -637,6 +637,16 @@ input#letterbox {
 
 					context.translate(...center)
 
+					if ( freeze.init ) {
+						let data = canvas.toDataURL('image/png')
+						freeze.image.setAttribute('src', data)
+						freeze.init = false
+					}	
+							
+					if ( freeze.state ) {
+						context.drawImage(freeze.image,0,0,w,h)
+					}
+
 					if ( rotate ) context.rotate(rotate)
 
 					if ( scale-1 ) context.scale(scale,scale)
@@ -748,17 +758,6 @@ input#letterbox {
 							context.fillText(line, x, y)
 						})
 					}
-
-					if ( freeze.init ) {
-						let data = canvas.toDataURL('image/png')
-						freeze.image.setAttribute('src', data)
-						freeze.init = false
-					}	
-							
-					if ( freeze.state ) {
-						context.drawImage(freeze.image,0,0,w,h)
-					}
-
 				}
 
 				// Recursive call
