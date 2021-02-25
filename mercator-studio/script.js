@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.16.2
+// @version	1.17.0
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2021, Xing (https://x-ing.space)
@@ -19,7 +19,6 @@
 
 	const host = document.createElement('aside')
 	const shadow = host.attachShadow({mode: 'open'})
-	const isFirefox = navigator.userAgent.includes('Firefox')
 
 	// Create form
 
@@ -334,17 +333,12 @@ input#letterbox {
 			input.classList.add('input')
 			if ( saved_values ) input.value = saved_values[key]
 
-			if (
-				!['temperature','tint'].includes(key)
-				|| !isFirefox
-			) {
-				// Disable the SVG filters for Firefox
-				let label = document.createElement('label')
-				label.textContent = input.id = key
+			let label = document.createElement('label')
+			label.textContent = input.id = key
 
-				form.append(label)
-				label.append(input)
-			}
+			form.append(label)
+			label.append(input)
+
 			return [key,input]
 		})
 	)
@@ -597,8 +591,8 @@ input#letterbox {
 
 					let exposure	= percentage(polynomial_map(v.exposure,2))
 					let contrast	= percentage(polynomial_map(v.contrast,3))
-					let temperature = isFirefox ? 0 : v.temperature
-					let tint	= isFirefox ? 0 : v.tint
+					let temperature = v.temperature
+					let tint	= v.tint
 					let sepia	= percentage(v.sepia)
 					let hue	= 360*v.hue+ 'deg'
 					let saturate	= percentage(amp**v.saturate)
