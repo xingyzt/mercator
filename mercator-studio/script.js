@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.16.2
+// @version	1.17.0
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2021, Xing (https://x-ing.space)
@@ -128,7 +128,7 @@ main.minimize {
 	overflow-wrap: anywhere;
 }
 #minimize::before{
-	content: '◀';
+	content: "◀";
 	transition: inherit;
 }
 #minimize:hover::before,
@@ -136,7 +136,7 @@ main.minimize {
 	margin-left: -2px;
 }
 .minimize #minimize::before{
-	content: '▶'
+	content: "▶";
 }
 .minimize #minimize:hover::before{
 	margin-left: 0;
@@ -291,14 +291,6 @@ input#letterbox {
 
 	const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values'))
 
-	const freeze = {
-		state: false,
-		init: false,
-		image: document.createElement('img'),
-		canvas: document.createElement('canvas'),
-	}
-	freeze.context = freeze.canvas.getContext('2d')
-
 	const inputs = Object.fromEntries(
 		'exposure,contrast,temperature,tint,sepia,hue,saturate,blur,fog,vignette,rotate,scale,x,y,pillarbox,letterbox,freeze,text'
 		.split(',')
@@ -313,9 +305,6 @@ input#letterbox {
 				case 'freeze':
 					input = document.createElement('input')
 					input.type = 'checkbox'
-					input.addEventListener('change',_=>{
-						freeze.state = freeze.init = input.checked
-					})
 				break
 				default:
 					input = document.createElement('input')
@@ -511,9 +500,13 @@ input#letterbox {
 	video.setAttribute('autoplay','')
 	video.setAttribute('muted','')
 
-	// Create canvas
+	// Create canvases
 
-	const canvas = document.createElement('canvas')
+	const canvases = Object.fromEntries(['buffer','freeze','display'].map(name=>{
+		const element = document.createElement('canvas')
+		const context = element.getContext('2d')
+		return [name,{element,context}]
+	}))
 
 	// Create title
 
@@ -521,7 +514,7 @@ input#letterbox {
 
 	h1.textContent = '↓ Mercator Studio ↓'
 
-	previews.append(minimize,video,canvas,h1)
+	previews.append(minimize,video,canvases.display.element,h1)
 
 	// Add UI to page
 	form.append(presets_label)
@@ -569,9 +562,21 @@ input#letterbox {
 			const w = old_stream_settings.width
 			const h = old_stream_settings.height
 			const center = [w/2,h/2]
-			canvas.width = freeze.canvas.width = w
-			canvas.height = freeze.canvas.height = h
-			const context = canvas.getContext('2d')
+			Object.values(canvases).forEach(canvas=>{
+				canvas.element.width = w
+				canvas.element.height = h
+			})
+			const canvas = canvases.buffer.buffer
+			const context = canvases.buffer.context
+      const freeze = {
+        state: false,
+        init: false,
+        image: document.createElement('img'),
+        canvas: canvases.freeze,
+      }
+      inputs.freeze.addEventListener('change',e=>{
+        freeze.state = freeze.init = e.target.checked
+      })
 
 			// Amp: for values that can range from 0 to +infinity, amp**value does the mapping.
 
@@ -651,8 +656,8 @@ input#letterbox {
 					// Apply CSS filters & linear transformations
 
 					if ( freeze.init ) {
-						freeze.context.drawImage(video,0,0,w,h)
-						let data = freeze.canvas.toDataURL('image/png')
+						freeze.canvas.context.drawImage(video,0,0,w,h)
+						let data = freeze.canvas.element.toDataURL('image/png')
 						freeze.image.setAttribute('src', data)
 						freeze.init = false
 					} else if ( freeze.state ) {
@@ -762,16 +767,18 @@ input#letterbox {
 					}
 				}
 
+				canvases.display.context.drawImage(canvases.buffer.element,0,0)
+
 				// Recursive call
 				requestAnimationFrame(draw)
 			}
 			draw()
-			const new_stream = canvas.captureStream(30)
+			const new_stream = canvases.display.element.captureStream(30)
 			new_stream.addEventListener('inactive',() => {
 				old_stream.getTracks().forEach(track => {
 					track.stop()
 				})
-				context.clearRect(0,0,w,h)
+				canvases.display.context.clearRect(0,0,w,h)
 				video.srcObject = null
 			})
 			return new_stream
