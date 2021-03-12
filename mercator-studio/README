@@ -26,7 +26,7 @@ Somewhat nice presets:
 Scroll or drag the sliders to adjust, and right click on them to reset.
 
 Changelog:
-· 1.17.0 Fix flickering issue by using a buffer
+· 1.17.2 Fix flickering and window-focus issues
 · 1.16.2 Added freeze feature (thanks @napsav)
 · 1.15.0 Added toggle to super tiny mode.
 · 1.14.1 Added math auto-convert.
