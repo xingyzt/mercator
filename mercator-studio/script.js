@@ -762,11 +762,8 @@ input#letterbox {
 
 				canvases.display.context.clearRect(0,0,w,h)
 				canvases.display.context.drawImage(canvases.buffer.element,0,0)
-
-				// Recursive call
-				requestAnimationFrame(draw)
 			}
-			draw()
+			setInterval(draw,1000/30)
 			const new_stream = canvases.display.element.captureStream(30)
 			new_stream.addEventListener('inactive',() => {
 				old_stream.getTracks().forEach(track => {
