@@ -587,186 +587,180 @@ input#letterbox {
 
 			function draw(){
 
-				// Avoid drawing the frame frame over and over, unless it's the preview stripes
-				if ( !video.srcObject || time != video.currentTime) {
+				time = video.currentTime
+				context.clearRect(0,0,w,h)
 
-					time = video.currentTime
-					context.clearRect(0,0,w,h)
+				// Get values
 
-					// Get values
+				inputs.hue.value %= 1
+				inputs.rotate.value %= 1
 
-					inputs.hue.value %= 1
-					inputs.rotate.value %= 1
+				let v = values
 
-					let v = values
+				let exposure	= percentage(polynomial_map(v.exposure,2))
+				let contrast	= percentage(polynomial_map(v.contrast,3))
+				let temperature = isFirefox ? 0 : v.temperature
+				let tint	= isFirefox ? 0 : v.tint
+				let sepia	= percentage(v.sepia)
+				let hue	= 360*v.hue+ 'deg'
+				let saturate	= percentage(amp**v.saturate)
+				let blur	= v.blur*w/16 + 'px'
+				let fog	= v.fog
+				let vignette	= v.vignette
+				let rotate	= v.rotate*2*Math.PI
+				let scale	= polynomial_map(v.scale,2)
+				let move_x	= v.x*w
+				let move_y	= v.y*h
+				let pillarbox	= v.pillarbox*w/2
+				let letterbox	= v.letterbox*h/2
+				let text	= (
+					v.text
+					.split('\n')
+				)
 
-					let exposure	= percentage(polynomial_map(v.exposure,2))
-					let contrast	= percentage(polynomial_map(v.contrast,3))
-					let temperature = isFirefox ? 0 : v.temperature
-					let tint	= isFirefox ? 0 : v.tint
-					let sepia	= percentage(v.sepia)
-					let hue	= 360*v.hue+ 'deg'
-					let saturate	= percentage(amp**v.saturate)
-					let blur	= v.blur*w/16 + 'px'
-					let fog	= v.fog
-					let vignette	= v.vignette
-					let rotate	= v.rotate*2*Math.PI
-					let scale	= polynomial_map(v.scale,2)
-					let move_x	= v.x*w
-					let move_y	= v.y*h
-					let pillarbox	= v.pillarbox*w/2
-					let letterbox	= v.letterbox*h/2
-					let text	= (
-						v.text
-						.split('\n')
-					)
+				// Color balance
 
-					// Clear transforms & filters
+				components.r.setAttribute('tableValues',polynomial_table(-temperature+tint/2))
+				components.g.setAttribute('tableValues',polynomial_table(-tint))
+				components.b.setAttribute('tableValues',polynomial_table( temperature+tint/2))
 
+				// CSS filters
 
-					// Color balance
+				context.filter = (`
+					brightness(${exposure})
+					contrast(${contrast})
+					${'url(#filter)'.repeat(Boolean(temperature||tint))}
+					sepia(${sepia})
+					hue-rotate(${hue})
+					saturate(${saturate})
+					blur(${blur})
+				`)
+				// Linear transformations: rotation, scaling, translation
 
-					components.r.setAttribute('tableValues',polynomial_table(-temperature+tint/2))
-					components.g.setAttribute('tableValues',polynomial_table(-tint))
-					components.b.setAttribute('tableValues',polynomial_table( temperature+tint/2))
+				context.translate(...center)
 
-					// CSS filters
+				if ( rotate ) context.rotate(rotate)
 
-					context.filter = (`
-						brightness(${exposure})
-						contrast(${contrast})
-						${'url(#filter)'.repeat(Boolean(temperature||tint))}
-						sepia(${sepia})
-						hue-rotate(${hue})
-						saturate(${saturate})
-						blur(${blur})
-					`)
-					// Linear transformations: rotation, scaling, translation
+				if ( scale-1 ) context.scale(scale,scale)
 
-					context.translate(...center)
+				if ( move_x || move_y ) context.translate(move_x,move_y)
 
-					if ( rotate ) context.rotate(rotate)
+				context.translate(-w/2,-h/2)
 
-					if ( scale-1 ) context.scale(scale,scale)
+				// Apply CSS filters & linear transformations
 
-					if ( move_x || move_y ) context.translate(move_x,move_y)
-
-					context.translate(-w/2,-h/2)
-
-					// Apply CSS filters & linear transformations
-
-					if ( freeze.init ) {
-						freeze.canvas.context.drawImage(video,0,0,w,h)
-						let data = freeze.canvas.element.toDataURL('image/png')
-						freeze.image.setAttribute('src', data)
-						freeze.init = false
-					} else if ( freeze.state ) {
-						// Draw frozen image
-						context.drawImage(freeze.image,0,0,w,h)
-					} else if (video.srcObject) {
-						// Draw video
-						context.drawImage(video,0,0,w,h)
-					} else {
-						// Draw preview stripes if video doesn't exist
-						'18, 100%, 68%; -10,100%,80%; 5, 90%, 72%; 48, 100%, 75%; 36, 100%, 70%; 20, 90%, 70%'
-							.split(';')
-							.forEach((color,index)=>{
-								context.fillStyle = `hsl(${color})`
-								context.fillRect(index*w/6,0,w/6,h)
-						})
-					}
-
-
-					// Clear transforms & filters
-
-					context.setTransform(1,0,0,1,0,0)
-					context.filter = 'brightness(1)'
-
-					// Fog: cover the entire image with a single color
-
-					if ( fog ) {
-						let fog_lum = Math.sign(fog)*100
-						let fog_alpha = Math.abs(fog)
-
-						context.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
-						context.fillRect(0,0,w,h)
-					}
-
-					// Vignette: cover the edges of the image with a single color
-
-					if ( vignette ) {
-						let vignette_lum = Math.sign(vignette)*100
-						let vignette_alpha = Math.abs(vignette)
-						let vignette_gradient = context.createRadialGradient(
-							...center, 0,
-							...center, Math.sqrt((w/2)**2+(h/2)**2)
-						)
-
-						vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
-						vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
-
-						context.fillStyle = vignette_gradient
-						context.fillRect(0,0,w,h)
-
-					}
-
-					// Pillarbox: crop width
-
-					if ( pillarbox ) {
-						context.clearRect(0,0,pillarbox,h)
-						context.clearRect(w,0,-pillarbox,h)
-					}
-
-					// Letterbox: crop height
-
-					if ( letterbox ) {
-						context.clearRect(0,0,w,letterbox)
-						context.clearRect(0,h,w,-letterbox)
-					}
-
-					// Text:
-
-					if ( text ) {
-
-						// Find out the font size that just fits
-
-						const vw = 0.9*(w-2*pillarbox)
-						const vh = 0.9*(h-2*letterbox)
-
-						context.font = `bold ${vw}px ${font_family}`
-
-						let char_metrics = context.measureText('0')
-						let char_width = char_metrics.width
-						let line_height = char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent
-						let text_width = text.reduce(
-							(max_width,current_line)=>Math.max(
-								max_width,
-								context.measureText(current_line).width
-							), 0 // Accumulator starts at 0
-						)
-
-						const font_size = Math.min(vw**2/text_width,vh**2/line_height/text.length)
-
-						// Found the font size. Time to draw!
-
-						context.font = `bold ${font_size}px ${font_family}`
-
-						char_metrics = context.measureText('0')
-						line_height = 1.5 * ( char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent )
-
-						context.lineWidth = font_size/8
-						context.strokeStyle = 'black'
-						context.fillStyle = 'white'
-
-						text.forEach((line,index)=>{
-							let x = center[0]
-							let y = center[1] + line_height * ( index - text.length/2 + 0.5)
-							context.strokeText(line, x, y)
-							context.fillText(line, x, y)
-						})
-					}
+				if ( freeze.init ) {
+					freeze.canvas.context.drawImage(video,0,0,w,h)
+					let data = freeze.canvas.element.toDataURL('image/png')
+					freeze.image.setAttribute('src', data)
+					freeze.init = false
+				} else if ( freeze.state ) {
+					// Draw frozen image
+					context.drawImage(freeze.image,0,0,w,h)
+				} else if (video.srcObject) {
+					// Draw video
+					context.drawImage(video,0,0,w,h)
+				} else {
+					// Draw preview stripes if video doesn't exist
+					'18, 100%, 68%; -10,100%,80%; 5, 90%, 72%; 48, 100%, 75%; 36, 100%, 70%; 20, 90%, 70%'
+						.split(';')
+						.forEach((color,index)=>{
+							context.fillStyle = `hsl(${color})`
+							context.fillRect(index*w/6,0,w/6,h)
+					})
 				}
 
+
+				// Clear transforms & filters
+
+				context.setTransform(1,0,0,1,0,0)
+				context.filter = 'brightness(1)'
+
+				// Fog: cover the entire image with a single color
+
+				if ( fog ) {
+					let fog_lum = Math.sign(fog)*100
+					let fog_alpha = Math.abs(fog)
+
+					context.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
+					context.fillRect(0,0,w,h)
+				}
+
+				// Vignette: cover the edges of the image with a single color
+
+				if ( vignette ) {
+					let vignette_lum = Math.sign(vignette)*100
+					let vignette_alpha = Math.abs(vignette)
+					let vignette_gradient = context.createRadialGradient(
+						...center, 0,
+						...center, Math.sqrt((w/2)**2+(h/2)**2)
+					)
+
+					vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
+					vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
+
+					context.fillStyle = vignette_gradient
+					context.fillRect(0,0,w,h)
+
+				}
+
+				// Pillarbox: crop width
+
+				if ( pillarbox ) {
+					context.clearRect(0,0,pillarbox,h)
+					context.clearRect(w,0,-pillarbox,h)
+				}
+
+				// Letterbox: crop height
+
+				if ( letterbox ) {
+					context.clearRect(0,0,w,letterbox)
+					context.clearRect(0,h,w,-letterbox)
+				}
+
+				// Text:
+
+				if ( text ) {
+
+					// Find out the font size that just fits
+
+					const vw = 0.9*(w-2*pillarbox)
+					const vh = 0.9*(h-2*letterbox)
+
+					context.font = `bold ${vw}px ${font_family}`
+
+					let char_metrics = context.measureText('0')
+					let char_width = char_metrics.width
+					let line_height = char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent
+					let text_width = text.reduce(
+						(max_width,current_line)=>Math.max(
+							max_width,
+							context.measureText(current_line).width
+						), 0 // Accumulator starts at 0
+					)
+
+					const font_size = Math.min(vw**2/text_width,vh**2/line_height/text.length)
+
+					// Found the font size. Time to draw!
+
+					context.font = `bold ${font_size}px ${font_family}`
+
+					char_metrics = context.measureText('0')
+					line_height = 1.5 * ( char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent )
+
+					context.lineWidth = font_size/8
+					context.strokeStyle = 'black'
+					context.fillStyle = 'white'
+
+					text.forEach((line,index)=>{
+						let x = center[0]
+						let y = center[1] + line_height * ( index - text.length/2 + 0.5)
+						context.strokeText(line, x, y)
+						context.fillText(line, x, y)
+					})
+				}
+
+				canvases.display.context.clearRect(0,0,w,h)
 				canvases.display.context.drawImage(canvases.buffer.element,0,0)
 
 				// Recursive call
