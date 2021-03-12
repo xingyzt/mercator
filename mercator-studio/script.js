@@ -568,15 +568,15 @@ input#letterbox {
 			})
 			const canvas = canvases.buffer.buffer
 			const context = canvases.buffer.context
-      const freeze = {
-        state: false,
-        init: false,
-        image: document.createElement('img'),
-        canvas: canvases.freeze,
-      }
-      inputs.freeze.addEventListener('change',e=>{
-        freeze.state = freeze.init = e.target.checked
-      })
+			const freeze = {
+				state: false,
+				init: false,
+				image: document.createElement('img'),
+				canvas: canvases.freeze,
+			}
+			inputs.freeze.addEventListener('change',e=>{
+				freeze.state = freeze.init = e.target.checked
+			})
 
 			// Amp: for values that can range from 0 to +infinity, amp**value does the mapping.
 
