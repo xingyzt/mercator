@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.17.3
+// @version	1.17.4
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2021, Xing (https://x-ing.space)
@@ -545,6 +545,8 @@ input#letterbox {
 
 	const amp = 8
 
+	let task = 0
+
 	// Background Blur for Google Meet does this (hello@brownfoxlabs.com)
 
 	class mercator_studio_MediaStream extends MediaStream {
@@ -580,14 +582,11 @@ input#letterbox {
 
 			// Amp: for values that can range from 0 to +infinity, amp**value does the mapping.
 
-			let time = video.currentTime
-
 			context.textAlign = 'center'
 			context.textBaseline = 'middle'
 
 			function draw(){
 
-				time = video.currentTime
 				context.clearRect(0,0,w,h)
 
 				// Get values
@@ -763,7 +762,8 @@ input#letterbox {
 				canvases.display.context.clearRect(0,0,w,h)
 				canvases.display.context.drawImage(canvases.buffer.element,0,0)
 			}
-			setInterval(draw,1000/30)
+			clearInterval(task)
+			task = setInterval(draw,33)
 			const new_stream = canvases.display.element.captureStream(30)
 			new_stream.addEventListener('inactive',() => {
 				old_stream.getTracks().forEach(track => {
