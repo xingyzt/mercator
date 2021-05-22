@@ -434,13 +434,17 @@ input#letterbox {
 					// Scroll to change values
 					input.addEventListener('wheel',event=>{
 						event.preventDefault()
+						input.focus()
 						const width = input.getBoundingClientRect().width
 						const dx = -event.deltaX
 						const dy = event.deltaY
 						const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
 						const range = input.max - input.min
-						const value = input.valueAsNumber + ratio*range
-						update_values( input, Math.round(value/input.step)*input.step )
+						const raw_value = input.valueAsNumber + ratio*range
+						const stepped_value = Math.round(raw_value/input.step)*input.step
+						const clamped_value = Math.min(Math.max(stepped_value, input.min),input.max)
+						const value = clamped_value
+						update_values( input, value )
 					})
 					
 					// Right click to individually reset
