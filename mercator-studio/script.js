@@ -18,7 +18,7 @@
 	// Create shadow root
 
 	const host = document.createElement('aside')
-	host.style = 'position: fixed;'
+	host.style.position = 'fixed'
 	const shadow = host.attachShadow({ mode: 'open' })
 
 	const isFirefox = navigator.userAgent.includes('Firefox')
@@ -47,10 +47,8 @@
 }
 main{
 	--bg: #3C4042;
-	--ca: #000;
-	--c8: #000;
-	--txt: #bbb;
-	--txt: #fff;	
+	--dark: black;
+	--txt: white;	
 	--height-collapsed: 3.5rem;
 
 	z-index: 99999;
@@ -214,13 +212,13 @@ label>*{
 label>* {
 	height: 1.5rem;
 	border-radius: 0.75rem;
-	border: 0.15rem solid var(--ca);
+	border: 0.15rem solid var(--dark);
 }
 label>:hover {
 	border: 0.15rem solid var(--txt);
 }
 #presets>:hover {
-	background: var(--ca);
+	background: var(--dark);
 }
 #presets>:focus {
 	background: var(--txt);
@@ -482,7 +480,7 @@ input#letterbox {
 					// Right click to individually reset
 					input.addEventListener('contextmenu', event => {
 						event.preventDefault()
-						update_values(input, value)
+						update_values(input, default_values[input.id] )
 					})
 			}
 
