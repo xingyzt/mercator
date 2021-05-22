@@ -11,18 +11,19 @@
 // @match	https://meet.google.com/*
 // @grant	none
 // ==/UserScript==
-
-( async function mercator_studio () {
+(async function mercator_studio() {
 
 	'use strict'
 
 	// Create shadow root
 
 	const host = document.createElement('aside')
-  host.style = 'position: fixed;'
-	const shadow = host.attachShadow({mode: 'open'})
+	host.style = 'position: fixed;'
+	const shadow = host.attachShadow({
+		mode: 'open'
+	})
 
-  const isFirefox = navigator.userAgent.includes('Firefox')
+	const isFirefox = navigator.userAgent.includes('Firefox')
 
 	// Create form
 
@@ -32,7 +33,7 @@
 	style.textContent = `
 * {
 	box-sizing: border-box;
-  transition-duration: 200ms;
+transition-duration: 200ms;
 	transition-property: opacity, background, transform, border-radius, border-color;
 }
 :not(input) {
@@ -47,49 +48,50 @@
 	outline: 0;
 }
 main{
-  --bg: #3C4042;
-  --ca: #000;
-  --c8: #000;
-  --txt: #bbb;
-  --txt: #fff;	
-  --height-collapsed: 3.5rem;
+--bg: #3C4042;
+--ca: #000;
+--c8: #000;
+--txt: #bbb;
+--txt: #fff;	
+--height-collapsed: 3.5rem;
 
-  z-index: 99999;
+z-index: 99999;
 	font-family: ${font_family};
 	font-size: 1rem;
 	width: 25rem;
-  height: 100vh;
+height: 100vh;
+position: fixed;
 	top: 0;
 	left: 0;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+padding: 1rem;
+display: flex;
+flex-direction: column;
+overflow: hidden;
 }
 main>*{
 	background: var(--bg);
 	color: var(--txt);
 	box-shadow: 0 .1rem .25rem #0004;
-  border-radius: .5rem;
+border-radius: .5rem;
 }
 main>#previews{
 	cursor: pointer;
-  margin-top: .5rem;
-  overflow: hidden;
-  display: flex;
+margin-top: .5rem;
+overflow: hidden;
+display: flex;
 	height: var(--height-collapsed);
 	display: flex;
 }
 main>form{
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden scroll;
+flex-grow: 1;
+display: flex;
+flex-direction: column;
+overflow: hidden scroll;
 	padding: 1rem;
 }
 :not(.focus)>form{
-  opacity: 0;
-  pointer-events: none;
+opacity: 0;
+pointer-events: none;
 }
 :not(.focus)>#previews{
 	border-radius: calc(var(--height-collapsed)/2);
@@ -97,7 +99,7 @@ main>form{
 button{
 	font-family: inherit;
 	font-size: .8rem;
-  background: transparent;
+background: transparent;
 }
 .focus #minimize,
 .focus #donate{
@@ -113,7 +115,7 @@ button{
 	font-size: .5rem;
 	font-weight: bold;
 	color: var(--txt);
-  background: transparent;
+background: transparent;
 	flex: 0 0 1rem;
 	width: var(--radius);
 	text-align: center;
@@ -123,23 +125,23 @@ button{
 }
 #minimize::before,
 #donate::before{
-  transition-duration: inherit;
+transition-duration: inherit;
 	transition-property: margin;
 }
 #minimize::before{
 	content: "◀";
 }
 #donate::before{
-  content: "🤍";
+content: "🤍";
 }
 #minimize:hover::before,
 .minimize #minimize::before{
 	margin-left: -2px;
-  margin-right: 2px;
+margin-right: 2px;
 }
 #donate:hover::before{
-  margin-right: -2px;
-  margin-left: 2px;
+margin-right: -2px;
+margin-left: 2px;
 }
 .minimize #minimize::before{
 	content: "▶";
@@ -153,14 +155,14 @@ button{
 	width: auto;
 	background-image: linear-gradient(90deg,
 		hsl( 18, 100%, 68%) 16.7%,	hsl(-10, 100%, 80%) 16.7%,
-		hsl(-10, 100%, 80%) 33.3%,	hsl(  5,  90%, 72%) 33.3%,
-		hsl(  5,  90%, 72%) 50%,	hsl( 48, 100%, 75%) 50%,
+		hsl(-10, 100%, 80%) 33.3%,	hsl(5,90%, 72%) 33.3%,
+		hsl(5,90%, 72%) 50%,	hsl( 48, 100%, 75%) 50%,
 		hsl( 48, 100%, 75%) 66.7%,	hsl( 36, 100%, 70%) 66.7%,
-		hsl( 36, 100%, 70%) 83.3%,	hsl( 20,  90%, 70%) 83.3%
+		hsl( 36, 100%, 70%) 83.3%,	hsl( 20,90%, 70%) 83.3%
 	);
 }
 .focus>#previews>video{
-  margin-right: 1rem;
+margin-right: 1rem;
 }
 #previews>h1 {
 	flex-grow: 1;
@@ -302,21 +304,21 @@ input#letterbox {
 	const minimize = document.createElement('button')
 	minimize.id = 'minimize'
 	minimize.title = 'toggle super tiny mode'
-	minimize.addEventListener('click',event=>{
+	minimize.addEventListener('click', event => {
 		event.stopPropagation()
 		main.classList.toggle('minimize')
 	})
-  const donate = document.createElement('button')
-  donate.id = 'donate'
-  donate.title = 'donate to the developer'
-  donate.addEventListener('click',()=>{
-    window.open('https://ko-fi.com/xingyzt')
-  })
-  
+	const donate = document.createElement('button')
+	donate.id = 'donate'
+	donate.title = 'donate to the developer'
+	donate.addEventListener('click', () => {
+		window.open('https://ko-fi.com/xingyzt')
+	})
+
 	const form = document.createElement('form')
 
 	// Create inputs
-	
+
 	const default_values = {
 		light: 0,
 		contrast: 0,
@@ -340,7 +342,7 @@ input#letterbox {
 		presets: 'reset',
 	}
 
-const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values-20')) || {}
+	const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values-20')) || {}
 
 	const preset_values = {
 		reset: default_values,
@@ -372,33 +374,36 @@ const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-val
 	}
 
 	// Clone default values into updating object
-	const values = {...default_values,...saved_values}
+	const values = {
+		...default_values,
+		...saved_values
+	}
 
 	const inputs = Object.fromEntries(
 		Object.entries(values)
-		.map( ([key,value]) => {
+		.map(([key, value]) => {
 			let input
 			switch (key) {
 				case 'text':
 					input = document.createElement('textarea')
 					input.placeholder = '🌈 Write text here 🌦️'
-					input.addEventListener('input',()=>{
+					input.addEventListener('input', () => {
 						// Auto-resizing textarea
 						input.style.height = 'auto'
-						input.style.height = input.scrollHeight+'px'
+						input.style.height = input.scrollHeight + 'px'
 
 						// String substitution
-						update_values( input, (input.value+'')
-							.replace(/--/g,'―')
-							.replace(/\\sqrt/g,'√')
-							.replace(/\\pm/g,'±')
-							.replace(/\\times/g,'×')
-							.replace(/\\cdot/g,'·')
-							.replace(/\\over/g,'∕')
+						update_values(input, (input.value + '')
+							.replace(/--/g, '―')
+							.replace(/\\sqrt/g, '√')
+							.replace(/\\pm/g, '±')
+							.replace(/\\times/g, '×')
+							.replace(/\\cdot/g, '·')
+							.replace(/\\over/g, '∕')
 							// Numbers starting with ^ (superscript) or _ (subscript)
-							.replace( /(\^|\_)(\d+)/g, (_,sign,number) =>
-								number.split('').map( digit =>
-									String.fromCharCode( digit.charCodeAt(0) + (
+							.replace(/(\^|\_)(\d+)/g, (_, sign, number) =>
+								number.split('').map(digit =>
+									String.fromCharCode(digit.charCodeAt(0) + (
 										// Difference in character codes between subscript numbers and their regular equivalents.
 										sign === '_' ? 8272 :
 										// Superscript 1, 2 & 3 are in separate ranges.
@@ -409,28 +414,28 @@ const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-val
 							)
 						)
 					})
-				break
+					break
 				case 'mirror':
 				case 'freeze':
 					input = document.createElement('input')
 					input.type = 'checkbox'
-					input.addEventListener('change',()=> 
-						update_values(input,input.checked)
+					input.addEventListener('change', () =>
+						update_values(input, input.checked)
 					)
-				break
+					break
 				case 'presets':
 					input = document.createElement('label')
-					input.append(...Object.keys(preset_values).map( key => {
+					input.append(...Object.keys(preset_values).map(key => {
 						const button = document.createElement('button')
 						button.textContent = key
-						button.addEventListener('click', event=>{
+						button.addEventListener('click', event => {
 							event.preventDefault()
 							Object.entries(preset_values[key])
-							.forEach( ([key,value]) => update_values(inputs[key],value) )
+								.forEach(([key, value]) => update_values(inputs[key], value))
 						})
 						return button
 					}))
-				break
+					break
 				default:
 					input = document.createElement('input')
 					input.type = 'range'
@@ -448,43 +453,46 @@ const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-val
 					// Use 32 steps normally, 128 if CTRL, 512 if SHIFT
 					const range = input.max - input.min
 					input.step = range / 32
-					input.addEventListener('keydown',({ctrlKey,shiftKey})=>{
-						input.step = range / ( shiftKey ? 512 : ctrlKey ? 128 : 32 )
+					input.addEventListener('keydown', ({
+						ctrlKey,
+						shiftKey
+					}) => {
+						input.step = range / (shiftKey ? 512 : ctrlKey ? 128 : 32)
 					})
-					input.addEventListener('keyup',()=>
+					input.addEventListener('keyup', () =>
 						input.step = range / 32
 					)
 
-					input.addEventListener('input',()=>
-						update_values( input, input.valueAsNumber )
+					input.addEventListener('input', () =>
+						update_values(input, input.valueAsNumber)
 					)
 					// Scroll to change values
-					input.addEventListener('wheel',event=>{
+					input.addEventListener('wheel', event => {
 						event.preventDefault()
 						input.focus()
 						const width = input.getBoundingClientRect().width
 						const dx = -event.deltaX
 						const dy = event.deltaY
-						const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
+						const ratio = (Math.abs(dx) > Math.abs(dy) ? dx : dy) / width
 						const range = input.max - input.min
-						const raw_value = input.valueAsNumber + ratio*range
-						const clamped_value = Math.min(Math.max(raw_value, input.min),input.max)
-						const stepped_value = Math.round(clamped_value/input.step)*input.step
+						const raw_value = input.valueAsNumber + ratio * range
+						const clamped_value = Math.min(Math.max(raw_value, input.min), input.max)
+						const stepped_value = Math.round(clamped_value / input.step) * input.step
 						const value = stepped_value
-						update_values( input, value )
+						update_values(input, value)
 					})
-					
+
 					// Right click to individually reset
-					input.addEventListener('contextmenu',event=>{
+					input.addEventListener('contextmenu', event => {
 						event.preventDefault()
-						update_values( input, value )
+						update_values(input, value)
 					})
 			}
-			
+
 			input.classList.add('input')
 			input.value = value
 
-			if (!( isFirefox && ['warmth','tint'].includes(key) )) {
+			if (!(isFirefox && ['warmth', 'tint'].includes(key))) {
 				// Disable the SVG filters for Firefox
 				let label = document.createElement('label')
 				label.textContent = input.id = key
@@ -492,28 +500,28 @@ const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-val
 				form.append(label)
 				label.append(input)
 			}
-			return [key,input]
+			return [key, input]
 		})
 	)
 
-	function update_values (input,value) {
+	function update_values(input, value) {
 		values[input.id] = input.value = value
-		window.localStorage.setItem('mercator-studio-values-20',JSON.stringify(values))
+		window.localStorage.setItem('mercator-studio-values-20', JSON.stringify(values))
 	}
 
 	// Create color balance matrix
 	const svgNS = 'http://www.w3.org/2000/svg'
-	const svg = document.createElementNS(svgNS,'svg')
-	const filter = document.createElementNS(svgNS,'filter')
+	const svg = document.createElementNS(svgNS, 'svg')
+	const filter = document.createElementNS(svgNS, 'filter')
 	filter.id = 'filter'
-	const component_transfer = document.createElementNS(svgNS,'feComponentTransfer')
+	const component_transfer = document.createElementNS(svgNS, 'feComponentTransfer')
 	const components = Object.fromEntries(
-		['R','G','B'].map(hue=>{
-			const func = document.createElementNS(svgNS,'feFunc'+hue)
-			func.setAttribute('type','table')
-			func.setAttribute('tableValues','0 1')
-		return [hue,func]
-	}))
+		['R', 'G', 'B'].map(hue => {
+			const func = document.createElementNS(svgNS, 'feFunc' + hue)
+			func.setAttribute('type', 'table')
+			func.setAttribute('tableValues', '0 1')
+			return [hue, func]
+		}))
 	component_transfer.append(...Object.values(components))
 	filter.append(component_transfer)
 	svg.append(filter)
@@ -521,39 +529,42 @@ const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-val
 	// Create previews
 	const previews = document.createElement('div')
 	previews.id = 'previews'
-  previews.addEventListener('click',()=>
-			main.classList.toggle('focus')
+	previews.addEventListener('click', () =>
+		main.classList.toggle('focus')
 	)
 
 	// Create preview video
 	const video = document.createElement('video')
-	video.setAttribute('playsinline','')
-	video.setAttribute('autoplay','')
-	video.setAttribute('muted','')
+	video.setAttribute('playsinline', '')
+	video.setAttribute('autoplay', '')
+	video.setAttribute('muted', '')
 
 	// Create canvases
-	const canvases = Object.fromEntries(['buffer','freeze','display'].map(name=>{
+	const canvases = Object.fromEntries(['buffer', 'freeze', 'display'].map(name => {
 		const element = document.createElement('canvas')
 		const context = element.getContext('2d')
-		return [name,{element,context}]
+		return [name, {
+			element,
+			context
+		}]
 	}))
 
 	// Create title
 	const h1 = document.createElement('h1')
 	h1.textContent = 'Mercator Studio'
 
-	previews.append(minimize,video,h1,canvases.buffer.element,donate)
+	previews.append(minimize, video, h1, canvases.buffer.element, donate)
 
 	// Add UI to page
-	main.append(style,form,previews)
-	shadow.append(main,svg)
+	main.append(style, form, previews)
+	shadow.append(main, svg)
 	document.body.append(host)
 
 	// Define mappings of linear values
-	const polynomial_map = (value,degree) => (value+1)**degree
-	const polynomial_table = (factor,steps=32) => Array(steps).fill(0)
-	.map((_,index)=>Math.pow(index/(steps-1),2**factor)).join(' ')
-	const percentage = (value) => value*100+'%'
+	const polynomial_map = (value, degree) => (value + 1) ** degree
+	const polynomial_table = (factor, steps = 32) => Array(steps).fill(0)
+		.map((_, index) => Math.pow(index / (steps - 1), 2 ** factor)).join(' ')
+	const percentage = (value) => value * 100 + '%'
 
 	const amp = 8
 
@@ -575,8 +586,8 @@ const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-val
 
 			const w = old_stream_settings.width
 			const h = old_stream_settings.height
-			const center = [w/2,h/2]
-			Object.values(canvases).forEach(canvas=>{
+			const center = [w / 2, h / 2]
+			Object.values(canvases).forEach(canvas => {
 				canvas.element.width = w
 				canvas.element.height = h
 			})
@@ -588,7 +599,7 @@ const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-val
 				image: document.createElement('img'),
 				canvas: canvases.freeze,
 			}
-			inputs.freeze.addEventListener('change',e=>{
+			inputs.freeze.addEventListener('change', e => {
 				freeze.state = freeze.init = e.target.checked
 			})
 
@@ -597,9 +608,9 @@ const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-val
 			context.textAlign = 'center'
 			context.textBaseline = 'middle'
 
-			function draw(){
+			function draw() {
 
-				context.clearRect(0,0,w,h)
+				context.clearRect(0, 0, w, h)
 
 				// Get values
 
@@ -608,30 +619,30 @@ const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-val
 
 				let v = values
 
-				let light	= percentage(polynomial_map(v.light,2))
-				let contrast	= percentage(polynomial_map(v.contrast,3))
+				let light = percentage(polynomial_map(v.light, 2))
+				let contrast = percentage(polynomial_map(v.contrast, 3))
 				let warmth = isFirefox ? 0 : v.warmth
-				let tint	= isFirefox ? 0 : v.tint
-				let sepia	= percentage(v.sepia)
-				let hue	= 360*v.hue+ 'deg'
-				let color	= percentage(amp**v.color)
-				let blur	= v.blur*w/16 + 'px'
-				let fog	= v.fog
-				let vignette	= v.vignette
-				let rotate	= v.rotate*2*Math.PI
-				let scale	= polynomial_map(v.scale,2)
-				let mirror	= v.mirror
-				let move_x	= v.pan*w
-				let move_y	= v.tilt*h
-				let pillarbox	= v.pillarbox*w/2
-				let letterbox	= v.letterbox*h/2
-				let text	= v.text.split('\n')
+				let tint = isFirefox ? 0 : v.tint
+				let sepia = percentage(v.sepia)
+				let hue = 360 * v.hue + 'deg'
+				let color = percentage(amp ** v.color)
+				let blur = v.blur * w / 16 + 'px'
+				let fog = v.fog
+				let vignette = v.vignette
+				let rotate = v.rotate * 2 * Math.PI
+				let scale = polynomial_map(v.scale, 2)
+				let mirror = v.mirror
+				let move_x = v.pan * w
+				let move_y = v.tilt * h
+				let pillarbox = v.pillarbox * w / 2
+				let letterbox = v.letterbox * h / 2
+				let text = v.text.split('\n')
 
 				// Color balance
 
-				components.R.setAttribute('tableValues',polynomial_table(-warmth+tint/2))
-				components.G.setAttribute('tableValues',polynomial_table(-tint))
-				components.B.setAttribute('tableValues',polynomial_table( warmth+tint/2))
+				components.R.setAttribute('tableValues', polynomial_table(-warmth + tint / 2))
+				components.G.setAttribute('tableValues', polynomial_table(-tint))
+				components.B.setAttribute('tableValues', polynomial_table(warmth + tint / 2))
 
 				// CSS filters
 
@@ -647,127 +658,127 @@ const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-val
 
 				// Linear transformations: rotation, scaling, translation
 				context.translate(...center)
-				if ( rotate ) context.rotate(rotate)
-				if ( scale-1 ) context.scale( scale, scale )
-				if ( mirror ) context.scale( -1, 1 )
-				if ( move_x || move_y ) context.translate(move_x,move_y)
-				context.translate(-w/2,-h/2)
+				if (rotate) context.rotate(rotate)
+				if (scale - 1) context.scale(scale, scale)
+				if (mirror) context.scale(-1, 1)
+				if (move_x || move_y) context.translate(move_x, move_y)
+				context.translate(-w / 2, -h / 2)
 
 				// Apply CSS filters & linear transformations
-				if ( freeze.init ) {
-					freeze.canvas.context.drawImage(video,0,0,w,h)
+				if (freeze.init) {
+					freeze.canvas.context.drawImage(video, 0, 0, w, h)
 					let data = freeze.canvas.element.toDataURL('image/png')
 					freeze.image.setAttribute('src', data)
 					freeze.init = false
-				} else if ( freeze.state ) {
+				} else if (freeze.state) {
 					// Draw frozen image
-					context.drawImage(freeze.image,0,0,w,h)
+					context.drawImage(freeze.image, 0, 0, w, h)
 				} else if (video.srcObject) {
 					// Draw video
-					context.drawImage(video,0,0,w,h)
+					context.drawImage(video, 0, 0, w, h)
 				} else {
 					// Draw preview stripes if video doesn't exist
 					'18, 100%, 68%; -10,100%,80%; 5, 90%, 72%; 48, 100%, 75%; 36, 100%, 70%; 20, 90%, 70%'
-						.split(';')
-						.forEach((color,index)=>{
+					.split(';')
+						.forEach((color, index) => {
 							context.fillStyle = `hsl(${color})`
-							context.fillRect(index*w/6,0,w/6,h)
-					})
+							context.fillRect(index * w / 6, 0, w / 6, h)
+						})
 				}
 
 				// Clear transforms & filters
-				context.setTransform(1,0,0,1,0,0)
+				context.setTransform(1, 0, 0, 1, 0, 0)
 				context.filter = 'brightness(1)'
 
 				// Fog: cover the entire image with a single color
-				if ( fog ) {
-					let fog_lum = Math.sign(fog)*100
+				if (fog) {
+					let fog_lum = Math.sign(fog) * 100
 					let fog_alpha = Math.abs(fog)
 
 					context.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
-					context.fillRect(0,0,w,h)
+					context.fillRect(0, 0, w, h)
 				}
 
 				// Vignette: cover the edges of the image with a single color
-				if ( vignette ) {
-					let vignette_lum = Math.sign(vignette)*100
+				if (vignette) {
+					let vignette_lum = Math.sign(vignette) * 100
 					let vignette_alpha = Math.abs(vignette)
 					let vignette_gradient = context.createRadialGradient(
 						...center, 0,
-						...center, Math.sqrt((w/2)**2+(h/2)**2)
+						...center, Math.sqrt((w / 2) ** 2 + (h / 2) ** 2)
 					)
 
 					vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
 					vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
 
 					context.fillStyle = vignette_gradient
-					context.fillRect(0,0,w,h)
+					context.fillRect(0, 0, w, h)
 
 				}
 
 				// Pillarbox: crop width
-				if ( pillarbox ) {
-					context.clearRect(0,0,pillarbox,h)
-					context.clearRect(w,0,-pillarbox,h)
+				if (pillarbox) {
+					context.clearRect(0, 0, pillarbox, h)
+					context.clearRect(w, 0, -pillarbox, h)
 				}
 
 				// Letterbox: crop height
-				if ( letterbox ) {
-					context.clearRect(0,0,w,letterbox)
-					context.clearRect(0,h,w,-letterbox)
+				if (letterbox) {
+					context.clearRect(0, 0, w, letterbox)
+					context.clearRect(0, h, w, -letterbox)
 				}
 
 				// Text:
-				if ( text ) {
+				if (text) {
 
 					// Find out the font size that just fits
 
-					const vw = 0.9*(w-2*pillarbox)
-					const vh = 0.9*(h-2*letterbox)
+					const vw = 0.9 * (w - 2 * pillarbox)
+					const vh = 0.9 * (h - 2 * letterbox)
 
 					context.font = `bold ${vw}px ${font_family}`
 
 					let char_metrics = context.measureText('0')
 					let line_height = char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent
 					let text_width = text.reduce(
-						(max_width,current_line)=>Math.max(
+						(max_width, current_line) => Math.max(
 							max_width,
 							context.measureText(current_line).width
 						), 0 // Accumulator starts at 0
 					)
 
-					const font_size = Math.min(vw**2/text_width,vh**2/line_height/text.length)
+					const font_size = Math.min(vw ** 2 / text_width, vh ** 2 / line_height / text.length)
 
 					// Found the font size. Time to draw!
 
 					context.font = `bold ${font_size}px ${font_family}`
 
 					char_metrics = context.measureText('0')
-					line_height = 1.5 * ( char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent )
+					line_height = 1.5 * (char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent)
 
-					context.lineWidth = font_size/8
+					context.lineWidth = font_size / 8
 					context.strokeStyle = 'black'
 					context.fillStyle = 'white'
 
-					text.forEach((line,index)=>{
+					text.forEach((line, index) => {
 						let x = center[0]
-						let y = center[1] + line_height * ( index - text.length/2 + 0.5)
+						let y = center[1] + line_height * (index - text.length / 2 + 0.5)
 						context.strokeText(line, x, y)
 						context.fillText(line, x, y)
 					})
 				}
 
-				canvases.display.context.clearRect(0,0,w,h)
-				canvases.display.context.drawImage(canvases.buffer.element,0,0)
+				canvases.display.context.clearRect(0, 0, w, h)
+				canvases.display.context.drawImage(canvases.buffer.element, 0, 0)
 			}
 			clearInterval(task)
-			task = setInterval(draw,33)
+			task = setInterval(draw, 33)
 			const new_stream = canvases.display.element.captureStream(30)
-			new_stream.addEventListener('inactive',() => {
+			new_stream.addEventListener('inactive', () => {
 				old_stream.getTracks().forEach(track => {
 					track.stop()
 				})
-				canvases.display.context.clearRect(0,0,w,h)
+				canvases.display.context.clearRect(0, 0, w, h)
 				video.srcObject = null
 			})
 			return new_stream
@@ -776,7 +787,7 @@ const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-val
 
 	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
 	MediaDevices.prototype.getUserMedia = async constraints =>
-		(constraints && constraints.video && !constraints.audio )
-		? new mercator_studio_MediaStream(await navigator.mediaDevices.old_getUserMedia(constraints))
-		: navigator.mediaDevices.old_getUserMedia(constraints)
-} ) ()
+		(constraints && constraints.video && !constraints.audio) ?
+		new mercator_studio_MediaStream(await navigator.mediaDevices.old_getUserMedia(constraints)) :
+		navigator.mediaDevices.old_getUserMedia(constraints)
+})()
