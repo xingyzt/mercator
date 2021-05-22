@@ -33,7 +33,7 @@
 	style.textContent = `
 * {
 	box-sizing: border-box;
-transition-duration: 200ms;
+	transition-duration: 200ms;
 	transition-property: opacity, background, transform, border-radius, border-color;
 }
 :not(input) {
@@ -48,58 +48,58 @@ transition-duration: 200ms;
 	outline: 0;
 }
 main{
---bg: #3C4042;
---ca: #000;
---c8: #000;
---txt: #bbb;
---txt: #fff;	
---height-collapsed: 3.5rem;
+	--bg: #3C4042;
+	--ca: #000;
+	--c8: #000;
+	--txt: #bbb;
+	--txt: #fff;	
+	--height-collapsed: 3.5rem;
 
-z-index: 99999;
+	z-index: 99999;
 	font-family: ${font_family};
 	font-size: 1rem;
 	width: 25rem;
-height: 100vh;
-position: fixed;
+	height: 100vh;
+	position: fixed;
 	top: 0;
 	left: 0;
-padding: 1rem;
-display: flex;
-flex-direction: column;
-overflow: hidden;
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
 }
 main>*{
 	background: var(--bg);
 	color: var(--txt);
 	box-shadow: 0 .1rem .25rem #0004;
-border-radius: .5rem;
+	border-radius: .5rem;
 }
 main>#previews{
 	cursor: pointer;
-margin-top: .5rem;
-overflow: hidden;
-display: flex;
-	height: var(--height-collapsed);
+	margin-top: .5rem;
+	overflow: hidden;
 	display: flex;
+	height: auto;
 }
 main>form{
-flex-grow: 1;
-display: flex;
-flex-direction: column;
-overflow: hidden scroll;
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden scroll;
 	padding: 1rem;
 }
 :not(.focus)>form{
-opacity: 0;
-pointer-events: none;
+	opacity: 0;
+	pointer-events: none;
 }
 :not(.focus)>#previews{
 	border-radius: calc(var(--height-collapsed)/2);
+	height: var(--height-collapsed);
 }
 button{
 	font-family: inherit;
 	font-size: .8rem;
-background: transparent;
+	background: transparent;
 }
 .focus #minimize,
 .focus #donate{
@@ -115,7 +115,7 @@ background: transparent;
 	font-size: .5rem;
 	font-weight: bold;
 	color: var(--txt);
-background: transparent;
+	background: transparent;
 	flex: 0 0 1rem;
 	width: var(--radius);
 	text-align: center;
@@ -125,7 +125,7 @@ background: transparent;
 }
 #minimize::before,
 #donate::before{
-transition-duration: inherit;
+	transition-duration: inherit;
 	transition-property: margin;
 }
 #minimize::before{
@@ -137,11 +137,11 @@ content: "🤍";
 #minimize:hover::before,
 .minimize #minimize::before{
 	margin-left: -2px;
-margin-right: 2px;
+	margin-right: 2px;
 }
 #donate:hover::before{
-margin-right: -2px;
-margin-left: 2px;
+	margin-right: -2px;
+	margin-left: 2px;
 }
 .minimize #minimize::before{
 	content: "▶";
@@ -151,8 +151,8 @@ margin-left: 2px;
 }
 #previews>video,
 #previews>canvas {
-	height: 100%;
 	width: auto;
+	height: auto;
 	background-image: linear-gradient(90deg,
 		hsl( 18, 100%, 68%) 16.7%,	hsl(-10, 100%, 80%) 16.7%,
 		hsl(-10, 100%, 80%) 33.3%,	hsl(5,90%, 72%) 33.3%,
@@ -162,7 +162,7 @@ margin-left: 2px;
 	);
 }
 .focus>#previews>video{
-margin-right: 1rem;
+	margin-right: 1rem;
 }
 #previews>h1 {
 	flex-grow: 1;
@@ -178,12 +178,11 @@ margin-right: 1rem;
 .focus>#previews>h1 {
 	display: none;
 }
-.focus>#previews {
-	height: auto;
-}
-.focus>#previews>* {
+.focus>#previews>video,
+.focus>#previews>canvas {
 	height: auto;
 	width: calc(50% - .5rem);
+	object-fit: contain;
 }
 #presets,
 label {
