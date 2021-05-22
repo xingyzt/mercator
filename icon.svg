@@ -1,6 +1,6 @@
 <svg width='128' height='128' viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'>
-	<title>Logo of Google Meet Filters &amp; Transforms</title>
-	<desc>Do stuff.</desc>
+	<title>Logo of Mercator Studio for Google Meet</title>
+	<desc>A white video recorder icon in a dark teal circle, wrapped by stripes in shades of pastel orange.</desc>
 	<circle cx='64' cy='64' r='64' fill='hsl(31, 100%, 73%)'/>
 
 	<rect fill='hsl( 18, 100%, 68%)' width='96' x='16' y='0' height='128'/>
@@ -15,6 +15,5 @@
 	<rect x='34' y='46' width='44' height='36' fill='white' rx='8' ry='8'/>
 	<path d='M68 64l22 -10v20z' fill='white' stroke-width='8' stroke='white' stroke-linejoin='round'/>
 
-	<desc>(C) Xing 2020.</desc>
-
+	<desc>(C) Xing Liu, 2020</desc>
 </svg>
