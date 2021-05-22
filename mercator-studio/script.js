@@ -15,6 +15,7 @@
 ( async function mercator_studio () {
 
 	'use strict'
+	
 	// Create shadow root
 
 	const host = document.createElement('aside')
@@ -483,8 +484,8 @@ input#letterbox {
 	filter.id = 'filter'
 	const component_transfer = document.createElementNS(svgNS,'feComponentTransfer')
 	const components = Object.fromEntries(
-		['r','g','b'].map(hue=>{
-			const func = document.createElementNS(svgNS,'feFunc'+hue.toUpperCase())
+		['R','G','B'].map(hue=>{
+			const func = document.createElementNS(svgNS,'feFunc'+hue)
 			func.setAttribute('type','table')
 			func.setAttribute('tableValues','0 1')
 		return [hue,func]
@@ -526,7 +527,6 @@ input#letterbox {
 	const polynomial_table = (factor,steps=32) => Array(steps).fill(0)
 	.map((_,index)=>Math.pow(index/(steps-1),2**factor)).join(' ')
 	const percentage = (value) => value*100+'%'
-	const signed_pow = (value,power) => Math.sign(value)*Math.abs(value)**power
 
 	const amp = 8
 
@@ -601,9 +601,9 @@ input#letterbox {
 
 				// Color balance
 
-				components.r.setAttribute('tableValues',polynomial_table(-temperature+tint/2))
-				components.g.setAttribute('tableValues',polynomial_table(-tint))
-				components.b.setAttribute('tableValues',polynomial_table( temperature+tint/2))
+				components.R.setAttribute('tableValues',polynomial_table(-temperature+tint/2))
+				components.G.setAttribute('tableValues',polynomial_table(-tint))
+				components.B.setAttribute('tableValues',polynomial_table( temperature+tint/2))
 
 				// CSS filters
 
