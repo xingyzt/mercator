@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.18.1
+// @version	1.19.0
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
-// @copyright	2021, Xing (https://x-ing.space)
+// @copyright	2020-2021, Xing (https://x-ing.space)
 // @license	MIT License; https://x-ing.space/mercator/LICENSE
 // @namespace	https://x-ing.space
 // @homepageURL	https://x-ing.space/mercator
@@ -15,7 +15,7 @@
 ( async function mercator_studio () {
 
 	'use strict'
-	
+
 	// Create shadow root
 
 	const host = document.createElement('aside')
@@ -64,7 +64,24 @@
 :focus {
 	outline: 0;
 }
+main{
+	--cf: #fff;
+	--ca: #aaa;
+	--c8: #888;
+	--c4: #444;
+	--c0: #000;
+}
+@media ( prefers-color-scheme: dark ){
+	main {
+		--cf: #222;
+		--ca: #000;
+		--c8: #000;
+		--c4: #bbb;
+		--c0: #fff;	
+	}
+}
 main {
+
 	z-index: 99999;
 	position: fixed;
 	left: 0;
@@ -76,7 +93,8 @@ main {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	background: white;
+	background: var(--cf);
+	color: var(--c0);
 	transform: translateY(calc(-100% + 3rem));
 	box-shadow: 0 .1rem .25rem #0004;
 	border-radius: 0 0 .75rem 0;
@@ -91,7 +109,8 @@ button{
 	font-size: .8rem;
 }
 main #collapse {
-	background: white;
+	background: var(--cf);
+	color: inherit;
 	cursor: pointer;
 	margin-bottom: .5rem;
 }
@@ -114,13 +133,12 @@ main.minimize {
 	font-family: inherit;
 	font-size: .5rem;
 	font-weight: bold;
-	color: #444;
+	color: var(--c4);
 	margin-left: -1rem;
 	flex: 0 0 1rem;
 	width: 1rem;
 	text-align: center;
 	border: 0;
-	background: white;
 	cursor: pointer;
 	overflow-wrap: anywhere;
 }
@@ -161,7 +179,7 @@ main.minimize {
 	font-size: 1rem;
 	font-weight: normal;
 	text-align: center;
-	color: #444;
+	color: var(--c4);
 	line-height: 1.5rem;
 }
 :hover>#previews>h1 {
@@ -183,11 +201,15 @@ label {
 	justify-content: space-between;
 	align-items: center;
 }
+#presets {
+	overflow: hidden;
+}
 #presets>* {
 	border: 0;
 	border-radius: 0;
 	background: transparent;
 	flex-grow: 1;
+	color: inherit;
 }
 #presets>:first-child {
 	border-radius: 100px 0 0 100px;
@@ -197,6 +219,7 @@ label {
 }
 label {
 	height: 2rem;
+	color: inherit;
 }
 label>*{
 	width: calc(100% - 6.5rem);
@@ -205,23 +228,23 @@ label>*,
 #collapse {
 	height: 1.5rem;
 	border-radius: 0.75rem;
-	border: 0.25rem solid lightgray;
+	border: 0.25rem solid var(--ca);
 }
 label>:hover,
 #collapse:hover {
-	border: 0.25rem solid gray;
+	border: 0.25rem solid var(--c4);
 }
 #presets>:hover {
-	background: #0003;
+	background: var(--ca);
 }
 #presets>:focus {
-	background: black;
-	color: white;
+	background: var(--c0);
+	color: var(--cf);
 }
 #presets:focus-within,
 #collapse:focus,
 label>:focus {
-	border-color: black;
+	border-color: var(--c0);
 }
 textarea {
 	text-align: center;
@@ -230,24 +253,30 @@ textarea {
 	resize: none;
 	line-height: 1;
 	overflow: hidden;
+	color: inherit;
+	background: var(--cf);
+}
+textarea::placeholder {
+	color: var(--c4);
 }
 input[type=range] {
 	-webkit-appearance: none;
+	cursor: ew-resize;
 	--gradient: transparent, transparent;
 	--rainbow: hsl(0, 80%, 75%), hsl(30, 80%, 75%), hsl(60, 80%, 75%), hsl(90, 80%, 75%), hsl(120, 80%, 75%), hsl(150, 80%, 75%), hsl(180, 80%, 75%), hsl(210, 80%, 75%), hsl(240, 80%, 75%), hsl(270, 80%, 75%), hsl(300, 80%, 75%), hsl(330, 80%, 75%);
 	background: linear-gradient(90deg, var(--gradient)), linear-gradient(90deg, var(--rainbow));
 }
 input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
-	background: white;
+	background: var(--cf);
 	width: 1rem;
 	height: 1rem;
-	border: 0.25rem solid black;
+	border: 0.25rem solid var(--c0);
 	border-radius: 0.5rem;
 }
 input[type=range]:focus::-webkit-slider-thumb {
-	border-color: white;
-	background: black;
+	border-color: var(--cf);
+	background: var(--c0);
 }
 input#exposure,
 input#fog,
