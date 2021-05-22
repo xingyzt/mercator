@@ -301,7 +301,6 @@ input#letterbox {
 				case 'text':
 					input = document.createElement('textarea')
 					input.placeholder = '🌈 Write text here 🌦️'
-					
 					// Auto-resizing textarea
 					input.addEventListener('input',()=>{
 						input.style.height = 'auto'
@@ -309,6 +308,7 @@ input#letterbox {
 					})
 				break
 				case 'freeze':
+				case 'flip':
 					input = document.createElement('input')
 					input.type = 'checkbox'
 				break
@@ -323,7 +323,17 @@ input#letterbox {
 						'letterbox'
 					].includes(key) ? 0 : -1
 					input.max = 1
-					input.step = 0.00001
+					const range = input.max - input.min
+
+					// Use 32 steps normally, and 128 if CTRL is held down
+					input.step = range / 32
+					input.addEventListener('keydown',({ctrlKey})=>{
+						if(ctrlKey) input.step = range / 128
+					})
+					input.addEventListener('keyup',()=>{
+						input.step = range / 32
+					})
+					
 					input.value = 0
 			}
 			input.classList.add('input')
