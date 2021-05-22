@@ -19,147 +19,133 @@
 	// Create shadow root
 
 	const host = document.createElement('aside')
+  host.style = 'position: fixed;'
 	const shadow = host.attachShadow({mode: 'open'})
-	const isFirefox = navigator.userAgent.includes('Firefox')
+
+  const isFirefox = navigator.userAgent.includes('Firefox')
 
 	// Create form
 
 	const main = document.createElement('main')
-	main.addEventListener('click',()=>
-			main.classList.add('focus')
-	)
-
-	const collapse = document.createElement('button')
-	collapse.textContent = '↑ collapse ↑'
-	collapse.id = 'collapse'
-	collapse.addEventListener('click',event=>{
-		event.stopPropagation()
-		main.classList.remove('focus')
-	})
-
-	const minimize = document.createElement('button')
-	minimize.id = 'minimize'
-	minimize.title = 'toggle super tiny mode'
-	minimize.addEventListener('click',event=>{
-		event.stopPropagation()
-		main.classList.toggle('minimize')
-	})
-
-	const form = document.createElement('form')
 	const style = document.createElement('style')
 	const font_family = `"Google Sans", Roboto, RobotDraft, Helvetica, sans-serif, serif`
 	style.textContent = `
 * {
 	box-sizing: border-box;
-	transition: all 200ms;
+  transition-duration: 200ms;
+	transition-property: opacity, background, transform, border-radius, border-color;
 }
-*:not(input) {
+:not(input) {
 	user-select: none;
 }
 @media (prefers-reduced-motion) {
 	* {
-		transition: all 0s;
+		transition-duration: 0s;
 	}
 }
 :focus {
 	outline: 0;
 }
 main{
-	--cf: #fff;
-	--ca: #aaa;
-	--c8: #888;
-	--c4: #444;
-	--c0: #000;
-}
-@media ( prefers-color-scheme: dark ){
-	main {
-		--cf: #222;
-		--ca: #000;
-		--c8: #000;
-		--c4: #bbb;
-		--c0: #fff;	
-	}
-}
-main {
+  --bg: #3C4042;
+  --ca: #000;
+  --c8: #000;
+  --txt: #bbb;
+  --txt: #fff;	
+  --height-collapsed: 3.5rem;
 
-	z-index: 99999;
-	position: fixed;
-	left: 0;
-	top: 0;
-	width: 480px;
-	max-width: 100vw;
-	height: auto;
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	background: var(--cf);
-	color: var(--c0);
-	transform: translateY(calc(-100% + 3rem));
-	box-shadow: 0 .1rem .25rem #0004;
-	border-radius: 0 0 .75rem 0;
-	padding: 1rem 1rem 0 1rem;
-	overflow: hidden;
+  z-index: 99999;
 	font-family: ${font_family};
 	font-size: 1rem;
+	width: 25rem;
+  height: 100vh;
+	top: 0;
+	left: 0;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+main>*{
+	background: var(--bg);
+	color: var(--txt);
+	box-shadow: 0 .1rem .25rem #0004;
+  border-radius: .5rem;
+}
+main>#previews{
 	cursor: pointer;
+  margin-top: .5rem;
+  overflow: hidden;
+  display: flex;
+	height: var(--height-collapsed);
+	display: flex;
+}
+main>form{
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden scroll;
+	padding: 1rem;
+}
+:not(.focus)>form{
+  opacity: 0;
+  pointer-events: none;
+}
+:not(.focus)>#previews{
+	border-radius: calc(var(--height-collapsed)/2);
 }
 button{
 	font-family: inherit;
 	font-size: .8rem;
+  background: transparent;
 }
-main #collapse {
-	background: var(--cf);
-	color: inherit;
-	cursor: pointer;
-	margin-bottom: .5rem;
-}
-main.focus {
-	transform: none;
-	border-radius: 0;
-	height: 100vh;
-	padding: 1rem;
-	cursor: default;
-	overflow: hidden scroll;
-}
-main.focus #minimize{
+.focus #minimize,
+.focus #donate{
 	display: none;
 }
-main.minimize {
+.minimize #previews {
 	width: 1rem;
 	padding-right: 0;
 }
-#minimize {
+#minimize,
+#donate {
 	font-family: inherit;
 	font-size: .5rem;
 	font-weight: bold;
-	color: var(--c4);
-	margin-left: -1rem;
+	color: var(--txt);
+  background: transparent;
 	flex: 0 0 1rem;
-	width: 1rem;
+	width: var(--radius);
 	text-align: center;
 	border: 0;
 	cursor: pointer;
 	overflow-wrap: anywhere;
 }
+#minimize::before,
+#donate::before{
+  transition-duration: inherit;
+	transition-property: margin;
+}
 #minimize::before{
 	content: "◀";
-	transition: inherit;
+}
+#donate::before{
+  content: "🤍";
 }
 #minimize:hover::before,
 .minimize #minimize::before{
 	margin-left: -2px;
+  margin-right: 2px;
+}
+#donate:hover::before{
+  margin-right: -2px;
+  margin-left: 2px;
 }
 .minimize #minimize::before{
 	content: "▶";
 }
 .minimize #minimize:hover::before{
 	margin-left: 0;
-}
-#previews {
-	margin-top: 1rem;
-	height: 3rem;
-	display: flex;
 }
 #previews>video,
 #previews>canvas {
@@ -172,17 +158,19 @@ main.minimize {
 		hsl( 48, 100%, 75%) 66.7%,	hsl( 36, 100%, 70%) 66.7%,
 		hsl( 36, 100%, 70%) 83.3%,	hsl( 20,  90%, 70%) 83.3%
 	);
-	margin-right: 1rem;
+}
+.focus>#previews>video{
+  margin-right: 1rem;
 }
 #previews>h1 {
 	flex-grow: 1;
-	font-size: 1rem;
+	font-size: .9rem;
 	font-weight: normal;
 	text-align: center;
-	color: var(--c4);
+	color: inherit;
 	line-height: 1.5rem;
 }
-:hover>#previews>h1 {
+#previews:hover>h1 {
 	transform: translateY(.1rem); /* Tiny nudge downwards */
 }
 .focus>#previews>h1 {
@@ -222,29 +210,26 @@ label {
 	color: inherit;
 }
 label>*{
-	width: calc(100% - 6.5rem);
+	width: calc(100% - 4.5rem);
 }
-label>*,
-#collapse {
+label>* {
 	height: 1.5rem;
 	border-radius: 0.75rem;
-	border: 0.25rem solid var(--ca);
+	border: 0.15rem solid var(--ca);
 }
-label>:hover,
-#collapse:hover {
-	border: 0.25rem solid var(--c4);
+label>:hover {
+	border: 0.15rem solid var(--txt);
 }
 #presets>:hover {
 	background: var(--ca);
 }
 #presets>:focus {
-	background: var(--c0);
-	color: var(--cf);
+	background: var(--txt);
+	color: var(--bg);
 }
 #presets:focus-within,
-#collapse:focus,
 label>:focus {
-	border-color: var(--c0);
+	border-color: var(--txt);
 }
 textarea {
 	text-align: center;
@@ -254,10 +239,10 @@ textarea {
 	line-height: 1;
 	overflow: hidden;
 	color: inherit;
-	background: var(--cf);
+	background: var(--bg);
 }
 textarea::placeholder {
-	color: var(--c4);
+	color: var(--txt);
 }
 input[type=range] {
 	-webkit-appearance: none;
@@ -268,17 +253,17 @@ input[type=range] {
 }
 input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
-	background: var(--cf);
-	width: 1rem;
-	height: 1rem;
-	border: 0.25rem solid var(--c0);
-	border-radius: 0.5rem;
+	background: var(--bg);
+	width: 1.3rem;
+	height: 1.3rem;
+	border: 0.15rem solid var(--txt);
+	border-radius: 0.65rem;
 }
 input[type=range]:focus::-webkit-slider-thumb {
-	border-color: var(--cf);
-	background: var(--c0);
+	border-color: var(--bg);
+	background: var(--txt);
 }
-input#exposure,
+input#light,
 input#fog,
 input#vignette {
 	--gradient: black, #8880, white
@@ -286,7 +271,7 @@ input#vignette {
 input#contrast {
 	--gradient: gray, #8880
 }
-input#temperature {
+input#warmth {
 	--gradient: #88f, #8880, #ff8
 }
 input#tint {
@@ -299,7 +284,7 @@ input#hue,
 input#rotate {
 	background: linear-gradient(90deg, hsl(0, 80%, 75%), hsl(60, 80%, 75%), hsl(120, 80%, 75%), hsl(180, 80%, 75%), hsl(240, 80%, 75%), hsl(300, 80%, 75%), hsl(0, 80%, 75%), hsl(60, 80%, 75%), hsl(120, 80%, 75%), hsl(180, 80%, 75%), hsl(240, 80%, 75%), hsl(300, 80%, 75%), hsl(0, 80%, 75%))
 }
-input#saturate {
+input#color {
 	--gradient: gray, #8880 50%, blue, magenta
 }
 input#blur {
@@ -313,28 +298,41 @@ input#letterbox {
 	--gradient: black, white
 }
 `
-	form.append(style)
+
+	const minimize = document.createElement('button')
+	minimize.id = 'minimize'
+	minimize.title = 'toggle super tiny mode'
+	minimize.addEventListener('click',event=>{
+		event.stopPropagation()
+		main.classList.toggle('minimize')
+	})
+  const donate = document.createElement('button')
+  donate.id = 'donate'
+  donate.title = 'donate to the developer'
+  donate.addEventListener('click',()=>{
+    window.open('https://ko-fi.com/xingyzt')
+  })
+  
+	const form = document.createElement('form')
 
 	// Create inputs
-
-	const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values')) || {}
 	
 	const default_values = {
-		exposure: 0,
+		light: 0,
 		contrast: 0,
-		temperature: 0,
+		warmth: 0,
 		tint: 0,
 		sepia: 0,
 		hue: 0,
-		saturate: 0,
+		color: 0,
 		blur: 0,
 		fog: 0,
 		vignette: 0,
 		rotate: 0,
 		scale: 0,
 		mirror: false,
-		x: 0,
-		y: 0,
+		pan: 0,
+		tilt: 0,
 		pillarbox: 0,
 		letterbox: 0,
 		freeze: false,
@@ -342,30 +340,25 @@ input#letterbox {
 		presets: 'reset',
 	}
 
+const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values-20')) || {}
+
 	const preset_values = {
 		reset: default_values,
 		concorde: {
 			contrast: 0.1,
-			temperature: -0.25,
+			warmth: -0.25,
 			tint: -0.05,
-			saturate: 0.2,
+			color: 0.2,
 		},
 		mono: {
-			exposure: 0.1,
+			light: 0.1,
 			contrast: -0.1,
 			sepia: 0.8,
-			saturate: -1,
+			color: -1,
 			vignette: -0.5,
 		},
-		stucco: {
-			contrast: -0.1,
-			tint: 0.1,
-			sepia: 0.25,
-			saturate: 0.25,
-			fog: 0.1,
-		},
 		matcha: {
-			exposure: 0.1,
+			light: 0.1,
 			tint: -0.75,
 			sepia: 1,
 			hue: 0.2,
@@ -374,7 +367,7 @@ input#letterbox {
 		},
 		deepfry: {
 			contrast: 1,
-			saturate: 0.5,
+			color: 0.5,
 		}
 	}
 
@@ -491,7 +484,7 @@ input#letterbox {
 			input.classList.add('input')
 			input.value = value
 
-			if (!( isFirefox && ['temperature','tint'].includes(key) )) {
+			if (!( isFirefox && ['warmth','tint'].includes(key) )) {
 				// Disable the SVG filters for Firefox
 				let label = document.createElement('label')
 				label.textContent = input.id = key
@@ -505,7 +498,7 @@ input#letterbox {
 
 	function update_values (input,value) {
 		values[input.id] = input.value = value
-		window.localStorage.setItem('mercator-studio-values',JSON.stringify(values))
+		window.localStorage.setItem('mercator-studio-values-20',JSON.stringify(values))
 	}
 
 	// Create color balance matrix
@@ -528,6 +521,9 @@ input#letterbox {
 	// Create previews
 	const previews = document.createElement('div')
 	previews.id = 'previews'
+  previews.addEventListener('click',()=>
+			main.classList.toggle('focus')
+	)
 
 	// Create preview video
 	const video = document.createElement('video')
@@ -544,12 +540,12 @@ input#letterbox {
 
 	// Create title
 	const h1 = document.createElement('h1')
-	h1.textContent = '↓ Mercator Studio ↓'
+	h1.textContent = 'Mercator Studio'
 
-	previews.append(minimize,video,canvases.buffer.element,h1)
+	previews.append(minimize,video,h1,canvases.buffer.element,donate)
 
 	// Add UI to page
-	main.append(collapse,form,previews)
+	main.append(style,form,previews)
 	shadow.append(main,svg)
 	document.body.append(host)
 
@@ -612,40 +608,40 @@ input#letterbox {
 
 				let v = values
 
-				let exposure	= percentage(polynomial_map(v.exposure,2))
+				let light	= percentage(polynomial_map(v.light,2))
 				let contrast	= percentage(polynomial_map(v.contrast,3))
-				let temperature = isFirefox ? 0 : v.temperature
+				let warmth = isFirefox ? 0 : v.warmth
 				let tint	= isFirefox ? 0 : v.tint
 				let sepia	= percentage(v.sepia)
 				let hue	= 360*v.hue+ 'deg'
-				let saturate	= percentage(amp**v.saturate)
+				let color	= percentage(amp**v.color)
 				let blur	= v.blur*w/16 + 'px'
 				let fog	= v.fog
 				let vignette	= v.vignette
 				let rotate	= v.rotate*2*Math.PI
 				let scale	= polynomial_map(v.scale,2)
 				let mirror	= v.mirror
-				let move_x	= v.x*w
-				let move_y	= v.y*h
+				let move_x	= v.pan*w
+				let move_y	= v.tilt*h
 				let pillarbox	= v.pillarbox*w/2
 				let letterbox	= v.letterbox*h/2
 				let text	= v.text.split('\n')
 
 				// Color balance
 
-				components.R.setAttribute('tableValues',polynomial_table(-temperature+tint/2))
+				components.R.setAttribute('tableValues',polynomial_table(-warmth+tint/2))
 				components.G.setAttribute('tableValues',polynomial_table(-tint))
-				components.B.setAttribute('tableValues',polynomial_table( temperature+tint/2))
+				components.B.setAttribute('tableValues',polynomial_table( warmth+tint/2))
 
 				// CSS filters
 
 				context.filter = (`
-					brightness(${exposure})
+					brightness(${light})
 					contrast(${contrast})
-					${'url(#filter)'.repeat(Boolean(temperature||tint))}
+					${'url(#filter)'.repeat(Boolean(warmth||tint))}
 					sepia(${sepia})
 					hue-rotate(${hue})
-					saturate(${saturate})
+					saturate(${color})
 					blur(${blur})
 				`)
 
