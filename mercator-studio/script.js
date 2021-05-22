@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.18.0
+// @version	1.18.1
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2021, Xing (https://x-ing.space)
@@ -24,27 +24,23 @@
 	// Create form
 
 	const main = document.createElement('main')
-	main.addEventListener('click',event=>{
-		if (
-			!main.classList.contains('focus')
-			&& event.target !== collapse
-		) {
+	main.addEventListener('click',()=>
 			main.classList.add('focus')
-		}
-	})
+	)
 
 	const collapse = document.createElement('button')
 	collapse.textContent = '↑ collapse ↑'
 	collapse.id = 'collapse'
-	collapse.addEventListener('click',()=>{
+	collapse.addEventListener('click',event=>{
+		event.stopPropagation()
 		main.classList.remove('focus')
 	})
 
 	const minimize = document.createElement('button')
 	minimize.id = 'minimize'
 	minimize.title = 'toggle super tiny mode'
-	minimize.addEventListener('click',e=>{
-		e.stopPropagation()
+	minimize.addEventListener('click',event=>{
+		event.stopPropagation()
 		main.classList.toggle('minimize')
 	})
 
@@ -188,6 +184,7 @@ label {
 }
 #presets>* {
 	border: 0;
+	border-radius: 0;
 	background: transparent;
 	flex-grow: 1;
 }
@@ -231,6 +228,7 @@ textarea {
 	font-weight: bold;
 	resize: none;
 	line-height: 1;
+	overflow: hidden;
 }
 input[type=range] {
 	-webkit-appearance: none;
@@ -290,31 +288,126 @@ input#letterbox {
 	// Create inputs
 
 	const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values'))
+	
+	const default_values = {
+		exposure: 0,
+		contrast: 0,
+		temperature: 0,
+		tint: 0,
+		sepia: 0,
+		hue: 0,
+		saturate: 0,
+		blur: 0,
+		fog: 0,
+		vignette: 0,
+		rotate: 0,
+		scale: 0,
+		x: 0,
+		y: 0,
+		pillarbox: 0,
+		letterbox: 0,
+		freeze: false,
+		text: '',
+		presets: 'reset',
+	}
+
+	const preset_values = {
+		reset: default_values,
+		concorde: {
+			contrast: 0.1,
+			temperature: -0.25,
+			tint: -0.05,
+			saturate: 0.2,
+		},
+		mono: {
+			exposure: 0.1,
+			contrast: -0.1,
+			sepia: 0.8,
+			saturate: -1,
+			vignette: -0.5,
+		},
+		stucco: {
+			contrast: -0.1,
+			tint: 0.1,
+			sepia: 0.25,
+			saturate: 0.25,
+			fog: 0.1,
+		},
+		matcha: {
+			exposure: 0.1,
+			tint: -0.75,
+			sepia: 1,
+			hue: 0.2,
+			vignette: 0.3,
+			fog: 0.3,
+		},
+		deepfry: {
+			contrast: 1,
+			saturate: 0.5,
+		}
+	}
 
 	const inputs = Object.fromEntries(
-		'exposure,contrast,temperature,tint,sepia,hue,saturate,blur,fog,vignette,rotate,scale,x,y,pillarbox,letterbox,freeze,text'
-		.split(',')
-		.map( key => {
-
+		Object.entries(default_values)
+		.map( ([key,value]) => {
 			let input
-			switch (key){
+			switch (key) {
 				case 'text':
 					input = document.createElement('textarea')
 					input.placeholder = '🌈 Write text here 🌦️'
-					// Auto-resizing textarea
 					input.addEventListener('input',()=>{
+						// Auto-resizing textarea
 						input.style.height = 'auto'
 						input.style.height = input.scrollHeight+'px'
+
+						// String substitution
+						update_values( input, input.value + ''
+							.replace(/--/g,'―')
+							.replace(/\\sqrt/g,'√')
+							.replace(/\\pm/g,'±')
+							.replace(/\\times/g,'×')
+							.replace(/\\cdot/g,'·')
+							.replace(/\\over/g,'∕')
+							// Numbers starting with ^ (superscript) or _ (subscript)
+							.replace( /(\^|\_)(\d+)/g, (_,sign,number) =>
+								number.split('').map( digit =>
+									String.fromCharCode( digit.charCodeAt(0) + (
+										// Difference in character codes between subscript numbers and their regular equivalents.
+										sign === '_' ? 8272 :
+										// Superscript 1, 2 & 3 are in separate ranges.
+										digit === '1' ? 136 :
+										'23'.includes(digit) ? 128 : 8256
+									))
+								).join('')
+							)
+						)
 					})
 				break
 				case 'freeze':
-				case 'flip':
 					input = document.createElement('input')
 					input.type = 'checkbox'
+					input.addEventListener('change',()=> 
+						update_values(input,input.value)
+					)
+				break
+				case 'presets':
+					input = document.createElement('label')
+					input.append(...Object.keys(preset_values).map( key => {
+						const button = document.createElement('button')
+						button.textContent = key
+						button.addEventListener('click', event=>{
+							event.preventDefault()
+							Object.entries(preset_values[key])
+							.forEach( ([key,value]) => update_values(inputs[key],value) )
+						})
+						return button
+					}))
 				break
 				default:
 					input = document.createElement('input')
 					input.type = 'range'
+
+					// These inputs go from 0 to 1, the rest -1 to 1
 					input.min = [
 						'blur',
 						'sepia',
@@ -323,26 +416,44 @@ input#letterbox {
 						'letterbox'
 					].includes(key) ? 0 : -1
 					input.max = 1
-					const range = input.max - input.min
 
 					// Use 32 steps normally, and 128 if CTRL is held down
+					const range = input.max - input.min
 					input.step = range / 32
 					input.addEventListener('keydown',({ctrlKey})=>{
 						if(ctrlKey) input.step = range / 128
 					})
-					input.addEventListener('keyup',()=>{
+					input.addEventListener('keyup',()=>
 						input.step = range / 32
-					})
+					)
 
-					input.value = 0
+					input.addEventListener('input',()=>
+						update_values( input, input.valueAsNumber )
+					)
+
+					// Scroll to change values
+					input.addEventListener('wheel',event=>{
+						event.preventDefault()
+						const width = input.getBoundingClientRect().width
+						const dx = -event.deltaX
+						const dy = event.deltaY
+						const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
+						const range = input.max - input.min
+						const value = input.valueAsNumber + ratio*range
+						update_values( input, Math.round(value/input.step)*input.step )
+					})
+					
+					// Right click to individually reset
+					input.addEventListener('contextmenu',event=>{
+						event.preventDefault()
+						update_values( input, value )
+					})
 			}
 			input.classList.add('input')
-			if ( saved_values ) input.value = saved_values[key]
 
-			if (
-				!['temperature','tint'].includes(key)
-				|| !isFirefox
-			) {
+			input.value = saved_values ? saved_values[key] : value
+
+			if (!( isFirefox && ['temperature','tint'].includes(key) )) {
 				// Disable the SVG filters for Firefox
 				let label = document.createElement('label')
 				label.textContent = input.id = key
@@ -354,141 +465,15 @@ input#letterbox {
 		})
 	)
 
-
-	const values = Object.fromEntries(
-		Object.entries(inputs)
-		.map(entry=>[
-			entry[0],
-			entry[1].valueAsNumber || entry[1].value
-		])
-	)
+	// Clone default values into updating object
+	const values = {...default_values}
 
 	function update_values (input,value) {
 		values[input.id] = input.value = value
 		window.localStorage.setItem('mercator-studio-values',JSON.stringify(values))
 	}
 
-	// Scroll to change values
-	form.addEventListener('wheel',event=>{
-		if ( event.target.type !== 'range' ) return
-		event.preventDefault()
-		const slider = event.target
-		const width = slider.getBoundingClientRect().width
-		const dx = -event.deltaX
-		const dy = event.deltaY
-		const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
-		const range = slider.max - slider.min
-		update_values( slider, slider.valueAsNumber + ratio*range )
-	})
-
-	// Right click to individually reset
-	form.addEventListener('contextmenu',event=>{
-		if ( event.target.type !== 'range' ) return
-		event.preventDefault()
-		update_values( event.target, 0 )
-	})
-
-	form.addEventListener('input',event=>{
-		const input = event.target
-		update_values(
-			input,
-			input.id === 'text' ?
-				( input.value + '' )
-				.replace(/\\sqrt/g,'√')
-				.replace(/\\pm/g,'±')
-				.replace(/\\times/g,'×')
-				.replace(/\\cdot/g,'·')
-				.replace(/\\over/g,'∕')
-				.replace(
-					/(\^|\_)(\d+)/g, // Numbers starting with ^ (superscript) or _ (subscript)
-					(_,sign,number) =>
-					number.split('').map(
-						digit =>
-						String.fromCharCode(
-							digit.charCodeAt(0)
-							+ (
-								sign === '_' ? 8272 :	/* Difference in character codes
-											 * between subscript numbers and
-											 * their regular equivalents.
-											 */
-								digit === '1' ? 136 :	/* Superscript 1, 2 & 3 are in
-											 * separate ranges.
-											 */
-								'23'.includes(digit) ? 128 : 8256
-							)
-						)
-					).join('')
-				)
-			: input.valueAsNumber
-		)
-	})
-
-	const presets_label = document.createElement('label')
-	const presets_collection = document.createElement('div')
-	presets_collection.id = 'presets'
-	const presets = 'reset,concorde,mono,stucco,matcha,deepfry'
-		.split(',')
-		.map(key=>{
-			let preset = document.createElement('button')
-			preset.textContent = preset.id = key
-			return preset
-		})
-	presets_label.textContent = 'presets'
-
-	presets_collection.append(...presets)
-	presets_label.append(presets_collection)
-
-	function get_preset_values ( preset_name ) {
-		switch(preset_name){
-			case 'concorde': return {
-				contrast: 0.1,
-				temperature: -0.25,
-				tint: -0.05,
-				saturate: 0.2,
-			}
-			case 'mono': return {
-				exposure: 0.1,
-				contrast: -0.1,
-				sepia: 0.8,
-				saturate: -1,
-				vignette: -0.5,
-			}
-			case 'stucco': return {
-				contrast: -0.1,
-				tint: 0.1,
-				sepia: 0.25,
-				saturate: 0.25,
-				fog: 0.1,
-			}
-			case 'matcha': return {
-				exposure: 0.1,
-				tint: -0.75,
-				sepia: 1,
-				hue: 0.2,
-				vignette: 0.3,
-				fog: 0.3,
-			}
-			case 'deepfry': return {
-				contrast: 1,
-				saturate: 0.5,
-			}
-		}
-	}
-
-	presets_label.addEventListener('click',event=>{
-		// Cancel refresh
-		event.preventDefault()
-
-		const preset_values = get_preset_values(event.target.id)
-		// Reset all
-		Object.values(inputs).forEach(input=>{
-			update_values(input, input.id === 'text' ? '' : preset_values ? preset_values[input.id] || 0 : 0)
-		})
-
-	})
-
 	// Create color balance matrix
-
 	const svgNS = 'http://www.w3.org/2000/svg'
 	const svg = document.createElementNS(svgNS,'svg')
 	const filter = document.createElementNS(svgNS,'filter')
@@ -499,25 +484,23 @@ input#letterbox {
 			const func = document.createElementNS(svgNS,'feFunc'+hue.toUpperCase())
 			func.setAttribute('type','table')
 			func.setAttribute('tableValues','0 1')
-			return [hue,func]
-		})
-	)
+		return [hue,func]
+	}))
 	component_transfer.append(...Object.values(components))
 	filter.append(component_transfer)
 	svg.append(filter)
 
+	// Create previews
 	const previews = document.createElement('div')
 	previews.id = 'previews'
 
 	// Create preview video
-
 	const video = document.createElement('video')
 	video.setAttribute('playsinline','')
 	video.setAttribute('autoplay','')
 	video.setAttribute('muted','')
 
 	// Create canvases
-
 	const canvases = Object.fromEntries(['buffer','freeze','display'].map(name=>{
 		const element = document.createElement('canvas')
 		const context = element.getContext('2d')
@@ -525,39 +508,22 @@ input#letterbox {
 	}))
 
 	// Create title
-
 	const h1 = document.createElement('h1')
-
 	h1.textContent = '↓ Mercator Studio ↓'
 
 	previews.append(minimize,video,canvases.buffer.element,h1)
 
 	// Add UI to page
-	form.append(presets_label)
-
 	main.append(collapse,form,previews)
-
 	shadow.append(main,svg)
 	document.body.append(host)
 
-	function polynomial_map(value,degree) {
-		return (value+1)**degree
-	}
-
-	function polynomial_table(factor){
-		return Array(32).fill(0).map(
-			(value,index)=>
-			Math.pow(index/31,2**factor)
-		).join(' ')
-	}
-
-	function percentage(value) {
-		return value*100+'%'
-	}
-
-	function signed_pow(value,power){
-		return Math.sign(value)*Math.abs(value)**power
-	}
+	// Define mappings of linear values
+	const polynomial_map = (value,degree) => (value+1)**degree
+	const polynomial_table = (factor,steps=32) => Array(steps).fill(0)
+	.map((_,index)=>Math.pow(index/(steps-1),2**factor)).join(' ')
+	const percentage = (value) => value*100+'%'
+	const signed_pow = (value,power) => Math.sign(value)*Math.abs(value)**power
 
 	const amp = 8
 
@@ -628,10 +594,7 @@ input#letterbox {
 				let move_y	= v.y*h
 				let pillarbox	= v.pillarbox*w/2
 				let letterbox	= v.letterbox*h/2
-				let text	= (
-					v.text
-					.split('\n')
-				)
+				let text	= v.text.split('\n')
 
 				// Color balance
 
@@ -650,20 +613,15 @@ input#letterbox {
 					saturate(${saturate})
 					blur(${blur})
 				`)
+
 				// Linear transformations: rotation, scaling, translation
-
 				context.translate(...center)
-
 				if ( rotate ) context.rotate(rotate)
-
 				if ( scale-1 ) context.scale(scale,scale)
-
 				if ( move_x || move_y ) context.translate(move_x,move_y)
-
 				context.translate(-w/2,-h/2)
 
 				// Apply CSS filters & linear transformations
-
 				if ( freeze.init ) {
 					freeze.canvas.context.drawImage(video,0,0,w,h)
 					let data = freeze.canvas.element.toDataURL('image/png')
@@ -685,14 +643,11 @@ input#letterbox {
 					})
 				}
 
-
 				// Clear transforms & filters
-
 				context.setTransform(1,0,0,1,0,0)
 				context.filter = 'brightness(1)'
 
 				// Fog: cover the entire image with a single color
-
 				if ( fog ) {
 					let fog_lum = Math.sign(fog)*100
 					let fog_alpha = Math.abs(fog)
@@ -702,7 +657,6 @@ input#letterbox {
 				}
 
 				// Vignette: cover the edges of the image with a single color
-
 				if ( vignette ) {
 					let vignette_lum = Math.sign(vignette)*100
 					let vignette_alpha = Math.abs(vignette)
@@ -720,21 +674,18 @@ input#letterbox {
 				}
 
 				// Pillarbox: crop width
-
 				if ( pillarbox ) {
 					context.clearRect(0,0,pillarbox,h)
 					context.clearRect(w,0,-pillarbox,h)
 				}
 
 				// Letterbox: crop height
-
 				if ( letterbox ) {
 					context.clearRect(0,0,w,letterbox)
 					context.clearRect(0,h,w,-letterbox)
 				}
 
 				// Text:
-
 				if ( text ) {
 
 					// Find out the font size that just fits
@@ -745,7 +696,6 @@ input#letterbox {
 					context.font = `bold ${vw}px ${font_family}`
 
 					let char_metrics = context.measureText('0')
-					let char_width = char_metrics.width
 					let line_height = char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent
 					let text_width = text.reduce(
 						(max_width,current_line)=>Math.max(
@@ -792,15 +742,9 @@ input#letterbox {
 		}
 	}
 
-	async function mercator_studio_getUserMedia ( constraints ) {
-		if (constraints && constraints.video && !constraints.audio ) {
-			return new mercator_studio_MediaStream(await navigator.mediaDevices.old_getUserMedia(constraints))
-		} else {
-			return navigator.mediaDevices.old_getUserMedia(constraints)
-		}
-	}
-
 	MediaDevices.prototype.old_getUserMedia = MediaDevices.prototype.getUserMedia
-	MediaDevices.prototype.getUserMedia = mercator_studio_getUserMedia
-
+	MediaDevices.prototype.getUserMedia = async constraints =>
+		(constraints && constraints.video && !constraints.audio )
+		? new mercator_studio_MediaStream(await navigator.mediaDevices.old_getUserMedia(constraints))
+		: navigator.mediaDevices.old_getUserMedia(constraints)
 } ) ()
