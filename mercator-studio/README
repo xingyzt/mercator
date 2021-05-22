@@ -19,34 +19,33 @@ Move the focus to where you want it:
 Somewhat nice presets:
 · Concorde
 · Mono
-· Stucco
 · Matcha
 · Deepfry
 
 Scroll or drag the sliders to adjust, right click on them to reset, and hold down <ctrl> or <shift> for finer steps.
 
 Changelog:
-· 2.0.0 Redesigned for Google Meet’s new look.
-· 1.19.1 Added mirroring; Dark mode support.
-· 1.18.1 Make textbox auto resize; Ctrl or Shift for finer steps.
+· 2.0.0 Redesign for Google Meet’s new look.
+· 1.19.1 Add mirroring; Dark mode support.
+· 1.18.1 Make textbox auto-resize; Ctrl or Shift for finer steps.
 · 1.17.4 Fix flickering and window-focus issues.
-· 1.16.2 Added freeze feature. (thanks @napsav)
-· 1.15.0 Added toggle to super tiny mode.
-· 1.14.1 Added math auto-convert.
+· 1.16.2 Add freeze feature. (thanks @napsav)
+· 1.15.0 Add toggle to super tiny mode.
+· 1.14.1 Add math auto-convert.
 · 1.13.3 Preserve values across sessions.
 · 1.12.0 Luminance-preserving temperature & tint.
 · 1.11.0 Multiline text input. Rebranded as Mercator Studio for Google Meet.
 · 1.10.8 Right click to individually reset; Text scales correctly.
 · 1.10.7 Turns off camera in sync; Partial Firefox support.
-· 1.10.5 Added scroll input for the range sliders; Increased max blur.
+· 1.10.5 Add scroll input for the range sliders; Increased max blur.
 · 1.10.4 UI color & accessibility tweaks.
 · 1.10.0 Changed to click to open panel; Added support for Firefox.
-· 1.9.0 Added text & emoji input.
-· 1.8.0 Added presets; Matched UI with material design.
-· 1.7.1 Fixed problem with collapsible UI.
-· 1.7.0 Added color balance tools and refined UI.
-· 1.6.0 Added fog.
-· 1.5.0 Added vignettes.
+· 1.9.0 Add text & emoji input.
+· 1.8.0 Add presets; Matched UI with material design.
+· 1.7.1 Fix problem with collapsible UI.
+· 1.7.0 Add color balance tools and refined UI.
+· 1.6.0 Add fog.
+· 1.5.0 Add vignettes.
 · 1.4.0 Converted to Chrome extension.
 
 Source code: https://github.com/FlyOrBoom/mercator
