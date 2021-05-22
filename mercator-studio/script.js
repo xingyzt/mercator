@@ -59,9 +59,9 @@ main{
 	font-family: ${font_family};
 	font-size: 1rem;
 	width: 25rem;
-	height: 100vh;
+	max-height: 100vh;
 	position: fixed;
-	top: 0;
+	bottom: 0;
 	left: 0;
 	padding: 1rem;
 	display: flex;
@@ -82,7 +82,6 @@ main>#previews{
 	height: auto;
 }
 main>form{
-	flex-grow: 1;
 	display: flex;
 	flex-direction: column;
 	overflow: hidden scroll;
@@ -170,7 +169,6 @@ content: "🤍";
 	font-weight: normal;
 	text-align: center;
 	color: inherit;
-	line-height: 1.5rem;
 }
 #previews:hover>h1 {
 	transform: translateY(.1rem); /* Tiny nudge downwards */
@@ -550,7 +548,7 @@ input#letterbox {
 
 	// Create title
 	const h1 = document.createElement('h1')
-	h1.textContent = 'Mercator Studio'
+	h1.innerText = 'Mercator\nStudio'
 
 	previews.append(minimize, video, h1, canvases.buffer.element, donate)
 
