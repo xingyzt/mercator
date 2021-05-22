@@ -287,7 +287,7 @@ input#letterbox {
 
 	// Create inputs
 
-	const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values'))
+	const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values')) || {}
 	
 	const default_values = {
 		exposure: 0,
@@ -347,8 +347,11 @@ input#letterbox {
 		}
 	}
 
+	// Clone default values into updating object
+	const values = {...default_values,...saved_values}
+
 	const inputs = Object.fromEntries(
-		Object.entries(default_values)
+		Object.entries(values)
 		.map( ([key,value]) => {
 			let input
 			switch (key) {
@@ -430,7 +433,6 @@ input#letterbox {
 					input.addEventListener('input',()=>
 						update_values( input, input.valueAsNumber )
 					)
-
 					// Scroll to change values
 					input.addEventListener('wheel',event=>{
 						event.preventDefault()
@@ -441,9 +443,9 @@ input#letterbox {
 						const ratio = ( Math.abs(dx) > Math.abs(dy) ? dx : dy ) / width
 						const range = input.max - input.min
 						const raw_value = input.valueAsNumber + ratio*range
-						const stepped_value = Math.round(raw_value/input.step)*input.step
-						const clamped_value = Math.min(Math.max(stepped_value, input.min),input.max)
-						const value = clamped_value
+						const clamped_value = Math.min(Math.max(raw_value, input.min),input.max)
+						const stepped_value = Math.round(clamped_value/input.step)*input.step
+						const value = stepped_value
 						update_values( input, value )
 					})
 					
@@ -453,9 +455,9 @@ input#letterbox {
 						update_values( input, value )
 					})
 			}
+			
 			input.classList.add('input')
-
-			input.value = saved_values ? saved_values[key] : value
+			input.value = value
 
 			if (!( isFirefox && ['temperature','tint'].includes(key) )) {
 				// Disable the SVG filters for Firefox
@@ -468,9 +470,6 @@ input#letterbox {
 			return [key,input]
 		})
 	)
-
-	// Clone default values into updating object
-	const values = {...default_values}
 
 	function update_values (input,value) {
 		values[input.id] = input.value = value
