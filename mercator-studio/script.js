@@ -417,11 +417,11 @@ input#letterbox {
 					].includes(key) ? 0 : -1
 					input.max = 1
 
-					// Use 32 steps normally, and 128 if CTRL is held down
+					// Use 32 steps normally, 128 if CTRL, 512 if SHIFT
 					const range = input.max - input.min
 					input.step = range / 32
-					input.addEventListener('keydown',({ctrlKey})=>{
-						if(ctrlKey) input.step = range / 128
+					input.addEventListener('keydown',({ctrlKey,shiftKey})=>{
+						input.step = range / ( shiftKey ? 512 : ctrlKey ? 128 : 32 )
 					})
 					input.addEventListener('keyup',()=>
 						input.step = range / 32

@@ -6,5 +6,6 @@ sed -i 's/!/(/' script.min.js
 sed -i 's/();$/)()/' script.min.js
 export BOOKMARKLET="$(cat script.min.js)"
 export README="$(cat README)"
+rm script.min.js
 cd ..
 envsubst < index.template.html > index.html
