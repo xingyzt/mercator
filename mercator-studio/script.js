@@ -332,6 +332,7 @@ input#letterbox {
 		vignette: 0,
 		rotate: 0,
 		scale: 0,
+		mirror: false,
 		x: 0,
 		y: 0,
 		pillarbox: 0,
@@ -416,11 +417,12 @@ input#letterbox {
 						)
 					})
 				break
+				case 'mirror':
 				case 'freeze':
 					input = document.createElement('input')
 					input.type = 'checkbox'
 					input.addEventListener('change',()=> 
-						update_values(input,input.value)
+						update_values(input,input.checked)
 					)
 				break
 				case 'presets':
@@ -622,6 +624,7 @@ input#letterbox {
 				let vignette	= v.vignette
 				let rotate	= v.rotate*2*Math.PI
 				let scale	= polynomial_map(v.scale,2)
+				let mirror	= v.mirror
 				let move_x	= v.x*w
 				let move_y	= v.y*h
 				let pillarbox	= v.pillarbox*w/2
@@ -649,7 +652,8 @@ input#letterbox {
 				// Linear transformations: rotation, scaling, translation
 				context.translate(...center)
 				if ( rotate ) context.rotate(rotate)
-				if ( scale-1 ) context.scale(scale,scale)
+				if ( scale-1 ) context.scale( scale, scale )
+				if ( mirror ) context.scale( -1, 1 )
 				if ( move_x || move_y ) context.translate(move_x,move_y)
 				context.translate(-w/2,-h/2)
 
