@@ -19,9 +19,7 @@
 
 	const host = document.createElement('aside')
 	host.style = 'position: fixed;'
-	const shadow = host.attachShadow({
-		mode: 'open'
-	})
+	const shadow = host.attachShadow({ mode: 'open' })
 
 	const isFirefox = navigator.userAgent.includes('Firefox')
 
@@ -167,9 +165,10 @@ content: "🤍";
 	flex-grow: 1;
 	font-size: .9rem;
 	font-weight: normal;
-	text-align: center;
 	color: inherit;
-	word-spacing: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 #previews:hover>h1 {
 	transform: translateY(.1rem); /* Tiny nudge downwards */
