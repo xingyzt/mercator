@@ -301,6 +301,12 @@ input#letterbox {
 				case 'text':
 					input = document.createElement('textarea')
 					input.placeholder = '🌈 Write text here 🌦️'
+					
+					// Auto-resizing textarea
+					input.addEventListener('input',()=>{
+						input.style.height = 'auto'
+						input.style.height = input.scrollHeight+'px'
+					})
 				break
 				case 'freeze':
 					input = document.createElement('input')
