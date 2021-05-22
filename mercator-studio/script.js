@@ -169,6 +169,7 @@ content: "🤍";
 	font-weight: normal;
 	text-align: center;
 	color: inherit;
+	word-spacing: 100vw;
 }
 #previews:hover>h1 {
 	transform: translateY(.1rem); /* Tiny nudge downwards */
@@ -548,7 +549,7 @@ input#letterbox {
 
 	// Create title
 	const h1 = document.createElement('h1')
-	h1.innerText = 'Mercator\nStudio'
+	h1.innerHTML = 'Mercator Studio'
 
 	previews.append(minimize, video, h1, canvases.buffer.element, donate)
 
