@@ -333,7 +333,7 @@ input#letterbox {
 					input.addEventListener('keyup',()=>{
 						input.step = range / 32
 					})
-					
+
 					input.value = 0
 			}
 			input.classList.add('input')
