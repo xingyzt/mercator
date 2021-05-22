@@ -331,20 +331,20 @@ input#letterbox {
 		vignette: 0,
 		rotate: 0,
 		scale: 0,
-		mirror: false,
 		pan: 0,
 		tilt: 0,
 		pillarbox: 0,
 		letterbox: 0,
-		freeze: false,
 		text: '',
+		mirror: false,
+		freeze: false,
 		presets: 'reset',
 	}
 
 	const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values-20')) || {}
 
 	const preset_values = {
-		reset: default_values,
+		reset: {},
 		concorde: {
 			contrast: 0.1,
 			warmth: -0.25,
@@ -429,7 +429,7 @@ input#letterbox {
 						button.textContent = key
 						button.addEventListener('click', event => {
 							event.preventDefault()
-							Object.entries(preset_values[key])
+							Object.entries({...default_values,...preset_values[key]})
 								.forEach(([key, value]) => update_values(inputs[key], value))
 						})
 						return button
