@@ -23,10 +23,10 @@ Somewhat nice presets:
 · Matcha
 · Deepfry
 
-Scroll or drag the sliders to adjust, and right click on them to reset.
+Scroll or drag the sliders to adjust, right click on them to reset, and hold down <ctrl> while scrolling/dragging for finer steps.
 
 Changelog:
-· 1.18.0 Make textbox auto resize.
+· 1.18.0 Make textbox auto resize; Hold ctrl for finer steps.
 · 1.17.4 Fix flickering and window-focus issues.
 · 1.16.2 Added freeze feature. (thanks @napsav)
 · 1.15.0 Added toggle to super tiny mode.
