@@ -26,8 +26,9 @@ Somewhat nice presets:
 Scroll or drag the sliders to adjust, and right click on them to reset.
 
 Changelog:
-· 1.17.4 Fix flickering and window-focus issues
-· 1.16.2 Added freeze feature (thanks @napsav)
+· 1.18.0 Make textbox auto resize.
+· 1.17.4 Fix flickering and window-focus issues.
+· 1.16.2 Added freeze feature. (thanks @napsav)
 · 1.15.0 Added toggle to super tiny mode.
 · 1.14.1 Added math auto-convert.
 · 1.13.3 Preserve values across sessions.

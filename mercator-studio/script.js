@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	1.17.4
+// @version	1.18.0
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2021, Xing (https://x-ing.space)
