@@ -90,8 +90,8 @@ main>form{
 	pointer-events: none;
 }
 :not(.focus)>#previews{
-	border-radius: 1.75rem;
-	flex-basis: 3.5rem;
+	border-radius: 2rem;
+	flex-basis: 4rem;
 }
 button{
 	font-family: inherit;
