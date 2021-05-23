@@ -19,6 +19,7 @@
 
 	const host = document.createElement('aside')
 	host.style.position = 'absolute'
+	host.style.zIndex = 10
 	const shadow = host.attachShadow({ mode: 'open' })
 
 	const isFirefox = navigator.userAgent.includes('Firefox')
@@ -45,22 +46,21 @@
 :focus {
 	outline: 0;
 }
-main{
+main {
 	--bg: #3C4042;
 	--dark: black;
 	--txt: white;	
-	--height-collapsed: 3.5rem;
 
 	font-family: ${font_family};
 	font-size: 1rem;
 	width: 25rem;
-	max-height: 100vh;
+	height: 100vh;
 	position: fixed;
 	bottom: 0;
 	left: 0;
 	padding: 1rem;
 	display: flex;
-	flex-direction: column;
+	flex-direction: column-reverse;
 	overflow: hidden;
 	pointer-events: none;
 }
@@ -76,21 +76,22 @@ main>#previews{
 	margin-top: .5rem;
 	overflow: hidden;
 	display: flex;
-	height: auto;
+	flex: 0 0 auto;
 }
 main>form{
 	display: flex;
 	flex-direction: column;
 	overflow: hidden scroll;
 	padding: 1rem;
+	flex: 0 1 auto;
 }
 :not(.focus)>form{
 	opacity: 0;
 	pointer-events: none;
 }
 :not(.focus)>#previews{
-	border-radius: calc(var(--height-collapsed)/2);
-	height: var(--height-collapsed);
+	border-radius: 1.75rem;
+	flex-basis: 3.5rem;
 }
 button{
 	font-family: inherit;
@@ -177,7 +178,7 @@ content: "🤍";
 .focus>#previews>video,
 .focus>#previews>canvas {
 	height: auto;
-	max-width: calc(50% - .5rem);
+	max-width: 50%;
 	object-fit: contain;
 }
 #presets,
@@ -551,7 +552,7 @@ input#letterbox {
 	previews.append(minimize, video, h1, canvases.buffer.element, donate)
 
 	// Add UI to page
-	main.append(style, form, previews)
+	main.append(style, previews, form)
 	shadow.append(main, svg)
 	document.body.append(host)
 
