@@ -25,7 +25,7 @@ Somewhat nice presets:
 Scroll or drag the sliders to adjust, right click on them to reset, and hold down <ctrl> or <shift> for finer steps.
 
 Changelog:
-· 2.0.0 Redesign for Google Meet’s new look.
+· 2.0.1 Redesign for Google Meet’s new look.
 · 1.19.1 Add mirroring; Dark mode support.
 · 1.18.1 Make textbox auto-resize; Ctrl or Shift for finer steps.
 · 1.17.4 Fix flickering and window-focus issues.
