@@ -203,8 +203,8 @@ label {
 #presets>:last-child {
 	border-radius: 0 100px 100px 0;
 }
-label {
-	margin-bottom: 0.25rem;
+label+label {
+	margin-top: 0.25rem;
 	color: inherit;
 }
 label>*{
