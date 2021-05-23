@@ -165,6 +165,7 @@ content: "🤍";
 	flex-basis: 1rem;
 	flex-grow: 1;
 	font-size: .9rem;
+	line-height: 1.4;
 	font-weight: normal;
 	color: inherit;
 	display: flex;
@@ -558,7 +559,7 @@ input#letterbox {
 
 	// Create title
 	const h1 = document.createElement('h1')
-	h1.innerHTML = 'Mercator\nStudio'
+	h1.innerText = 'Mercator\nStudio'
 
 	previews.append(minimize, video, h1, canvases.buffer.element, donate)
 
