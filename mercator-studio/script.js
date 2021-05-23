@@ -18,7 +18,7 @@
 	// Create shadow root
 
 	const host = document.createElement('aside')
-	host.style.position = 'fixed'
+	host.style.position = 'absolute'
 	const shadow = host.attachShadow({ mode: 'open' })
 
 	const isFirefox = navigator.userAgent.includes('Firefox')
