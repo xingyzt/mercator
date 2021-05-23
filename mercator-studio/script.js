@@ -304,10 +304,12 @@ input#vignette {
 input#contrast {
 	--gradient: gray, #8880
 }
-input#warmth {
+input#warmth,
+input#tilt {
 	--gradient: #88f, #8880, #ff8
 }
-input#tint {
+input#tint,
+input#pan {
 	--gradient: #f8f, #8880, #8f8
 }
 input#sepia {
@@ -324,8 +326,6 @@ input#blur {
 	--gradient: #8880, gray
 }
 input#scale,
-input#x,
-input#y,
 input#pillarbox,
 input#letterbox {
 	--gradient: black, white
