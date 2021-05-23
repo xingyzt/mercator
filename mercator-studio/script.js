@@ -391,7 +391,7 @@ input#letterbox {
 				case 'text':
 					input = document.createElement('textarea')
 					input.rows = 3
-					input.placeholder = '\n'+'🌈 Write text here 🌦️'
+					input.placeholder = '\n🌈 Write text here 🌦️'
 					input.addEventListener('input', () => {
 						// String substitution
 						update_values(input, (input.value + '')
