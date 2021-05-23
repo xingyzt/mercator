@@ -333,7 +333,7 @@ input#letterbox {
 		tint: 0,
 		sepia: 0,
 		hue: 0,
-		color: 0,
+		saturate: 0,
 		blur: 0,
 		fade: 0,
 		vignette: 0,
@@ -629,7 +629,7 @@ input#letterbox {
 				let tint = isFirefox ? 0 : v.tint
 				let sepia = percentage(v.sepia)
 				let hue = 360 * v.hue + 'deg'
-				let color = percentage(amp ** v.color)
+				let saturate = percentage(amp ** v.saturate)
 				let blur = v.blur * w / 16 + 'px'
 				let fade = v.fade
 				let vignette = v.vignette
@@ -656,7 +656,7 @@ input#letterbox {
 					${'url(#filter)'.repeat(Boolean(warmth||tint))}
 					sepia(${sepia})
 					hue-rotate(${hue})
-					saturate(${color})
+					saturate(${saturate})
 					blur(${blur})
 				`)
 
