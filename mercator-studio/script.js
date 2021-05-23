@@ -156,15 +156,14 @@ content: "🤍";
 		hsl( 36, 100%, 70%) 83.3%,	hsl( 20,90%, 70%) 83.3%
 	);
 }
-.focus>#previews>video{
-	margin-right: 1rem;
-}
 #previews>h1 {
+	flex-basis: 1rem;
 	flex-grow: 1;
 	font-size: .9rem;
 	font-weight: normal;
 	color: inherit;
 	display: flex;
+	text-align: center;
 	align-items: center;
 	justify-content: center;
 }
@@ -172,12 +171,12 @@ content: "🤍";
 	transform: translateY(.1rem); /* Tiny nudge downwards */
 }
 .focus>#previews>h1 {
-	display: none;
+	font-size: 0;
 }
 .focus>#previews>video,
 .focus>#previews>canvas {
 	height: auto;
-	width: calc(50% - .5rem);
+	max-width: calc(50% - .5rem);
 	object-fit: contain;
 }
 #presets,
