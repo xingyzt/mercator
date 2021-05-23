@@ -270,7 +270,7 @@ input[type=range]:focus::-webkit-slider-thumb {
 	background: var(--txt);
 }
 input#light,
-input#fog,
+input#fade,
 input#vignette {
 	--gradient: black, #8880, white
 }
@@ -332,7 +332,7 @@ input#letterbox {
 		hue: 0,
 		color: 0,
 		blur: 0,
-		fog: 0,
+		fade: 0,
 		vignette: 0,
 		rotate: 0,
 		scale: 0,
@@ -369,7 +369,7 @@ input#letterbox {
 			sepia: 1,
 			hue: 0.2,
 			vignette: 0.3,
-			fog: 0.3,
+			fade: 0.3,
 		},
 		deepfry: {
 			contrast: 1,
@@ -628,7 +628,7 @@ input#letterbox {
 				let hue = 360 * v.hue + 'deg'
 				let color = percentage(amp ** v.color)
 				let blur = v.blur * w / 16 + 'px'
-				let fog = v.fog
+				let fade = v.fade
 				let vignette = v.vignette
 				let rotate = v.rotate * 2 * Math.PI
 				let scale = polynomial_map(v.scale, 2)
@@ -643,7 +643,7 @@ input#letterbox {
 
 				components.R.setAttribute('tableValues', polynomial_table(-warmth + tint / 2))
 				components.G.setAttribute('tableValues', polynomial_table(-tint))
-				components.B.setAttribute('tableValues', polynomial_table(warmth + tint / 2))
+				components.B.setAttribute('tableValues', polynomial_table( warmth + tint / 2))
 
 				// CSS filters
 
@@ -691,12 +691,12 @@ input#letterbox {
 				context.setTransform(1, 0, 0, 1, 0, 0)
 				context.filter = 'brightness(1)'
 
-				// Fog: cover the entire image with a single color
-				if (fog) {
-					let fog_lum = Math.sign(fog) * 100
-					let fog_alpha = Math.abs(fog)
+				// Fade: cover the entire image with a single color
+				if (fade) {
+					let fade_lum = Math.sign(fade) * 100
+					let fade_alpha = Math.abs(fade)
 
-					context.fillStyle = `hsla(0,0%,${fog_lum}%,${fog_alpha})`
+					context.fillStyle = `hsla(0,0%,${fade_lum}%,${fade_alpha})`
 					context.fillRect(0, 0, w, h)
 				}
 
