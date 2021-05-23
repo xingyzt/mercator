@@ -111,7 +111,7 @@ button{
 	font-family: inherit;
 	font-size: .5rem;
 	font-weight: bold;
-	color: var(--txt);
+	color: inherit;
 	background: transparent;
 	flex: 0 0 1rem;
 	width: var(--radius);
@@ -212,7 +212,7 @@ label>*{
 }
 label>* {
 	height: 1rem;
-	border-radius: 0.75rem;
+	border-radius: 0.5rem;
 	border: 0.15rem solid var(--txt);
 }
 #presets>:hover {
@@ -233,13 +233,18 @@ textarea {
 	font-weight: bold;
 	font-size: 0.8rem;
 	resize: none;
-	line-height: 1;
-	overflow: hidden;
+	line-height: 1.1;
+	overflow: hidden scroll;
 	color: inherit;
 	background: var(--bg);
+	height: auto;
 }
 textarea::placeholder {
 	color: var(--txt);
+}
+textarea::selection {
+	color: var(--dark);
+	background: var(--txt);
 }
 input[type=range] {
 	-webkit-appearance: none;
@@ -385,12 +390,9 @@ input#letterbox {
 			switch (key) {
 				case 'text':
 					input = document.createElement('textarea')
-					input.placeholder = '🌈 Write text here 🌦️'
+					input.rows = 3
+					input.placeholder = '\n'+'🌈 Write text here 🌦️'
 					input.addEventListener('input', () => {
-						// Auto-resizing textarea
-						input.style.height = 'auto'
-						input.style.height = input.scrollHeight + 'px'
-
 						// String substitution
 						update_values(input, (input.value + '')
 							.replace(/--/g, '―')
