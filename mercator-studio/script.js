@@ -560,18 +560,20 @@ input#letterbox {
 	previews.id = 'previews'
 	previews.title = 'toggle Mercator Studio (ctrl m)'
 	previews.tabIndex = 0
-	previews.href = '#'
-	const toggleFocus = () => {
+	previews.href = '#mercator-studio'
+	const toggleFocus = event => {
 		main.classList.toggle('focus')
 		const focus = main.classList.contains('focus')
 		const spotlight = focus ? form.querySelector('input') : previews
 		spotlight.focus()
+		previews.href = focus ? '#' : '#mercator-studio'
+		event.preventDefault()
 	}
 	previews.addEventListener('click', toggleFocus )
 
 	// Ctrl+m to toggle
-	window.addEventListener('keydown', ({code,ctrlKey}) => {
-		if(code=='KeyM' && ctrlKey) toggleFocus()
+	window.addEventListener('keydown', event => {
+		if(event.code=='KeyM' && event.ctrlKey) toggleFocus(event)
 	})
 
 	// Create preview video
