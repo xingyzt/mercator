@@ -560,13 +560,12 @@ input#letterbox {
 	previews.id = 'previews'
 	previews.title = 'toggle Mercator Studio (ctrl m)'
 	previews.tabIndex = 0
-	previews.href = '#mercator-studio'
+	previews.href = '#'
 	const toggleFocus = () => {
 		main.classList.toggle('focus')
 		const focus = main.classList.contains('focus')
 		const spotlight = focus ? form.querySelector('input') : previews
 		spotlight.focus()
-		previews.href = focus ? '#' : '#mercator-studio'
 	}
 	previews.addEventListener('click', toggleFocus )
 
