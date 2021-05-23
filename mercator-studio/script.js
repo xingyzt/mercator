@@ -90,7 +90,7 @@ main>form{
 	pointer-events: none;
 }
 :not(.focus)>#previews{
-	border-radius: 2rem;
+	border-radius: 1.5rem;
 	flex-basis: 4rem;
 }
 button{
@@ -113,7 +113,7 @@ button{
 	font-weight: bold;
 	color: inherit;
 	background: transparent;
-	flex: 0 0 1rem;
+	flex: 0 0 1.5rem;
 	width: var(--radius);
 	text-align: center;
 	border: 0;
@@ -139,6 +139,9 @@ content: "🤍";
 #donate:hover::before{
 	margin-right: -2px;
 	margin-left: 2px;
+}
+.minimize #minimize{
+	flex-basis: 1rem;
 }
 .minimize #minimize::before{
 	content: "▶";
