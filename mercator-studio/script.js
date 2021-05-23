@@ -84,18 +84,17 @@ main {
 	pointer-events: none;
 }
 #bar,
-#inputs {
-	background: var(--bg);
+#fields {
 	color: var(--txt);
 	box-shadow: 0 .1rem .25rem #0004;
 	border-radius: .5rem;
 	pointer-events: all;
 }
 #bar:focus-within,
-#inputs:focus-within {
+#fields:focus-within {
 	box-shadow: 0 0 0 0.15rem var(--txt), 0 .1rem .25rem #0004;
 }
-:not(.edit)>#inputs{
+:not(.edit)>#fields{
 	opacity: 0;
 	pointer-events: none;
 }
@@ -105,7 +104,8 @@ main {
 }
 #text:hover,
 #presets:hover,
-#bar>:hover {
+#bar>:hover,
+#bar>:focus {
 	background: var(--bg-hov);
 }
 
@@ -116,13 +116,14 @@ main {
 	overflow: hidden;
 	flex: 0 0 auto;
 	display: flex;
+	background: var(--bg-hov)
 }
 .minimize #bar {
 	width: 1rem;
 	padding-right: 0;
 }
 #bar > a {
-	background: inherit;
+	background: var(--bg);
 }
 #bar #minimize,
 #bar #donate {
@@ -196,12 +197,13 @@ main {
 
 /* -- */
 
-#inputs {
+#fields {
 	display: flex;
 	flex-direction: column;
 	overflow: hidden scroll;
 	padding: 1rem;
 	flex: 0 1 auto;
+	background: var(--bg);
 }
 #presets,
 label {
@@ -332,8 +334,8 @@ input#letterbox {
 }
 `
 
-	const form = document.createElement('form')
-	form.id= 'inputs'
+	const fields = document.createElement('section')
+	fields.id= 'fields'
 
 	// Create inputs
 
@@ -511,7 +513,7 @@ input#letterbox {
 				let label = document.createElement('label')
 				label.textContent = input.id = key
 
-				form.append(label)
+				fields.append(label)
 				label.append(input)
 			}
 			return [key, input]
@@ -540,7 +542,7 @@ input#letterbox {
 	filter.append(component_transfer)
 	svg.append(filter)
 
-	const bar = document.createElement('div')
+	const bar = document.createElement('section')
 	bar.id = 'bar'
 
 	const minimize = document.createElement('a')
@@ -574,7 +576,7 @@ input#letterbox {
 	const toggleEdit = event => {
 		main.classList.toggle('edit')
 		const edit = main.classList.contains('edit')
-		edit ? form.querySelector('input').focus() : previews.focus()
+		edit ? Object.values(inputs)[0].focus() : previews.focus()
 		previews.href = edit ? 'mercator:preview' : 'mercator:edit'
 		event.preventDefault()
 	}
@@ -609,7 +611,7 @@ input#letterbox {
 	bar.append(minimize, previews, donate)
 
 	// Add UI to page
-	main.append(style, bar, form)
+	main.append(style, bar, fields)
 	shadow.append(main, svg)
 	document.body.append(host)
 
