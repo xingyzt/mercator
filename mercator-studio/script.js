@@ -189,6 +189,8 @@ label {
 }
 #presets {
 	overflow: hidden;
+	height: 1.3rem;
+	margin-bottom: -0.15rem;
 }
 #presets>* {
 	border: 0;
@@ -196,6 +198,7 @@ label {
 	background: transparent;
 	flex-grow: 1;
 	color: inherit;
+	height: 100%;
 }
 #presets>:first-child {
 	border-radius: 100px 0 0 100px;
