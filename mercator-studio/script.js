@@ -48,12 +48,14 @@
 }
 main {
 	--bg: #3C4042;
+	--bg-hov: #434649;
 	--dark: black;
 	--txt: white;	
 
 	font-family: ${font_family};
 	font-size: 0.9rem;
 	width: 25rem;
+	max-width: 100vw;
 	height: 100vh;
 	position: fixed;
 	bottom: 0;
@@ -161,6 +163,11 @@ content: "🤍";
 		hsl( 36, 100%, 70%) 83.3%,	hsl( 20,90%, 70%) 83.3%
 	);
 }
+#text:hover,
+#presets:hover,
+#previews:hover {
+	background: var(--bg-hov);
+}
 #previews>h1 {
 	flex-basis: 1rem;
 	flex-grow: 1;
@@ -193,7 +200,7 @@ label {
 }
 #presets {
 	overflow: hidden;
-	height: 1.3rem;
+	height: auto;
 	margin-bottom: -0.15rem;
 }
 #presets>* {
@@ -202,13 +209,13 @@ label {
 	background: transparent;
 	flex-grow: 1;
 	color: inherit;
-	height: 100%;
+	height: 1.3rem;
 }
 #presets>:first-child {
-	border-radius: 100px 0 0 100px;
+	border-radius: 0.25rem 0 0 0.25rem;
 }
 #presets>:last-child {
-	border-radius: 0 100px 100px 0;
+	border-radius: 0 0.25rem 0.25rem 0;
 }
 label+label {
 	margin-top: 0.5rem;
@@ -234,7 +241,7 @@ label>:focus,
 label>:hover {
 	border-color: var(--dark);
 }
-textarea {
+#text {
 	text-align: center;
 	font-family: inherit;
 	font-weight: bold;
@@ -246,10 +253,10 @@ textarea {
 	background: var(--bg);
 	height: auto;
 }
-textarea::placeholder {
+#text::placeholder {
 	color: var(--txt);
 }
-textarea::selection {
+#text::selection {
 	color: var(--dark);
 	background: var(--txt);
 }
@@ -361,13 +368,13 @@ input#letterbox {
 			contrast: 0.1,
 			warmth: -0.25,
 			tint: -0.05,
-			color: 0.2,
+			saturate: 0.2,
 		},
 		mono: {
 			light: 0.1,
 			contrast: -0.1,
 			sepia: 0.8,
-			color: -1,
+			saturate: -1,
 			vignette: -0.5,
 		},
 		matcha: {
@@ -380,7 +387,7 @@ input#letterbox {
 		},
 		deepfry: {
 			contrast: 1,
-			color: 0.5,
+			saturate: 0.5,
 		}
 	}
 
