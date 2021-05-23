@@ -33,7 +33,12 @@
 * {
 	box-sizing: border-box;
 	transition-duration: 200ms;
-	transition-property: opacity, background, transform, border-radius, border-color;
+	transition-property: opacity, background, transform, border-radius, box-shadow; border-color;
+
+	color: inherit;
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
 }
 :not(input) {
 	user-select: none;
@@ -46,6 +51,18 @@
 :focus {
 	outline: 0;
 }
+a, button {
+	cursor: pointer;
+	text-decoration: none;
+}
+button {
+	padding: 0;
+	background: transparent;
+	border: 0;
+}
+
+/* -- */
+
 main {
 	--bg: #3C4042;
 	--bg-hov: #434649;
@@ -66,7 +83,7 @@ main {
 	overflow: hidden;
 	pointer-events: none;
 }
-#previews,
+#bar,
 #inputs {
 	background: var(--bg);
 	color: var(--txt);
@@ -74,96 +91,77 @@ main {
 	border-radius: .5rem;
 	pointer-events: all;
 }
-#previews {
-	cursor: pointer;
-	margin-top: .5rem;
-	overflow: hidden;
-	display: flex;
-	flex: 0 0 auto;
-	text-decoration: none;
-}
-#previews:focus,
+#bar:focus-within,
 #inputs:focus-within {
 	box-shadow: 0 0 0 0.15rem var(--txt), 0 .1rem .25rem #0004;
 }
-#inputs{
-	display: flex;
-	flex-direction: column;
-	overflow: hidden scroll;
-	padding: 1rem;
-	flex: 0 1 auto;
-}
-:not(.focus)>#inputs{
+:not(.edit)>#inputs{
 	opacity: 0;
 	pointer-events: none;
 }
-:not(.focus)>#previews{
+:not(.edit)>#bar{
 	border-radius: 1.5rem;
 	flex-basis: 4rem;
 }
-button {
-	padding: 0;
-	font-family: inherit;
-	font-size: 100%;
-	background: transparent;
-	border: 0;
+#text:hover,
+#presets:hover,
+#bar>:hover {
+	background: var(--bg-hov);
 }
-.focus #minimize,
-.focus #donate{
-	display: none;
+
+/* -- */
+
+#bar {
+	margin-top: .5rem;
+	overflow: hidden;
+	flex: 0 0 auto;
+	display: flex;
 }
-.minimize #previews {
+.minimize #bar {
 	width: 1rem;
 	padding-right: 0;
 }
-#minimize,
-#donate {
-	font-family: inherit;
+#bar > a {
+	background: inherit;
+}
+#bar #minimize,
+#bar #donate {
 	font-size: .5rem;
-	font-weight: bold;
-	color: inherit;
-	text-decoration: none;
-	background: transparent;
 	flex: 0 0 1.5rem;
 	width: var(--radius);
 	text-align: center;
 	line-height: 4rem;
 	height: 100%;
-	border: 0;
-	cursor: pointer;
 	overflow-wrap: anywhere;
 }
-#minimize::before,
-#donate::before{
-	transition-duration: inherit;
-	transition-property: margin;
+.edit #bar #minimize,
+.edit #bar #donate,
+.edit #bar h2,
+.minimize #bar :not(#minimize) {
+	display: none;
 }
-#minimize::before{
-	content: "◀";
+#minimize:hover,
+#minimize:focus,
+.minimize #minimize {
+	transform: translateX(-2px);
 }
-#donate::before{
-content: "🤍";
-}
-#minimize:hover::before,
-.minimize #minimize::before{
-	margin-left: -2px;
-	margin-right: 2px;
-}
-#donate:hover::before{
-	margin-right: -2px;
-	margin-left: 2px;
+#donate:hover,
+#donate:focus {
+	transform: translateX( 2px);
 }
 .minimize #minimize{
 	flex-basis: 1rem;
 }
-.minimize #minimize::before{
-	content: "▶";
-}
 .minimize #minimize:hover::before{
 	margin-left: 0;
 }
-#previews>video,
-#previews>canvas {
+#previews {
+	flex: 1 0 0;
+	width: 0;
+	display: flex;
+}
+#previews video,
+#previews canvas {
 	width: auto;
 	height: auto;
 	background-image: linear-gradient(90deg,
@@ -174,40 +172,55 @@ content: "🤍";
 		hsl( 36, 100%, 70%) 83.3%,	hsl( 20,90%, 70%) 83.3%
 	);
 }
-#text:hover,
-#presets:hover,
-#previews:hover {
-	background: var(--bg-hov);
+.edit #previews video,
+.edit #previews canvas {
+	height: auto;
+	max-width: 50%;
+	object-fit: contain;
 }
-#previews>h1 {
+#previews h2 {
 	flex-basis: 1rem;
 	flex-grow: 1;
 	font-size: .9rem;
 	line-height: 1.4;
 	font-weight: normal;
-	color: inherit;
 	display: flex;
 	text-align: center;
 	align-items: center;
 	justify-content: center;
 }
-#previews:hover>h1 {
-	transform: translateY(-.1rem); /* Tiny nudge upwards */
+#previews:hover h2,
+#previews:focus h2 {
+	transform: translateY(-2px);
 }
-.focus>#previews>h1 {
-	font-size: 0;
-}
-.focus>#previews>video,
-.focus>#previews>canvas {
-	height: auto;
-	max-width: 50%;
-	object-fit: contain;
+
+/* -- */
+
+#inputs {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden scroll;
+	padding: 1rem;
+	flex: 0 1 auto;
 }
 #presets,
 label {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+}
+label+label {
+	margin-top: 0.5rem;
+}
+label:focus-within{
+	font-weight: bold;
+}
+label > * {
+	width: calc(100% - 4.5rem);
+	height: 1rem;
+	border-radius: 0.5rem;
+	border: 0.15rem solid var(--bg-hov);
+	font-size: 0.8rem;
 }
 #presets {
 	overflow: hidden;
@@ -219,28 +232,14 @@ label {
 	border-radius: 0;
 	background: transparent;
 	flex-grow: 1;
-	color: inherit;
 	height: 1.3rem;
-	font-size: 0.8rem;
+	font-weight: normal;
 }
 #presets>:first-child {
 	border-radius: 0.25rem 0 0 0.25rem;
 }
 #presets>:last-child {
 	border-radius: 0 0.25rem 0.25rem 0;
-}
-label+label {
-	margin-top: 0.5rem;
-	color: inherit;
-}
-label:focus-within{
-	font-weight: bold;
-}
-label>*{
-	width: calc(100% - 4.5rem);
-	height: 1rem;
-	border-radius: 0.5rem;
-	border: 0.15rem solid var(--txt);
 }
 #presets>:hover {
 	background: var(--dark);
@@ -252,22 +251,20 @@ label>*{
 #presets:focus-within,
 label>:focus,
 label>:hover {
-	border-color: var(--dark);
+	border-width: 0.15rem;
+	border-color: var(--txt);
 }
 #text {
 	text-align: center;
-	font-family: inherit;
 	font-weight: bold;
-	font-size: 0.8rem;
 	resize: none;
 	line-height: 1.1;
 	overflow: hidden scroll;
-	color: inherit;
 	background: var(--bg);
 	height: auto;
 }
 #text::placeholder {
-	color: var(--txt);
+	color: inherit;
 }
 #text::selection {
 	color: var(--dark);
@@ -293,10 +290,10 @@ input[type=range]::-webkit-slider-thumb {
 	border-radius: 100%;
 }
 input[type=range]:hover::-webkit-slider-thumb {
-	background: var(--dark);
+	background: var(--bg-hov);
 }
 input[type=range]:focus::-webkit-slider-thumb {
-	border-color: var(--dark);
+	border-color: var(--bg);
 	background: var(--txt);
 }
 input#light,
@@ -334,25 +331,6 @@ input#letterbox {
 	--gradient: black, white
 }
 `
-
-	const minimize = document.createElement('a')
-	minimize.id = 'minimize'
-	minimize.href = 'mercator:minimize'
-	minimize.addEventListener('click', event => {
-		event.preventDefault()
-		event.stopPropagation()
-		main.classList.toggle('minimize')
-		const minimized = main.classList.contains('minimize')
-		minimize.href = minimized ? 'mercator:preview' : 'mercator:minimize'
-	})
-	const donate = document.createElement('a')
-	donate.id = 'donate'
-	donate.href = 'mercator:donate'
-	donate.addEventListener('click', event => {
-		event.preventDefault()
-		event.stopPropagation()
-		window.open('https://ko-fi.com/xingyzt')
-	})
 
 	const form = document.createElement('form')
 	form.id= 'inputs'
@@ -526,7 +504,6 @@ input#letterbox {
 					})
 			}
 
-			input.classList.add('input')
 			input.value = value
 
 			if (!(isFirefox && ['warmth', 'tint'].includes(key))) {
@@ -563,24 +540,49 @@ input#letterbox {
 	filter.append(component_transfer)
 	svg.append(filter)
 
+	const bar = document.createElement('div')
+	bar.id = 'bar'
+
+	const minimize = document.createElement('a')
+	minimize.id = 'minimize'
+	minimize.href = 'mercator:minimize'
+	minimize.textContent = '◀'
+	minimize.addEventListener('click', event => {
+		event.preventDefault()
+		event.stopPropagation()
+		main.classList.toggle('minimize')
+		const minimized = main.classList.contains('minimize')
+		minimize.href = minimized ? 'mercator:preview' : 'mercator:minimize'
+		minimize.textContent = minimized ? '▶' : '◀'
+		minimize.focus()
+	})
+
+	const donate = document.createElement('a')
+	donate.id = 'donate'
+	donate.href = 'mercator:donate'
+	donate.textContent = '🤍'
+	donate.addEventListener('click', event => {
+		event.preventDefault()
+		event.stopPropagation()
+		window.open('https://ko-fi.com/xingyzt')
+	})
+
 	// Create previews
 	const previews = document.createElement('a')
 	previews.id = 'previews'
-	previews.tabIndex = 0
 	previews.href = 'mercator:edit'
-	const toggleFocus = event => {
-		main.classList.toggle('focus')
-		const focus = main.classList.contains('focus')
-		const spotlight = focus ? form.querySelector('input') : previews
-		spotlight.focus()
-		previews.href = focus ? 'mercator:preview' : 'mercator:edit'
+	const toggleEdit = event => {
+		main.classList.toggle('edit')
+		const edit = main.classList.contains('edit')
+		edit ? form.querySelector('input').focus() : previews.focus()
+		previews.href = edit ? 'mercator:preview' : 'mercator:edit'
 		event.preventDefault()
 	}
-	previews.addEventListener('click', toggleFocus )
+	previews.addEventListener('click', toggleEdit)
 
 	// Ctrl+m to toggle
 	window.addEventListener('keydown', event => {
-		if(event.code=='KeyM' && event.ctrlKey) toggleFocus(event)
+		if(event.code=='KeyM' && event.ctrlKey) toggleEdit(event)
 	})
 
 	// Create preview video
@@ -600,13 +602,14 @@ input#letterbox {
 	}))
 
 	// Create title
-	const h1 = document.createElement('h1')
-	h1.innerText = 'Mercator\nStudio'
+	const h2 = document.createElement('h2')
+	h2.innerText = 'Mercator\nStudio'
 
-	previews.append(minimize, video, h1, canvases.buffer.element, donate)
+	previews.append(video, h2, canvases.buffer.element)
+	bar.append(minimize, previews, donate)
 
 	// Add UI to page
-	main.append(style, previews, form)
+	main.append(style, bar, form)
 	shadow.append(main, svg)
 	document.body.append(host)
 
