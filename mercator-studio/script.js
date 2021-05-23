@@ -51,7 +51,6 @@ main{
 	--txt: white;	
 	--height-collapsed: 3.5rem;
 
-	z-index: 99999;
 	font-family: ${font_family};
 	font-size: 1rem;
 	width: 25rem;
@@ -63,12 +62,14 @@ main{
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
+	pointer-events: none;
 }
 main>*{
 	background: var(--bg);
 	color: var(--txt);
 	box-shadow: 0 .1rem .25rem #0004;
 	border-radius: .5rem;
+	pointer-events: all;
 }
 main>#previews{
 	cursor: pointer;
