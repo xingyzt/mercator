@@ -52,13 +52,13 @@ main {
 	--txt: white;	
 
 	font-family: ${font_family};
-	font-size: 1rem;
+	font-size: 0.9rem;
 	width: 25rem;
 	height: 100vh;
 	position: fixed;
 	bottom: 0;
 	left: 0;
-	padding: 1rem;
+	padding: 0.5rem;
 	display: flex;
 	flex-direction: column-reverse;
 	overflow: hidden;
@@ -170,7 +170,7 @@ content: "🤍";
 	justify-content: center;
 }
 #previews:hover>h1 {
-	transform: translateY(.1rem); /* Tiny nudge downwards */
+	transform: translateY(-.1rem); /* Tiny nudge upwards */
 }
 .focus>#previews>h1 {
 	font-size: 0;
@@ -204,19 +204,16 @@ label {
 	border-radius: 0 100px 100px 0;
 }
 label+label {
-	margin-top: 0.25rem;
+	margin-top: 0.5rem;
 	color: inherit;
 }
 label>*{
 	width: calc(100% - 4.5rem);
 }
 label>* {
-	height: 1.2rem;
+	height: 1rem;
 	border-radius: 0.75rem;
 	border: 0.15rem solid var(--txt);
-}
-label>:hover {
-	border: 0.15rem solid var(--dark);
 }
 #presets>:hover {
 	background: var(--dark);
@@ -226,13 +223,15 @@ label>:hover {
 	color: var(--bg);
 }
 #presets:focus-within,
-label>:focus {
+label>:focus,
+label>:hover {
 	border-color: var(--dark);
 }
 textarea {
 	text-align: center;
 	font-family: inherit;
 	font-weight: bold;
+	font-size: 0.8rem;
 	resize: none;
 	line-height: 1;
 	overflow: hidden;
@@ -258,8 +257,11 @@ input[type=range]::-webkit-slider-thumb {
 	transform: scale(1.5);
 	border-radius: 100%;
 }
+input[type=range]:hover::-webkit-slider-thumb {
+	background: var(--dark);
+}
 input[type=range]:focus::-webkit-slider-thumb {
-	border-color: var(--bg);
+	border-color: var(--dark);
 	background: var(--txt);
 }
 input#light,
