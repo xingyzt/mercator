@@ -122,10 +122,13 @@ button {
 	font-size: .5rem;
 	font-weight: bold;
 	color: inherit;
+	text-decoration: none;
 	background: transparent;
 	flex: 0 0 1.5rem;
 	width: var(--radius);
 	text-align: center;
+	line-height: 4rem;
+	height: 100%;
 	border: 0;
 	cursor: pointer;
 	overflow-wrap: anywhere;
@@ -332,17 +335,22 @@ input#letterbox {
 }
 `
 
-	const minimize = document.createElement('button')
+	const minimize = document.createElement('a')
 	minimize.id = 'minimize'
-	minimize.title = 'toggle super tiny mode'
+	minimize.href = 'mercator:minimize'
 	minimize.addEventListener('click', event => {
+		event.preventDefault()
 		event.stopPropagation()
 		main.classList.toggle('minimize')
+		const minimized = main.classList.contains('minimize')
+		minimize.href = minimized ? 'mercator:preview' : 'mercator:minimize'
 	})
-	const donate = document.createElement('button')
+	const donate = document.createElement('a')
 	donate.id = 'donate'
-	donate.title = 'donate to the developer'
-	donate.addEventListener('click', () => {
+	donate.href = 'mercator:donate'
+	donate.addEventListener('click', event => {
+		event.preventDefault()
+		event.stopPropagation()
 		window.open('https://ko-fi.com/xingyzt')
 	})
 
@@ -558,15 +566,14 @@ input#letterbox {
 	// Create previews
 	const previews = document.createElement('a')
 	previews.id = 'previews'
-	previews.title = 'toggle Mercator Studio (ctrl m)'
 	previews.tabIndex = 0
-	previews.href = '#mercator-studio'
+	previews.href = 'mercator:edit'
 	const toggleFocus = event => {
 		main.classList.toggle('focus')
 		const focus = main.classList.contains('focus')
 		const spotlight = focus ? form.querySelector('input') : previews
 		spotlight.focus()
-		previews.href = focus ? '#' : '#mercator-studio'
+		previews.href = focus ? 'mercator:preview' : 'mercator:edit'
 		event.preventDefault()
 	}
 	previews.addEventListener('click', toggleFocus )
