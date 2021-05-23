@@ -204,19 +204,19 @@ label {
 	border-radius: 0 100px 100px 0;
 }
 label {
-	height: 2rem;
+	margin-bottom: 0.25rem;
 	color: inherit;
 }
 label>*{
 	width: calc(100% - 4.5rem);
 }
 label>* {
-	height: 1.5rem;
+	height: 1.2rem;
 	border-radius: 0.75rem;
-	border: 0.15rem solid var(--dark);
+	border: 0.15rem solid var(--txt);
 }
 label>:hover {
-	border: 0.15rem solid var(--txt);
+	border: 0.15rem solid var(--dark);
 }
 #presets>:hover {
 	background: var(--dark);
@@ -227,7 +227,7 @@ label>:hover {
 }
 #presets:focus-within,
 label>:focus {
-	border-color: var(--txt);
+	border-color: var(--dark);
 }
 textarea {
 	text-align: center;
@@ -252,10 +252,11 @@ input[type=range] {
 input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	background: var(--bg);
-	width: 1.3rem;
-	height: 1.3rem;
-	border: 0.15rem solid var(--txt);
-	border-radius: 0.65rem;
+	width: 1rem;
+	height: 1rem;
+	border: 0.1rem solid var(--txt);
+	transform: scale(1.5);
+	border-radius: 100%;
 }
 input[type=range]:focus::-webkit-slider-thumb {
 	border-color: var(--bg);
