@@ -1,0 +1,11 @@
+"Mercator Studio for Google Meet" is a browser extension which injects a 
+JavaScript program into Google Meet. This program applies color filters and 
+draws shapes on your video feed. It runs entirely inside the browser, accessing 
+no external resources. It remembers your slider preferences by putting them in 
+your browser's local storage. These preferences can be restored to default 
+values via the "reset" button on the extension's panel interface, or completely 
+deleted by clearing your browser's cache. Only your filtered video data is 
+transmitted to Google Meet. However, Google handles your filtered video data 
+according to their own Terms of Service and Privacy Policy. You can stop the 
+transmission of video data to both the extension and Google Meet by turning off 
+the camera, for example, through the Google Meet's "disable camera" button.
