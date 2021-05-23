@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	2.0.1
+// @version	2.1.0
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2020-2021, Xing (https://x-ing.space)
@@ -66,28 +66,34 @@ main {
 	overflow: hidden;
 	pointer-events: none;
 }
-main>*{
+#previews,
+#inputs {
 	background: var(--bg);
 	color: var(--txt);
 	box-shadow: 0 .1rem .25rem #0004;
 	border-radius: .5rem;
 	pointer-events: all;
 }
-main>#previews{
+#previews {
 	cursor: pointer;
 	margin-top: .5rem;
 	overflow: hidden;
 	display: flex;
 	flex: 0 0 auto;
+	text-decoration: none;
 }
-main>form{
+#previews:focus,
+#inputs:focus-within {
+	box-shadow: 0 0 0 0.15rem var(--txt), 0 .1rem .25rem #0004;
+}
+#inputs{
 	display: flex;
 	flex-direction: column;
 	overflow: hidden scroll;
 	padding: 1rem;
 	flex: 0 1 auto;
 }
-:not(.focus)>form{
+:not(.focus)>#inputs{
 	opacity: 0;
 	pointer-events: none;
 }
@@ -95,10 +101,12 @@ main>form{
 	border-radius: 1.5rem;
 	flex-basis: 4rem;
 }
-button{
+button {
+	padding: 0;
 	font-family: inherit;
-	font-size: .8rem;
+	font-size: 100%;
 	background: transparent;
+	border: 0;
 }
 .focus #minimize,
 .focus #donate{
@@ -210,6 +218,7 @@ label {
 	flex-grow: 1;
 	color: inherit;
 	height: 1.3rem;
+	font-size: 0.8rem;
 }
 #presets>:first-child {
 	border-radius: 0.25rem 0 0 0.25rem;
@@ -221,10 +230,11 @@ label+label {
 	margin-top: 0.5rem;
 	color: inherit;
 }
+label:focus-within{
+	font-weight: bold;
+}
 label>*{
 	width: calc(100% - 4.5rem);
-}
-label>* {
 	height: 1rem;
 	border-radius: 0.5rem;
 	border: 0.15rem solid var(--txt);
@@ -259,6 +269,9 @@ label>:hover {
 #text::selection {
 	color: var(--dark);
 	background: var(--txt);
+}
+input[type=checkbox] {
+	cursor: pointer;
 }
 input[type=range] {
 	-webkit-appearance: none;
@@ -334,6 +347,7 @@ input#letterbox {
 	})
 
 	const form = document.createElement('form')
+	form.id= 'inputs'
 
 	// Create inputs
 
@@ -542,11 +556,24 @@ input#letterbox {
 	svg.append(filter)
 
 	// Create previews
-	const previews = document.createElement('div')
+	const previews = document.createElement('a')
 	previews.id = 'previews'
-	previews.addEventListener('click', () =>
+	previews.title = 'toggle Mercator Studio (ctrl m)'
+	previews.tabIndex = 0
+	previews.href = '#mercator-studio'
+	const toggleFocus = () => {
 		main.classList.toggle('focus')
-	)
+		const focus = main.classList.contains('focus')
+		const spotlight = focus ? form.querySelector('input') : previews
+		spotlight.focus()
+		previews.href = focus ? '#' : '#mercator-studio'
+	}
+	previews.addEventListener('click', toggleFocus )
+
+	// Ctrl+m to toggle
+	window.addEventListener('keydown', ({code,ctrlKey}) => {
+		if(code=='KeyM' && ctrlKey) toggleFocus()
+	})
 
 	// Create preview video
 	const video = document.createElement('video')
