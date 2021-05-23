@@ -558,7 +558,7 @@ input#letterbox {
 
 	// Create title
 	const h1 = document.createElement('h1')
-	h1.innerHTML = 'Mercator Studio'
+	h1.innerHTML = 'Mercator\nStudio'
 
 	previews.append(minimize, video, h1, canvases.buffer.element, donate)
 
