@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	2.1.0
+// @version	2.1.1
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2020-2021, Xing (https://x-ing.space)
@@ -20,6 +20,7 @@
 	const host = document.createElement('aside')
 	host.style.position = 'absolute'
 	host.style.zIndex = 10
+	host.style.pointerEvents = 'none'
 	const shadow = host.attachShadow({ mode: 'open' })
 
 	const isFirefox = navigator.userAgent.includes('Firefox')
