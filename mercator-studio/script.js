@@ -292,10 +292,21 @@ input[type=range]::-webkit-slider-thumb {
 	transform: scale(1.5);
 	border-radius: 100%;
 }
-input[type=range]:hover::-webkit-slider-thumb {
+input[type=range]::-moz-range-thumb {
+	background: var(--bg);
+	width: 1rem;
+	height: 1rem;
+	border: 0.1rem solid var(--txt);
+	transform: scale(1.5);
+	border-radius: 100%;
+	box-sizing: border-box;
+}
+input[type=range]:hover::-webkit-slider-thumb,
+input[type=range]:hover::-moz-range-thumb {
 	background: var(--bg-hov);
 }
-input[type=range]:focus::-webkit-slider-thumb {
+input[type=range]:focus::-webkit-slider-thumb,
+input[type=range]:focus::-moz-range-thumb {
 	border-color: var(--bg);
 	background: var(--txt);
 }
