@@ -34,7 +34,7 @@
 * {
 	box-sizing: border-box;
 	transition-duration: 200ms;
-	transition-property: opacity, background, transform, border-radius, box-shadow; border-color;
+	transition-property: opacity, background, transform, border-radius, border-color;
 
 	color: inherit;
 	font-family: inherit;
@@ -66,7 +66,8 @@ button {
 
 main {
 	--bg: #3C4042;
-	--bg-hov: #434649;
+	--bg-x: #434649;
+	--bg-xx: #505457;
 	--dark: black;
 	--txt: white;	
 
@@ -91,10 +92,6 @@ main {
 	border-radius: .5rem;
 	pointer-events: all;
 }
-#bar:focus-within,
-#fields:focus-within {
-	box-shadow: 0 0 0 0.15rem var(--txt), 0 .1rem .25rem #0004;
-}
 :not(.edit)>#fields{
 	opacity: 0;
 	pointer-events: none;
@@ -103,11 +100,15 @@ main {
 	border-radius: 1.5rem;
 	flex-basis: 4rem;
 }
-#text:hover,
+#text:hover, #text:focus,
 #presets:hover,
-#bar>:hover,
-#bar>:focus {
-	background: var(--bg-hov);
+#bar>:hover, #bar>:focus {
+	background: var(--bg-x);
+}
+#text:hover:focus,
+#presets:hover,
+#bar>:hover:focus {
+	background: var(--bg-xx);
 }
 
 /* -- */
@@ -117,7 +118,7 @@ main {
 	overflow: hidden;
 	flex: 0 0 auto;
 	display: flex;
-	background: var(--bg-hov)
+	background: var(--bg-x)
 }
 .minimize #bar {
 	width: 1rem;
@@ -143,12 +144,10 @@ main {
 	display: none;
 }
 #minimize:hover,
-#minimize:focus,
 .minimize #minimize {
 	transform: translateX(-2px);
 }
-#donate:hover,
-#donate:focus {
+#donate:hover {
 	transform: translateX( 2px);
 }
 .minimize #minimize{
@@ -191,8 +190,7 @@ main {
 	align-items: center;
 	justify-content: center;
 }
-#previews:hover h2,
-#previews:focus h2 {
+#previews:hover h2 {
 	transform: translateY(-2px);
 }
 
@@ -222,7 +220,7 @@ label > * {
 	width: calc(100% - 4.5rem);
 	height: 1rem;
 	border-radius: 0.5rem;
-	border: 0.15rem solid var(--bg-hov);
+	border: 0.15rem solid var(--bg-x);
 	font-size: 0.8rem;
 }
 #presets {
@@ -293,7 +291,7 @@ input[type=range]::-webkit-slider-thumb {
 	border-radius: 100%;
 }
 input[type=range]:hover::-webkit-slider-thumb {
-	background: var(--bg-hov);
+	background: var(--bg-x);
 }
 input[type=range]:focus::-webkit-slider-thumb {
 	border-color: var(--bg);
@@ -309,7 +307,7 @@ input[type=range]::-moz-range-thumb {
 	box-sizing: border-box;
 }
 input[type=range]:hover::-moz-range-thumb {
-	background: var(--bg-hov);
+	background: var(--bg-x);
 }
 input[type=range]:focus::-moz-range-thumb {
 	border-color: var(--bg);
@@ -427,7 +425,7 @@ input#letterbox {
 					input.placeholder = '\n🌈 Write text here 🌦️'
 					input.addEventListener('input', () => {
 						// String substitution
-						update_values(input, (input.value + '')
+						set_value(input, (input.value + '')
 							.replace(/--/g, '―')
 							.replace(/\\sqrt/g, '√')
 							.replace(/\\pm/g, '±')
@@ -454,7 +452,7 @@ input#letterbox {
 					input = document.createElement('input')
 					input.type = 'checkbox'
 					input.addEventListener('change', () =>
-						update_values(input, input.checked)
+						set_value(input, input.checked)
 					)
 					break
 				case 'presets':
@@ -465,7 +463,7 @@ input#letterbox {
 						button.addEventListener('click', event => {
 							event.preventDefault()
 							Object.entries({...default_values,...preset_values[key]})
-								.forEach(([key, value]) => update_values(inputs[key], value))
+								.forEach(([key, value]) => set_value(inputs[key], value))
 						})
 						return button
 					}))
@@ -487,19 +485,19 @@ input#letterbox {
 					// Use 32 steps normally, 128 if CTRL, 512 if SHIFT
 					const range = input.max - input.min
 					input.step = range / 32
-					input.addEventListener('keydown', ({
-						ctrlKey,
-						shiftKey
-					}) => {
+					input.addEventListener('keydown', ({ code, ctrlKey, shiftKey }) => {
+						if(code === 'Digit0') reset_value(input)
 						input.step = range / (shiftKey ? 512 : ctrlKey ? 128 : 32)
 					})
 					input.addEventListener('keyup', () =>
 						input.step = range / 32
 					)
 
-					input.addEventListener('input', () =>
-						update_values(input, input.valueAsNumber)
-					)
+					input.addEventListener('input', () => {
+						input.focus()
+						set_value(input, input.valueAsNumber)
+					})
+
 					// Scroll to change values
 					input.addEventListener('wheel', event => {
 						event.preventDefault()
@@ -513,13 +511,13 @@ input#letterbox {
 						const clamped_value = Math.min(Math.max(raw_value, input.min), input.max)
 						const stepped_value = Math.round(clamped_value / input.step) * input.step
 						const value = stepped_value
-						update_values(input, value)
+						set_value(input, value)
 					})
 
 					// Right click to individually reset
 					input.addEventListener('contextmenu', event => {
 						event.preventDefault()
-						update_values(input, default_values[input.id] )
+						reset_value(input)
 					})
 			}
 
@@ -537,9 +535,12 @@ input#letterbox {
 		})
 	)
 
-	function update_values(input, value) {
+	function set_value(input, value) {
 		values[input.id] = input.value = value
 		window.localStorage.setItem('mercator-studio-values-20', JSON.stringify(values))
+	}
+	function reset_value(input) {
+		set_value(input, default_values[input.id])
 	}
 
 	// Create color balance matrix
@@ -566,15 +567,17 @@ input#letterbox {
 	minimize.id = 'minimize'
 	minimize.href = 'mercator:minimize'
 	minimize.textContent = '◀'
-	minimize.addEventListener('click', event => {
+	const toggleMinimize = event => {
 		event.preventDefault()
 		event.stopPropagation()
+		main.classList.remove('edit')
 		main.classList.toggle('minimize')
 		const minimized = main.classList.contains('minimize')
 		minimize.href = minimized ? 'mercator:preview' : 'mercator:minimize'
 		minimize.textContent = minimized ? '▶' : '◀'
 		minimize.focus()
-	})
+	}
+	minimize.addEventListener('click', toggleMinimize)
 
 	const donate = document.createElement('a')
 	donate.id = 'donate'
@@ -591,6 +594,7 @@ input#letterbox {
 	previews.id = 'previews'
 	previews.href = 'mercator:edit'
 	const toggleEdit = event => {
+		main.classList.remove('minimize')
 		main.classList.toggle('edit')
 		const edit = main.classList.contains('edit')
 		edit ? Object.values(inputs)[0].focus() : previews.focus()
@@ -601,7 +605,8 @@ input#letterbox {
 
 	// Ctrl+m to toggle
 	window.addEventListener('keydown', event => {
-		if(event.code=='KeyM' && event.ctrlKey) toggleEdit(event)
+		if (event.code=='KeyM' && event.ctrlKey)
+			event.shiftKey ? toggleMinimize(event) : toggleEdit(event)
 	})
 
 	// Create preview video

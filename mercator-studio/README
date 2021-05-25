@@ -22,9 +22,9 @@ Somewhat nice presets:
 · Matcha
 · Deepfry
 
-Scroll or drag the sliders to adjust, right click on them to reset, and hold down Ctrl or Shift for finer steps.
+Scroll, drag, or use arrow keys on the sliders to adjust, right click or press 0 on them to reset, and hold down Ctrl or Shift for finer steps.
 
-Ctrl+M to open/close the interface.
+Ctrl+M to open/close the interface, Ctrl+Shift+M to minimize it.
 
 Changelog:
 · 2.1.1 Improve keyboard navigation.
