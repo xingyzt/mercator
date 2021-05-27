@@ -12,7 +12,7 @@
 // @grant	none
 // ==/UserScript==
 (async function mercator_studio() {
-try{
+
 	'use strict'
 
 	// Create shadow root
@@ -946,5 +946,5 @@ input#letterbox {
 		(constraints && constraints.video && !constraints.audio) ?
 		new mercator_studio_MediaStream(await navigator.mediaDevices.old_getUserMedia(constraints)) :
 		navigator.mediaDevices.old_getUserMedia(constraints)
-}catch(e){alert(e)}
+
 })()
