@@ -251,6 +251,12 @@ main > * {
 	border: 0.15rem solid var(--bg-x);
 	font-size: 0.8rem;
 }
+#presets:focus-within,
+#fields > label > :focus,
+#fields > label > :hover {
+	border-width: 0.15rem;
+	border-color: var(--txt);
+}
 #presets {
 	overflow: hidden;
 	height: auto;
@@ -276,12 +282,6 @@ main > * {
 #presets>:focus {
 	background: var(--txt);
 	color: var(--bg);
-}
-#presets:focus-within,
-label>:focus,
-label>:hover {
-	border-width: 0.15rem;
-	border-color: var(--txt);
 }
 #fields > label > #text {
 	text-align: center;
@@ -311,6 +311,7 @@ input[type=range] {
 }
 input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
+	transition: inherit;
 	background: var(--bg);
 	width: 1rem;
 	height: 1rem;
@@ -326,6 +327,7 @@ input[type=range]:focus::-webkit-slider-thumb {
 	background: var(--txt);
 }
 input[type=range]::-moz-range-thumb {
+	transition: inherit;
 	background: var(--bg);
 	width: 1rem;
 	height: 1rem;
