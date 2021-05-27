@@ -32,12 +32,12 @@ Changelog:
 · 1.19 Add mirroring; Dark mode support.
 · 1.18 Make textbox auto-resize; Ctrl or Shift for finer steps.
 · 1.17 Fix flickering and window-focus issues.
-· 1.16 Add freeze feature. (thanks @napsav)
+· 1.16 Add freeze feature (thanks @napsav).
 · 1.15 Add toggle to super tiny mode.
 · 1.14 Add math auto-convert.
 · 1.13 Preserve values across sessions.
 · 1.12 Luminance-preserving temperature & tint.
-· 1.11 Multiline text input. Rebranded as Mercator Studio for Google Meet.
+· 1.11 Multiline text input; Rebranded as Mercator Studio for Google Meet.
 · 1.10 Sync camera; Capture scroll; Right-click reset; Firefox support.
 · 1.9 Add text & emoji input.
 · 1.8 Add presets; Matched UI with material design.
