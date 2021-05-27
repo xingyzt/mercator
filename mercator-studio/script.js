@@ -12,7 +12,7 @@
 // @grant	none
 // ==/UserScript==
 (async function mercator_studio() {
-
+try{
 	'use strict'
 
 	// Create shadow root
@@ -29,12 +29,18 @@
 
 	const main = document.createElement('main')
 	const style = document.createElement('style')
-	const font_family = `"Google Sans", Roboto, RobotDraft, Helvetica, sans-serif, serif`
+	const body_fonts = 'Roboto, RobotDraft, Helvetica, sans-serif, serif'
+	const display_fonts = '"Google Sans", ' + body_fonts
 	style.textContent = `
-* {
+a, button {
+	all: unset;
+	cursor: pointer;
+	text-align: center;
+}
+main, main *, a, button {
 	box-sizing: border-box;
 	transition-duration: 200ms;
-	transition-property: opacity, background, transform, border-radius, border-color;
+	transition-property: opacity, background, transform, padding, border-radius, border-color;
 
 	color: inherit;
 	font-family: inherit;
@@ -52,15 +58,6 @@
 :focus {
 	outline: 0;
 }
-a, button {
-	cursor: pointer;
-	text-decoration: none;
-}
-button {
-	padding: 0;
-	background: transparent;
-	border: 0;
-}
 
 /* -- */
 
@@ -71,7 +68,7 @@ main {
 	--dark: black;
 	--txt: white;	
 
-	font-family: ${font_family};
+	font-family: ${display_fonts};
 	font-size: 0.9rem;
 	width: 25rem;
 	max-width: 100vw;
@@ -85,11 +82,14 @@ main {
 	overflow: hidden;
 	pointer-events: none;
 }
-#bar,
-#fields {
+main > * {
 	color: var(--txt);
-	box-shadow: 0 .1rem .25rem #0004;
+}
+#fields,
+#bar,
+#labels > * {
 	border-radius: .5rem;
+	box-shadow: 0 .1rem .25rem #0004;
 	pointer-events: all;
 }
 :not(.edit)>#fields{
@@ -113,18 +113,50 @@ main {
 
 /* -- */
 
+#tips {
+	position: relative;
+	font-family: ${body_fonts};
+	font-size: 0.8rem;
+	z-index: 10;
+}
+#tips > * {
+	display: block;
+	position: absolute;
+	bottom: 0rem;
+	height: 1.5rem;
+	padding: 0.25rem;
+	border-radius: 0.25rem;
+}
+#tips > :not(.show) {
+	opacity: 0;
+}
+#tips > [for="minimize"] {
+	left: 0;
+}
+#tips > [for="previews"] {
+	left: 50%;
+	transform: translateX(-50%);
+}
+#tips > [for="donate"] {
+	right: 0;
+}
+.edit > #tips > * {
+	top: 1rem;
+}
+
+/* -- */
+
 #bar {
 	margin-top: .5rem;
 	overflow: hidden;
 	flex: 0 0 auto;
 	display: flex;
-	background: var(--bg-x)
 }
 .minimize #bar {
 	width: 1rem;
-	padding-right: 0;
 }
-#bar > a {
+#bar > *,
+#tips > * {
 	background: var(--bg);
 }
 #bar #minimize,
@@ -143,18 +175,15 @@ main {
 .minimize #bar :not(#minimize) {
 	display: none;
 }
-#minimize:hover,
-.minimize #minimize {
-	transform: translateX(-2px);
+:not(.minimize) #minimize:hover,
+.minimize #minimize:not(:hover) {
+	padding-right: 2px;
 }
 #donate:hover {
-	transform: translateX( 2px);
+	padding-left: 2px;
 }
 .minimize #minimize{
 	flex-basis: 1rem;
-}
-.minimize #minimize:hover::before{
-	margin-left: 0;
 }
 #previews {
 	flex: 1 0 0;
@@ -179,18 +208,16 @@ main {
 	max-width: 50%;
 	object-fit: contain;
 }
-#previews h2 {
-	flex-basis: 1rem;
+#previews>h2 {
 	flex-grow: 1;
 	font-size: .9rem;
 	line-height: 1.4;
-	font-weight: normal;
 	display: flex;
 	text-align: center;
 	align-items: center;
 	justify-content: center;
 }
-#previews:hover h2 {
+#previews:hover>h2 {
 	transform: translateY(-2px);
 }
 
@@ -205,18 +232,18 @@ main {
 	background: var(--bg);
 }
 #presets,
-label {
+#fields > label {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
-label+label {
+#fields > label+label {
 	margin-top: 0.5rem;
 }
-label:focus-within{
+#fields > label:focus-within{
 	font-weight: bold;
 }
-label > * {
+#fields > label > * {
 	width: calc(100% - 4.5rem);
 	height: 1rem;
 	border-radius: 0.5rem;
@@ -255,7 +282,7 @@ label>:hover {
 	border-width: 0.15rem;
 	border-color: var(--txt);
 }
-#text {
+#fields > label > #text {
 	text-align: center;
 	font-weight: bold;
 	resize: none;
@@ -560,53 +587,104 @@ input#letterbox {
 	filter.append(component_transfer)
 	svg.append(filter)
 
+	// Create labels
+	
+	const minimize_tip = document.createElement('label')
+	minimize_tip.htmlFor = 'minimize'
+	minimize_tip.dataset.off = 'Minimize previews (ctrl + shift + m)'
+	minimize_tip.dataset.on = 'Open previews (ctrl + shift + m)'
+	minimize_tip.textContent = minimize_tip.dataset.off
+
+	const previews_tip = document.createElement('label')
+	previews_tip.htmlFor = 'previews'
+	previews_tip.dataset.off = 'Open studio (ctrl + m)'
+	previews_tip.dataset.on = 'Close studio (ctrl + m)'
+	previews_tip.textContent = previews_tip.dataset.off
+
+	const donate_tip = document.createElement('label')
+	donate_tip.htmlFor = 'donate'
+	donate_tip.textContent = 'Donate to the dev'
+
+	const tips = document.createElement('section')
+	tips.id = 'tips'
+	tips.append(minimize_tip,previews_tip,donate_tip)
+
+	// Mimic Google Meet tooltip behavior where hover gets priority over focused
+	const update_tips = () => {
+		tips.querySelectorAll('.show').forEach(tip=>tip.classList.remove('show'))
+		const show = tips.querySelector('.hover') || tips.querySelector('.focus')
+		if(show) show.classList.add('show')
+	}
+	const link_tip = ( original, tip ) => {
+		original.addEventListener('mouseenter',()=>{
+			tip.classList.add('hover')
+			update_tips()
+		})
+		original.addEventListener('mouseleave',()=>{
+			tip.classList.remove('hover')
+			update_tips()
+		})
+		original.addEventListener('focus',()=>{
+			tip.classList.add('focus')
+			update_tips()
+		})
+		original.addEventListener('blur',()=>{
+			tip.classList.remove('focus')
+			update_tips()
+		})
+	}
+
+	// create bottom bar
+
 	const bar = document.createElement('section')
 	bar.id = 'bar'
 
-	const minimize = document.createElement('a')
+	const minimize = document.createElement('button')
 	minimize.id = 'minimize'
-	minimize.href = 'mercator:minimize'
 	minimize.textContent = '◀'
-	const toggleMinimize = event => {
-		event.preventDefault()
-		event.stopPropagation()
+	const toggleMinimize = () => {
 		main.classList.remove('edit')
 		main.classList.toggle('minimize')
-		const minimized = main.classList.contains('minimize')
-		minimize.href = minimized ? 'mercator:preview' : 'mercator:minimize'
-		minimize.textContent = minimized ? '▶' : '◀'
 		minimize.focus()
+		const state = main.classList.contains('minimize')
+		minimize.textContent = state ? '▶' : '◀'
+		minimize_tip.textContent = minimize_tip.dataset[ state ? 'on' : 'off' ]
+		minimize_tip.classList.remove('focus')
+		update_tips()
 	}
 	minimize.addEventListener('click', toggleMinimize)
+	link_tip(minimize,minimize_tip)
 
 	const donate = document.createElement('a')
 	donate.id = 'donate'
-	donate.href = 'mercator:donate'
+	donate.href = 'https://ko-fi.com/xingyzt'
+	donate.target = '_blank'
 	donate.textContent = '🤍'
-	donate.addEventListener('click', event => {
-		event.preventDefault()
-		event.stopPropagation()
-		window.open('https://ko-fi.com/xingyzt')
-	})
+	link_tip(donate,donate_tip)
+
 
 	// Create previews
-	const previews = document.createElement('a')
+	const previews = document.createElement('button')
 	previews.id = 'previews'
-	previews.href = 'mercator:edit'
-	const toggleEdit = event => {
+	const toggleEdit = () => {
 		main.classList.remove('minimize')
 		main.classList.toggle('edit')
-		const edit = main.classList.contains('edit')
-		edit ? Object.values(inputs)[0].focus() : previews.focus()
-		previews.href = edit ? 'mercator:preview' : 'mercator:edit'
-		event.preventDefault()
+		previews.focus()
+		const state = main.classList.contains('edit')
+		state ? Object.values(inputs)[0].focus() : previews.focus()
+		previews_tip.textContent = previews_tip.dataset[state ? 'on' : 'off']
+		previews_tip.classList.remove('focus')
+		update_tips()
 	}
 	previews.addEventListener('click', toggleEdit)
+	link_tip(previews,previews_tip)
 
 	// Ctrl+m to toggle
 	window.addEventListener('keydown', event => {
-		if (event.code=='KeyM' && event.ctrlKey)
+		if (event.code=='KeyM' && event.ctrlKey) {
+			event.preventDefault()
 			event.shiftKey ? toggleMinimize(event) : toggleEdit(event)
+		}
 	})
 
 	// Create preview video
@@ -626,15 +704,16 @@ input#letterbox {
 	}))
 
 	// Create title
-	const h2 = document.createElement('h2')
-	h2.innerText = 'Mercator\nStudio'
+	const title = document.createElement('h2')
+	title.id = 'title'
+	title.innerText = 'Mercator\nStudio'
 
-	previews.append(video, h2, canvases.buffer.element)
+	previews.append(video, title, canvases.buffer.element)
 	bar.append(minimize, previews, donate)
 
 	// Add UI to page
-	main.append(style, bar, fields)
-	shadow.append(main, svg)
+	main.append(bar, tips, fields)
+	shadow.append(main, style, svg)
 	document.body.append(host)
 
 	// Define mappings of linear values
@@ -813,7 +892,7 @@ input#letterbox {
 					const vw = 0.9 * (w - 2 * pillarbox)
 					const vh = 0.9 * (h - 2 * letterbox)
 
-					context.font = `bold ${vw}px ${font_family}`
+					context.font = `bold ${vw}px ${display_fonts}`
 
 					let char_metrics = context.measureText('0')
 					let line_height = char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent
@@ -828,7 +907,7 @@ input#letterbox {
 
 					// Found the font size. Time to draw!
 
-					context.font = `bold ${font_size}px ${font_family}`
+					context.font = `bold ${font_size}px ${display_fonts}`
 
 					char_metrics = context.measureText('0')
 					line_height = 1.5 * (char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent)
@@ -867,4 +946,5 @@ input#letterbox {
 		(constraints && constraints.video && !constraints.audio) ?
 		new mercator_studio_MediaStream(await navigator.mediaDevices.old_getUserMedia(constraints)) :
 		navigator.mediaDevices.old_getUserMedia(constraints)
+}catch(e){alert(e)}
 })()
