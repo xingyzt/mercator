@@ -102,7 +102,8 @@ main > * {
 }
 #text:hover, #text:focus,
 #presets:hover,
-#bar>:hover, #bar>:focus {
+#bar>:hover, #bar>:focus,
+#tips > * {
 	background: var(--bg-x);
 }
 #text:hover:focus,
@@ -117,6 +118,7 @@ main > * {
 	position: relative;
 	font-family: ${body_fonts};
 	font-size: 0.8rem;
+	line-height: 1rem;
 	z-index: 10;
 }
 #tips > * {
@@ -155,8 +157,7 @@ main > * {
 .minimize #bar {
 	width: 1rem;
 }
-#bar > *,
-#tips > * {
+#bar > * {
 	background: var(--bg);
 }
 #bar #minimize,
@@ -403,8 +404,8 @@ input#letterbox {
 		open_tip: { en: 'Open', es: 'Abre', fr: 'Ouvre', pt: 'Aberto', zh: '打开' },
 		close_tip: { en: 'Close', es: 'Cierra', fr: 'Ferme', pt: 'Feche', zh: '合起' },
 		minimize_tip: { en: 'Minimize', es: 'Minimizas', fr: 'Minimise', pt: 'Minimiza', zh: '合起' },
-		previews_tip: { en: 'previews', es: 'visualizaciones', fr: 'aperçus', pt: 'visualizações', zh: '预览' },
-		studio_tip: { en: 'studio', es: 'estudio', fr: 'studio', pt: 'estúdio', zh: '画室' },
+		previews_tip: { en: ' previews', es: ' visualizaciones', fr: ' aperçus', pt: 'visualizações', zh: '预览' },
+		studio_tip: { en: ' studio', es: ' estudio', fr: ' studio', pt: ' estúdio', zh: '画室' },
 		text_tip: { en: 'Write text here', es: 'Escribe el texto aquí', fr: 'Écrivez du texte ici', pt: 'Escreva o texto aqui', zh: '在这里写字' },
 		donate_tip: { en: 'Donate to the dev', es: 'Donas al dev', fr: 'Fais un don au dev', pt: 'Você doa para o dev', zh: '捐款给作者' },
 	}
@@ -644,14 +645,14 @@ input#letterbox {
 	
 	const minimize_tip = document.createElement('label')
 	minimize_tip.htmlFor = 'minimize'
-	minimize_tip.dataset.off = `${i18n.minimize_tip} ${i18n.previews_tip} (ctrl + shift + m)`
-	minimize_tip.dataset.on = `${i18n.open_tip} ${i18n.previews_tip} (ctrl + shift + m)`
+	minimize_tip.dataset.off = `${i18n.minimize_tip}${i18n.previews_tip} (ctrl + shift + m)`
+	minimize_tip.dataset.on = `${i18n.open_tip}${i18n.previews_tip} (ctrl + shift + m)`
 	minimize_tip.textContent = minimize_tip.dataset.off
 
 	const previews_tip = document.createElement('label')
 	previews_tip.htmlFor = 'previews'
-	previews_tip.dataset.off = `${i18n.open_tip} ${i18n.studio_tip} (ctrl + m)`
-	previews_tip.dataset.on = `${i18n.close_tip} ${i18n.studio_tip} (ctrl + m)`
+	previews_tip.dataset.off = `${i18n.open_tip}${i18n.studio_tip} (ctrl + m)`
+	previews_tip.dataset.on = `${i18n.close_tip}${i18n.studio_tip} (ctrl + m)`
 	previews_tip.textContent = previews_tip.dataset.off
 
 	const donate_tip = document.createElement('label')
