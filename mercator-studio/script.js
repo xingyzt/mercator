@@ -93,8 +93,8 @@ main > * {
 	pointer-events: all;
 }
 :not(.edit)>#fields{
+	display: none;
 	opacity: 0;
-	pointer-events: none;
 }
 :not(.edit)>#bar{
 	border-radius: 1.5rem;
@@ -714,6 +714,7 @@ input#letterbox {
 	donate.href = 'https://ko-fi.com/xingyzt'
 	donate.target = '_blank'
 	donate.textContent = '🤍'
+	donate.setAttribute('aria-label',i18n.donate_tip)
 	link_tip(donate,donate_tip)
 
 
