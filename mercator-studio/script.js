@@ -381,6 +381,56 @@ input#letterbox {
 
 	// Create inputs
 
+	// Top languages of users: English, Portuguese, Spanish, Italian, Polish
+	// + my mother tongue Chinese
+
+	const names = {
+		light: {	en: 'light', es: 'brillo', fr: 'clarte', pt: 'brilho', zh: '亮度' },
+		contrast: {	en: 'contrast', es: 'contraste', fr: 'contraste', pt: 'contraste', zh: '对比度' },
+		warmth: {	en: 'warmth', es: 'calor', fr: 'chaleur', pt: 'calor', zh: '温度' },
+		tint: { en: 'tint', es: 'tinción', fr: 'verte', pt: 'verde', zh: '色调' },
+		sepia: { en: 'sepia', es: 'sepia', fr: 'sépia', pt: 'sépia', zh: '泛黄' },
+		hue: { en: 'hue', es: 'tono', fr: 'ton', pt: 'matiz', zh: '色相' },
+		saturate: { en: 'saturate', es: 'satura', fr: 'sature', pt: 'satura', zh: '饱和度' },
+		blur: { en: 'blur', es: 'desenfoque' , fr: 'flou', pt: 'desfoque', zh: '模糊' },
+		fade: { en: 'fade', es: 'fundido', fr: 'fondu', pt: 'fundido', zh: '淡出' },
+		vignette: { en: 'vignette', es: 'viñeta', fr: 'vignette', pt: 'vinheta', zh: '虚光照' },
+		rotate: { en: 'rotate', es: 'rota', fr: 'pivote', pt: 'rota', zh: '旋转' },
+		scale: { en: 'scale', es: 'zoom', fr: 'zoom', pt: 'zoom', zh: '大小' },
+		pan: { en: 'pan', es: 'panea', fr: 'pan', pt: 'panea', zh: '左右' },
+		tilt: { en: 'tilt', es: 'inclina', fr: 'incline', pt: 'empina', zh: '上下' },
+		pillarbox: { en: 'pillarbox', es: 'recorta-x', fr: 'taille-x', pt: 'recorta-x', zh: '裁剪左右' },
+		letterbox: { en: 'letterbox', es: 'recorta-y', fr: 'taille-y', pt: 'recorta-y', zh: '裁剪上下' },
+		text: { en: 'text', es: 'texto', fr: 'texte', pt: 'texto', zh: '文字' },
+		mirror: { en: 'mirror', es: 'refleja', fr: 'réfléch', pt: 'refleja', zh: '反射' },
+		freeze: { en: 'freeze', es: 'pausa', fr: 'arrête', pt: 'pausa', zh: '暂停' },
+		presets: { en: 'presets', es: 'preadjustes', fr: 'préréglages', pt: 'preadjustes', zh: '预设' },
+		tooltip_open: { en: 'Open', es: '' },
+		tooltip_close: { en: 'Close', },
+		tooltip_minimize: { en: 'Minimize' },
+	}
+	const types = {
+		light: 'range',
+		contrast: 'range',
+		warmth: 'range',
+		tint: 'range',
+		sepia: 'range_positive',
+		hue: 'range_loop',
+		saturate: 'range',
+		blur: 'range_positive',
+		fade: 'range',
+		vignette: 'range',
+		rotate: 'range_loop',
+		scale: 'range_positive',
+		pan: 'range',
+		tilt: 'range',
+		pillarbox: 'range_positive',
+		letterbox: 'range_positive',
+		text: 'textarea',
+		mirror: 'checkbox',
+		freeze: 'checkbox',
+		presets: 'radio',
+	}
 	const default_values = {
 		light: 0,
 		contrast: 0,
@@ -403,7 +453,6 @@ input#letterbox {
 		freeze: false,
 		presets: 'reset',
 	}
-
 	const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values-20')) || {}
 
 	const preset_values = {
@@ -442,11 +491,11 @@ input#letterbox {
 	}
 
 	const inputs = Object.fromEntries(
-		Object.entries(values)
+		Object.entries(types)
 		.map(([key, value]) => {
 			let input
-			switch (key) {
-				case 'text':
+			switch (type) {
+				case 'textarea':
 					input = document.createElement('textarea')
 					input.rows = 3
 					input.placeholder = '\n🌈 Write text here 🌦️'
@@ -474,8 +523,7 @@ input#letterbox {
 						)
 					})
 					break
-				case 'mirror':
-				case 'freeze':
+				case 'checkbox':
 					input = document.createElement('input')
 					input.type = 'checkbox'
 					input.addEventListener('change', () =>
@@ -495,18 +543,14 @@ input#letterbox {
 						return button
 					}))
 					break
-				default:
+				case 'range':
+				case 'range_loop':
+				case 'range_positive':
 					input = document.createElement('input')
 					input.type = 'range'
 
 					// These inputs go from 0 to 1, the rest -1 to 1
-					input.min = [
-						'blur',
-						'sepia',
-						'scale',
-						'pillarbox',
-						'letterbox'
-					].includes(key) ? 0 : -1
+					input.min = ( type === 'range_positive' ) - 1
 					input.max = 1
 
 					// Use 32 steps normally, 128 if CTRL, 512 if SHIFT
@@ -553,7 +597,7 @@ input#letterbox {
 			if (!(isFirefox && ['warmth', 'tint'].includes(key))) {
 				// Disable the SVG filters for Firefox
 				let label = document.createElement('label')
-				label.textContent = input.id = key
+				label.textContent = input.id = names[key][navigator.language.substr(0,2)] || names[key].en
 
 				fields.append(label)
 				label.append(input)
