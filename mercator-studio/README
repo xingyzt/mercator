@@ -50,6 +50,10 @@ Changelog:
 · 1.6.0 Add fog.
 · 1.5.0 Add vignettes.
 · 1.4.0 Converted to Chrome extension.
+· 1.3.0 Fix the blur slider's range.
+· 1.2.0 Add cropping.
+· 1.1.0 Add a way to reset everything.
+· 1.0.0 Hello world!
 
 Source code: https://github.com/FlyOrBoom/mercator
 
