@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name	Mercator Studio for Google Meet
-// @version	2.1.2
+// @version	2.2.0
 // @description	Change how you look on Google Meet.
 // @author	Xing <dev@x-ing.space> (https://x-ing.space)
 // @copyright	2020-2021, Xing (https://x-ing.space)
@@ -12,7 +12,7 @@
 // @grant	none
 // ==/UserScript==
 (async function mercator_studio() {
-
+try{
 	'use strict'
 
 	// Create shadow root
@@ -376,39 +376,48 @@ input#letterbox {
 }
 `
 
-	const fields = document.createElement('section')
-	fields.id= 'fields'
-
-	// Create inputs
-
+	// Translate labels
 	// Top languages of users: English, Portuguese, Spanish, Italian, Polish
-	// + my mother tongue Chinese
 
-	const names = {
-		light: {	en: 'light', es: 'brillo', fr: 'clarte', pt: 'brilho', zh: '亮度' },
+	const i18n = {
+		light: {	en: 'light', es: 'brillo', fr: 'lumin', pt: 'brilho', zh: '亮度' },
 		contrast: {	en: 'contrast', es: 'contraste', fr: 'contraste', pt: 'contraste', zh: '对比度' },
 		warmth: {	en: 'warmth', es: 'calor', fr: 'chaleur', pt: 'calor', zh: '温度' },
-		tint: { en: 'tint', es: 'tinción', fr: 'verte', pt: 'verde', zh: '色调' },
+		tint: { en: 'tint', es: 'tinción', fr: 'teinte', pt: 'verde', zh: '色调' },
 		sepia: { en: 'sepia', es: 'sepia', fr: 'sépia', pt: 'sépia', zh: '泛黄' },
 		hue: { en: 'hue', es: 'tono', fr: 'ton', pt: 'matiz', zh: '色相' },
 		saturate: { en: 'saturate', es: 'satura', fr: 'sature', pt: 'satura', zh: '饱和度' },
-		blur: { en: 'blur', es: 'desenfoque' , fr: 'flou', pt: 'desfoque', zh: '模糊' },
+		blur: { en: 'blur', es: 'difuminar' , fr: 'flou', pt: 'enevoa', zh: '模糊' },
 		fade: { en: 'fade', es: 'fundido', fr: 'fondu', pt: 'fundido', zh: '淡出' },
 		vignette: { en: 'vignette', es: 'viñeta', fr: 'vignette', pt: 'vinheta', zh: '虚光照' },
 		rotate: { en: 'rotate', es: 'rota', fr: 'pivote', pt: 'rota', zh: '旋转' },
 		scale: { en: 'scale', es: 'zoom', fr: 'zoom', pt: 'zoom', zh: '大小' },
-		pan: { en: 'pan', es: 'panea', fr: 'pan', pt: 'panea', zh: '左右' },
-		tilt: { en: 'tilt', es: 'inclina', fr: 'incline', pt: 'empina', zh: '上下' },
-		pillarbox: { en: 'pillarbox', es: 'recorta-x', fr: 'taille-x', pt: 'recorta-x', zh: '裁剪左右' },
-		letterbox: { en: 'letterbox', es: 'recorta-y', fr: 'taille-y', pt: 'recorta-y', zh: '裁剪上下' },
+		pan: { en: 'pan', es: 'panea', fr: 'pan', pt: 'panea', zh: '左右移动' },
+		tilt: { en: 'tilt', es: 'inclina', fr: 'incline', pt: 'empina', zh: '上下移动' },
+		pillarbox: { en: 'pillarbox', es: 'recorta-h', fr: 'taille-h', pt: 'recorta-h', zh: '左右裁剪' },
+		letterbox: { en: 'letterbox', es: 'recorta-v', fr: 'taille-v', pt: 'recorta-v', zh: '上下裁剪' },
 		text: { en: 'text', es: 'texto', fr: 'texte', pt: 'texto', zh: '文字' },
 		mirror: { en: 'mirror', es: 'refleja', fr: 'réfléch', pt: 'refleja', zh: '反射' },
 		freeze: { en: 'freeze', es: 'pausa', fr: 'arrête', pt: 'pausa', zh: '暂停' },
 		presets: { en: 'presets', es: 'preadjustes', fr: 'préréglages', pt: 'preadjustes', zh: '预设' },
-		tooltip_open: { en: 'Open', es: '' },
-		tooltip_close: { en: 'Close', },
-		tooltip_minimize: { en: 'Minimize' },
+		open_tip: { en: 'Open', es: 'Abre', fr: 'Ouvre', pt: 'Aberto', zh: '打开' },
+		close_tip: { en: 'Close', es: 'Cierra', fr: 'Ferme', pt: 'Feche', zh: '合起' },
+		minimize_tip: { en: 'Minimize', es: 'Minimizas', fr: 'Minimise', pt: 'Minimiza', zh: '合起' },
+		previews_tip: { en: 'previews', es: 'visualizaciones', fr: 'aperçus', pt: 'visualizações', zh: '预览' },
+		studio_tip: { en: 'studio', es: 'estudio', fr: 'studio', pt: 'estúdio', zh: '画室' },
+		text_tip: { en: 'Write text here', es: 'Escribe el texto aquí', fr: 'Écrivez du texte ici', pt: 'Escreva o texto aqui', zh: '在这里写字' },
+		donate_tip: { en: 'Donate to the dev', es: 'Donas al dev', fr: 'Fais un don au dev', pt: 'Você doa para o dev', zh: '捐款给作者' },
 	}
+	const langs = [ 'en', 'es', 'fr', 'pt', 'zh' ]
+	const lang = navigator.language.substr(0,2)
+	if(langs.includes(lang)) main.lang = lang
+	for(const key in i18n) i18n[key] = i18n[key][lang] || i18n[key].en 
+
+	// Create inputs
+	
+	const fields = document.createElement('section')
+	fields.id= 'fields'
+	
 	const types = {
 		light: 'range',
 		contrast: 'range',
@@ -491,14 +500,15 @@ input#letterbox {
 	}
 
 	const inputs = Object.fromEntries(
-		Object.entries(types)
+		Object.entries(values)
 		.map(([key, value]) => {
 			let input
+			const type = types[key]
 			switch (type) {
 				case 'textarea':
 					input = document.createElement('textarea')
 					input.rows = 3
-					input.placeholder = '\n🌈 Write text here 🌦️'
+					input.placeholder = `\n🌈 ${i18n.text_tip} 🌦️`
 					input.addEventListener('input', () => {
 						// String substitution
 						set_value(input, (input.value + '')
@@ -530,7 +540,7 @@ input#letterbox {
 						set_value(input, input.checked)
 					)
 					break
-				case 'presets':
+				case 'radio':
 					input = document.createElement('label')
 					input.append(...Object.keys(preset_values).map(key => {
 						const button = document.createElement('button')
@@ -543,9 +553,7 @@ input#letterbox {
 						return button
 					}))
 					break
-				case 'range':
-				case 'range_loop':
-				case 'range_positive':
+				default:
 					input = document.createElement('input')
 					input.type = 'range'
 
@@ -593,14 +601,15 @@ input#letterbox {
 			}
 
 			input.value = value
+			input.id = key
 
 			if (!(isFirefox && ['warmth', 'tint'].includes(key))) {
 				// Disable the SVG filters for Firefox
 				let label = document.createElement('label')
-				label.textContent = input.id = names[key][navigator.language.substr(0,2)] || names[key].en
+				label.textContent = i18n[key]
 
-				fields.append(label)
 				label.append(input)
+				fields.append(label)
 			}
 			return [key, input]
 		})
@@ -635,19 +644,19 @@ input#letterbox {
 	
 	const minimize_tip = document.createElement('label')
 	minimize_tip.htmlFor = 'minimize'
-	minimize_tip.dataset.off = 'Minimize previews (ctrl + shift + m)'
-	minimize_tip.dataset.on = 'Open previews (ctrl + shift + m)'
+	minimize_tip.dataset.off = `${i18n.minimize_tip} ${i18n.previews_tip} (ctrl + shift + m)`
+	minimize_tip.dataset.on = `${i18n.open_tip} ${i18n.previews_tip} (ctrl + shift + m)`
 	minimize_tip.textContent = minimize_tip.dataset.off
 
 	const previews_tip = document.createElement('label')
 	previews_tip.htmlFor = 'previews'
-	previews_tip.dataset.off = 'Open studio (ctrl + m)'
-	previews_tip.dataset.on = 'Close studio (ctrl + m)'
+	previews_tip.dataset.off = `${i18n.open_tip} ${i18n.studio_tip} (ctrl + m)`
+	previews_tip.dataset.on = `${i18n.close_tip} ${i18n.studio_tip} (ctrl + m)`
 	previews_tip.textContent = previews_tip.dataset.off
 
 	const donate_tip = document.createElement('label')
 	donate_tip.htmlFor = 'donate'
-	donate_tip.textContent = 'Donate to the dev'
+	donate_tip.textContent = i18n.donate_tip
 
 	const tips = document.createElement('section')
 	tips.id = 'tips'
@@ -990,5 +999,5 @@ input#letterbox {
 		(constraints && constraints.video && !constraints.audio) ?
 		new mercator_studio_MediaStream(await navigator.mediaDevices.old_getUserMedia(constraints)) :
 		navigator.mediaDevices.old_getUserMedia(constraints)
-
+}catch(e){alert(e)}
 })()

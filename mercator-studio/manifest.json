@@ -1,6 +1,6 @@
 {
 	"name": "Mercator Studio for Google Meet",
-	"version": "2.1.2",
+	"version": "2.2.0",
 	"author": "Xing (x-ing.space)",
 	"description": "Change how you look on Google Meet with adjustable exposure, vignette, emojis, and more!",
 	"content_scripts": [
