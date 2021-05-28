@@ -412,9 +412,8 @@ input#letterbox {
 		donate_tip: { en: 'Donate to the dev', es: 'Donas al dev', fr: 'Fais un don au dev', pt: 'Você doa para o dev', zh: '捐款给作者' },
 	}
 	const langs = [ 'en', 'es', 'fr', 'pt', 'zh' ]
-	const lang = navigator.language.substr(0,2)
-	if(langs.includes(lang)) main.lang = lang
-	for(const key in i18n) i18n[key] = i18n[key][lang] || i18n[key].en 
+	main.lang = langs.find( x => x === navigator.language.split('-')[0] ) || 'en'
+	for(const key in i18n) i18n[key] = i18n[key][main.lang]
 
 	// Create inputs
 	
