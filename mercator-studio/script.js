@@ -401,6 +401,7 @@ input#letterbox {
 		mirror:	{ en: 'mirror',	es: 'refleja',	fr: 'réfléch',	it: 'rispecchi',	pt: 'refleja',	zh: '反射' },
 		freeze:	{ en: 'freeze',	es: 'pausa',	fr: 'arrête',	it: 'pausa',	pt: 'pausa',	zh: '暂停' },
 		presets:	{ en: 'presets',	es: 'estilos',	fr: 'styles',	it: 'stili',	pt: 'estilos',	zh: '预设' },
+		preset:	{ en: 'preset: ',	es: 'estilo: ',	fr: 'style: ',	it: 'stile: ',	pt: 'estilo: ',	zh: '预设：' },
 		reset:	{ en: 'reset',	es: 'reini',	fr: 'réinit',	it: 'reset',	pt: 'reini',	zh: '重置'	},
 		open_tip:	{ en: 'Open',	es: 'Abre',	fr: 'Ouvre',	it: 'Apri',	pt: 'Aberto',	zh: '打开' },
 		close_tip:	{ en: 'Close',	es: 'Cierra',	fr: 'Ferme',	it: 'Chiudi',	pt: 'Feche',	zh: '合起' },
@@ -546,7 +547,7 @@ input#letterbox {
 					input.append(...Object.keys(preset_values).map(key => {
 						const button = document.createElement('button')
 						button.textContent = ( key === 'reset' ) ? i18n.reset : key
-						button.setAttribute('aria-label', button.textContent)
+						button.setAttribute('aria-label', i18n.preset + button.textContent)
 						button.addEventListener('click', event => {
 							event.preventDefault()
 							Object.entries({...default_values,...preset_values[key]})
