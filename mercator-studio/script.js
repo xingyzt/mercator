@@ -411,7 +411,7 @@ input#letterbox {
 		text_tip:	{ en: 'Write text here',	es: 'Escribe el texto aquí',	fr: 'Écrivez du texte ici',	it: 'Scrivi il testo qui',	pt: 'Escreva o texto aqui',	zh: '在这里写字' },
 		donate_tip:	{ en: 'Donate to the dev',	es: 'Donas al dev',	fr: 'Fais un don au dev',	it: 'Donare al dev',	pt: 'Você doa para o dev',	zh: '捐款给作者' },
 	}
-	const langs = [ 'en', 'es', 'fr', 'pt', 'zh' ]
+	const langs = [ 'en', 'es', 'fr', 'it', 'pt', 'zh' ]
 	main.lang = langs.find( x => x === navigator.language.split('-')[0] ) || 'en'
 	for(const key in i18n) i18n[key] = i18n[key][main.lang]
 
