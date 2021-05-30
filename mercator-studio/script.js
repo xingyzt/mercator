@@ -12,7 +12,6 @@
 // @grant	none
 // ==/UserScript==
 (async function mercator_studio() {
-try{
 	'use strict'
 
 	// Create shadow root
@@ -383,33 +382,34 @@ input#letterbox {
 	// Top languages of users: English, Portuguese, Spanish, Italian, Polish
 
 	const i18n = {
-		light:	{ en: 'light',	es: 'brillo',	fr: 'lumin',	pt: 'brilho',	zh: '亮度' },
-		contrast:	{ en: 'contrast',	es: 'contraste',	fr: 'contraste',	pt: 'contraste',	zh: '对比度' },
-		warmth:	{ en: 'warmth',	es: 'calor',	fr: 'chaleur',	pt: 'calor',	zh: '温度' },
-		tint:	{ en: 'tint',	es: 'tinción',	fr: 'teinte',	pt: 'verde',	zh: '色调' },
-		sepia:	{ en: 'sepia',	es: 'sepia',	fr: 'sépia',	pt: 'sépia',	zh: '泛黄' },
-		hue:	{ en: 'hue',	es: 'tono',	fr: 'ton',	pt: 'matiz',	zh: '色相' },
-		saturate:	{ en:	'saturate',	es: 'satura',	fr: 'sature',	pt: 'satura',	zh: '饱和度' },
-		blur:	{ en: 'blur',	es: 'difuminar'	, fr: 'flou',	pt: 'enevoa',	zh: '模糊' },
-		fade:	{ en: 'fade',	es: 'fundido',	fr: 'fondu',	pt: 'fundido',	zh: '淡出' },
-		vignette:	{ en: 'vignette',	es: 'viñeta',	fr: 'vignette', pt: 'vinheta',	zh: '虚光照' },
-		rotate:	{ en: 'rotate',	es: 'rota',	fr: 'pivote',	pt: 'rota',	zh: '旋转' },
-		scale:	{ en: 'scale',	es: 'zoom',	fr: 'zoom',	pt: 'zoom',	zh: '大小' },
-		pan:	{ en: 'pan',	es: 'panea',	fr: 'pan',	pt: 'panea',	zh: '左右移动' },
-		tilt:	{ en: 'tilt',	es: 'inclina',	fr: 'incline', 	pt: 'empina',	zh: '上下移动' },
-		pillarbox:	{ en: 'pillarbox',	es: 'recorta-h',	fr: 'taille-h',	pt: 'recorta-h', zh: '左右裁剪' },
-		letterbox:	{ en: 'letterbox',	es: 'recorta-v',	fr: 'taille-v',	pt: 'recorta-v', zh: '上下裁剪' },
-		text:	{ en: 'text',	es: 'texto',	fr: 'texte',	pt: 'texto',	zh: '文字' },
-		mirror:	{ en: 'mirror',	es: 'refleja',	fr: 'réfléch',	pt: 'refleja',	zh: '反射' },
-		freeze:	{ en: 'freeze',	es: 'pausa',	fr: 'arrête',	pt: 'pausa',	zh: '暂停' },
-		presets:	{ en: 'presets',	es: 'preadjustes',	fr: 'préréglages',	pt: 'preadjustes',	zh: '预设' },
-		open_tip:	{ en: 'Open',	es: 'Abre',	fr:	'Ouvre', pt:	'Aberto',	zh: '打开' },
-		close_tip:	{ en: 'Close',	es: 'Cierra',	fr:	'Ferme', pt:	'Feche',	zh: '合起' },
-		minimize_tip:	{ en: 'Minimize',	es: 'Minimizas',	fr: 'Minimise',	pt: 'Minimiza',	zh: '合起' },
-		previews_tip:	{ en: ' previews',	es: ' visualizaciones',	fr: ' aperçus',	pt: 'visualizações',	zh: '预览' },
-		studio_tip:	{ en: ' studio',	es: ' estudio',	fr: ' studio',	pt: ' estúdio',	zh: '画室' },
-		text_tip:	{ en: 'Write text here',	es: 'Escribe el texto aquí',	fr: 'Écrivez du texte ici',	pt: 'Escreva o texto aqui',	zh: '在这里写字' },
-		donate_tip:	{ en: 'Donate to the dev',	es: 'Donas al dev',	fr: 'Fais un don au dev',	pt: 'Você doa para o dev',	zh: '捐款给作者' },
+		light:	{ en: 'light',	es: 'brillo',	fr: 'lumin',	it: 'lumin',	pt: 'brilho',	zh: '亮度' },
+		contrast:	{ en: 'contrast',	es: 'contraste',	fr: 'contraste',	it: 'contrasto',	pt: 'contraste',	zh: '对比度' },
+		warmth:	{ en: 'warmth',	es: 'calor',	fr: 'chaleur',	it: 'calore',	pt: 'calor',	zh: '温度' },
+		tint:	{ en: 'tint',	es: 'tinción',	fr: 'teinte',	it: 'tinta',	pt: 'verde',	zh: '色调' },
+		sepia:	{ en: 'sepia',	es: 'sepia',	fr: 'sépia',	it: 'seppia',	pt: 'sépia',	zh: '泛黄' },
+		hue:	{ en: 'hue',	es: 'tono',	fr: 'ton',	it: 'tonalità',	pt: 'matiz',	zh: '色相' },
+		saturate:	{ en: 'saturate',	es: 'satura',	fr: 'sature',	it: 'saturare',	pt: 'satura',	zh: '饱和度' },
+		blur:	{ en: 'blur',	es: 'difuminar',	fr: 'flou',	it: 'sfocatura',	pt: 'enevoa',	zh: '模糊' },
+		fade:	{ en: 'fade',	es: 'fundido',	fr: 'fondu',	it: 'svanisci',	pt: 'fundido',	zh: '淡出' },
+		vignette:	{ en: 'vignette',	es: 'viñeta',	fr: 'vignette',	it: 'vignetta',	pt: 'vinheta',	zh: '虚光照' },
+		rotate:	{ en: 'rotate',	es: 'rota',	fr: 'pivote',	it: 'ruoti',	pt: 'rota',	zh: '旋转' },
+		scale:	{ en: 'scale',	es: 'zoom',	fr: 'zoom',	it: 'scala',	pt: 'zoom',	zh: '大小' },
+		pan:	{ en: 'pan',	es: 'panea',	fr: 'pan',	it: 'sposti-h',	pt: 'panea',	zh: '左右移动' },
+		tilt:	{ en: 'tilt',	es: 'inclina',	fr: 'incline', 	it: 'sposti-v',	pt: 'empina',	zh: '上下移动' },
+		pillarbox:	{ en: 'pillarbox',	es: 'recorta-h',	fr: 'taille-h',	it: 'tagli-h',	pt: 'recorta-h', zh: '左右裁剪' },
+		letterbox:	{ en: 'letterbox',	es: 'recorta-v',	fr: 'taille-v',	it: 'tagli-v',	pt: 'recorta-v', zh: '上下裁剪' },
+		text:	{ en: 'text',	es: 'texto',	fr: 'texte',	it: 'testo',	pt: 'texto',	zh: '文字' },
+		mirror:	{ en: 'mirror',	es: 'refleja',	fr: 'réfléch',	it: 'rispecchi',	pt: 'refleja',	zh: '反射' },
+		freeze:	{ en: 'freeze',	es: 'pausa',	fr: 'arrête',	it: 'pausa',	pt: 'pausa',	zh: '暂停' },
+		presets:	{ en: 'presets',	es: 'preadjustes',	fr: 'préréglages',	it: 'program',	pt: 'preadjustes',	zh: '预设' },
+		reset:	{ en: 'reset',	es: 'reini',	fr: 'réinit',	it: 'reset',	pt: 'reini',	zh: '重置'	},
+		open_tip:	{ en: 'Open',	es: 'Abre',	fr: 'Ouvre',	it: 'Apri',	pt: 'Aberto',	zh: '打开' },
+		close_tip:	{ en: 'Close',	es: 'Cierra',	fr: 'Ferme',	it: 'Chiudi',	pt: 'Feche',	zh: '合起' },
+		minimize_tip:	{ en: 'Minimize',	es: 'Minimizas',	fr: 'Minimise',	it: 'Minimizzi',	pt: 'Minimiza',	zh: '合起' },
+		previews_tip:	{ en: ' previews',	es: ' visualizaciones',	fr: ' aperçus',	it: ' anteprima',	pt: 'visualizações',	zh: '预览' },
+		studio_tip:	{ en: ' studio',	es: ' estudio',	fr: ' studio',	it: ' studio',	pt: ' estúdio',	zh: '画室' },
+		text_tip:	{ en: 'Write text here',	es: 'Escribe el texto aquí',	fr: 'Écrivez du texte ici',	it: 'Scrivi il testo qui',	pt: 'Escreva o texto aqui',	zh: '在这里写字' },
+		donate_tip:	{ en: 'Donate to the dev',	es: 'Donas al dev',	fr: 'Fais un don au dev',	it: 'Donare al dev',	pt: 'Você doa para o dev',	zh: '捐款给作者' },
 	}
 	const langs = [ 'en', 'es', 'fr', 'pt', 'zh' ]
 	main.lang = langs.find( x => x === navigator.language.split('-')[0] ) || 'en'
@@ -546,7 +546,8 @@ input#letterbox {
 					input = document.createElement('label')
 					input.append(...Object.keys(preset_values).map(key => {
 						const button = document.createElement('button')
-						button.textContent = key
+						button.textContent = ( key === 'reset' ) ? i18n.reset : key
+						button.setAttribute('aria-label', button.textContent)
 						button.addEventListener('click', event => {
 							event.preventDefault()
 							Object.entries({...default_values,...preset_values[key]})
@@ -1002,5 +1003,4 @@ input#letterbox {
 		(constraints && constraints.video && !constraints.audio) ?
 		new mercator_studio_MediaStream(await navigator.mediaDevices.old_getUserMedia(constraints)) :
 		navigator.mediaDevices.old_getUserMedia(constraints)
-}catch(e){alert(e)}
 })()
