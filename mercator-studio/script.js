@@ -64,7 +64,6 @@ main {
 	--bg: #3C4042;
 	--bg-x: #434649;
 	--bg-xx: #505457;
-	--dark: black;
 	--txt: white;	
 
 	font-family: ${display_fonts};
@@ -256,7 +255,7 @@ main > * {
 	border-width: 0.15rem;
 	border-color: var(--txt);
 }
-#presets {
+#fields > label > #presets {
 	overflow: hidden;
 	height: auto;
 	margin-bottom: -0.15rem;
@@ -276,7 +275,7 @@ main > * {
 	border-radius: 0 0.25rem 0.25rem 0;
 }
 #presets>:hover {
-	background: var(--dark);
+	background: var(--bg);
 }
 #presets>:focus {
 	background: var(--txt);
@@ -295,7 +294,7 @@ main > * {
 	color: inherit;
 }
 #text::selection {
-	color: var(--dark);
+	color: var(--bg);
 	background: var(--txt);
 }
 input[type=checkbox] {
@@ -401,7 +400,7 @@ input#letterbox {
 		text:	{ en: 'text',	es: 'texto',	fr: 'texte',	it: 'testo',	pt: 'texto',	zh: '文字' },
 		mirror:	{ en: 'mirror',	es: 'refleja',	fr: 'réfléch',	it: 'rispecchi',	pt: 'refleja',	zh: '反射' },
 		freeze:	{ en: 'freeze',	es: 'pausa',	fr: 'arrête',	it: 'pausa',	pt: 'pausa',	zh: '暂停' },
-		presets:	{ en: 'presets',	es: 'preadjustes',	fr: 'préréglages',	it: 'program',	pt: 'preadjustes',	zh: '预设' },
+		presets:	{ en: 'presets',	es: 'estilos',	fr: 'styles',	it: 'stili',	pt: 'estilos',	zh: '预设' },
 		reset:	{ en: 'reset',	es: 'reini',	fr: 'réinit',	it: 'reset',	pt: 'reini',	zh: '重置'	},
 		open_tip:	{ en: 'Open',	es: 'Abre',	fr: 'Ouvre',	it: 'Apri',	pt: 'Aberto',	zh: '打开' },
 		close_tip:	{ en: 'Close',	es: 'Cierra',	fr: 'Ferme',	it: 'Chiudi',	pt: 'Feche',	zh: '合起' },
