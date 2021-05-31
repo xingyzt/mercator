@@ -87,9 +87,8 @@ main {
 	box-shadow: 0 .1rem .25rem #0004;
 	pointer-events: all;
 }
-:not(.edit) > #fields{
+:not(.edit) > #fields {
 	display: none;
-	opacity: 0;
 }
 :not(.edit) > #bar{
 	border-radius: 1.5rem;
@@ -144,20 +143,19 @@ main {
 /* -- */
 
 #bar {
-	margin-top: .5rem;
+	margin-top: 0.5rem;
 	overflow: hidden;
 	flex: 0 0 auto;
 	display: flex;
 }
-.minimize # #bar {
-	width: 1.5rem;
+.minimize > #bar {
+	width: 1rem;
 }
 #bar > * {
 	background: var(--bg);
 }
-#bar > #minimize,
-#bar > #donate {
-	font-size: .5rem;
+#bar > :not(#previews) {
+	font-size: 0.5rem;
 	flex: 0 0 1.5rem;
 	width: var(--radius);
 	text-align: center;
@@ -165,18 +163,15 @@ main {
 	height: 100%;
 	overflow-wrap: anywhere;
 }
-.edit > #bar > #minimize,
-.edit > #bar > #donate,
-.edit > #bar > #previwes > h2,
+.edit > #bar > :not(#previews),
+.edit > #bar > #previews > h2,
 .minimize #bar :not(#minimize) {
 	display: none;
 }
 :not(.minimize) > #bar > #minimize:hover {
 	padding-right: 2px;
 }
-.minimize > #bar:hover > #minimize {
-	padding-left: 2px;
-}
+.minimize > #bar:hover > #minimize,
 #donate:hover {
 	padding-left: 2px;
 }
@@ -188,8 +183,7 @@ main {
 	width: 0;
 	display: flex;
 }
-#previews > video,
-#previews > canvas {
+#previews > :not(h2) {
 	width: auto;
 	height: auto;
 	background-image: linear-gradient(90deg,
@@ -200,8 +194,7 @@ main {
 		hsl( 36, 100%, 70%) 83.3%,	hsl( 20,90%, 70%) 83.3%
 	);
 }
-.edit > #bar > #previews > video,
-.edit > #bar > #previews > canvas {
+.edit > #bar > #previews > :not(h2) {
 	height: auto;
 	max-width: 50%;
 	object-fit: contain;
@@ -232,8 +225,8 @@ main {
 #presets,
 #fields > label {
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
+	justify-content: space-between;
 }
 #fields > label+label {
 	margin-top: 0.5rem;
@@ -251,7 +244,6 @@ main {
 #presets:focus-within,
 #fields > label > :focus,
 #fields > label > :hover {
-	border-width: 0.15rem;
 	border-color: var(--txt);
 }
 #fields > label > #presets {
