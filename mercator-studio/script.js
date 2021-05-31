@@ -928,6 +928,7 @@ input#letterbox {
 
 					const vw = 0.9 * (w - 2 * pillarbox)
 					const vh = 0.9 * (h - 2 * letterbox)
+					const line_count = text.length
 
 					context.font = `bold ${vw}px ${display_fonts}`
 
@@ -940,7 +941,7 @@ input#letterbox {
 						), 0 // Accumulator starts at 0
 					)
 
-					const font_size = Math.min(vw ** 2 / text_width, vh ** 2 / line_height / text.length)
+					const font_size = Math.min(vw ** 2 / text_width, vh ** 2 / line_height / line_count)
 
 					// Found the font size. Time to draw!
 
@@ -955,7 +956,7 @@ input#letterbox {
 
 					text.forEach((line, index) => {
 						let x = center[0]
-						let y = center[1] + line_height * (index - text.length / 2 + 0.5)
+						let y = center[1] + line_height * (index - line_count / 2 + 0.5)
 						context.strokeText(line, x, y)
 						context.fillText(line, x, y)
 					})
@@ -968,9 +969,7 @@ input#letterbox {
 			task = setInterval(draw, 33)
 			const new_stream = canvases.display.element.captureStream(30)
 			new_stream.addEventListener('inactive', () => {
-				old_stream.getTracks().forEach(track => {
-					track.stop()
-				})
+				old_stream.getTracks().forEach(track => track.stop())
 				canvases.display.context.clearRect(0, 0, w, h)
 				video.srcObject = null
 			})
