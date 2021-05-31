@@ -36,23 +36,22 @@ a, button {
 	cursor: pointer;
 	text-align: center;
 }
-main, main *, a, button {
+main, main * {
 	box-sizing: border-box;
 	transition-duration: 200ms;
 	transition-property: opacity, background, transform, padding, border-radius, border-color;
-
 	color: inherit;
 	font-family: inherit;
 	font-size: inherit;
 	font-weight: inherit;
 }
-:not(input) {
-	user-select: none;
-}
 @media (prefers-reduced-motion) {
-	* {
+	main, main * {
 		transition-duration: 0s;
 	}
+}
+:not(input) {
+	user-select: none;
 }
 :focus {
 	outline: 0;
@@ -79,8 +78,6 @@ main {
 	flex-direction: column-reverse;
 	overflow: hidden;
 	pointer-events: none;
-}
-main > * {
 	color: var(--txt);
 }
 #fields,
@@ -90,23 +87,23 @@ main > * {
 	box-shadow: 0 .1rem .25rem #0004;
 	pointer-events: all;
 }
-:not(.edit)>#fields{
+:not(.edit) > #fields{
 	display: none;
 	opacity: 0;
 }
-:not(.edit)>#bar{
+:not(.edit) > #bar{
 	border-radius: 1.5rem;
 	flex-basis: 4rem;
 }
 #text:hover, #text:focus,
 #presets:hover,
-#bar>:hover, #bar>:focus,
+#bar > :hover, #bar > :focus,
 #tips > * {
 	background: var(--bg-x);
 }
 #text:hover:focus,
 #presets:hover,
-#bar>:hover:focus {
+#bar > :hover:focus {
 	background: var(--bg-xx);
 }
 
@@ -130,14 +127,14 @@ main > * {
 #tips > :not(.show) {
 	opacity: 0;
 }
-#tips > [for="minimize"] {
+#tips > [for=minimize] {
 	left: 0;
 }
-#tips > [for="previews"] {
+#tips > [for=previews] {
 	left: 50%;
 	transform: translateX(-50%);
 }
-#tips > [for="donate"] {
+#tips > [for=donate] {
 	right: 0;
 }
 .edit > #tips > * {
@@ -152,14 +149,14 @@ main > * {
 	flex: 0 0 auto;
 	display: flex;
 }
-.minimize #bar {
-	width: 1rem;
+.minimize # #bar {
+	width: 1.5rem;
 }
 #bar > * {
 	background: var(--bg);
 }
-#bar #minimize,
-#bar #donate {
+#bar > #minimize,
+#bar > #donate {
 	font-size: .5rem;
 	flex: 0 0 1.5rem;
 	width: var(--radius);
@@ -168,20 +165,22 @@ main > * {
 	height: 100%;
 	overflow-wrap: anywhere;
 }
-.edit #bar #minimize,
-.edit #bar #donate,
-.edit #bar h2,
+.edit > #bar > #minimize,
+.edit > #bar > #donate,
+.edit > #bar > #previwes > h2,
 .minimize #bar :not(#minimize) {
 	display: none;
 }
-:not(.minimize) #minimize:hover,
-.minimize #minimize:not(:hover) {
+:not(.minimize) > #bar > #minimize:hover {
 	padding-right: 2px;
+}
+.minimize > #bar:hover > #minimize {
+	padding-left: 2px;
 }
 #donate:hover {
 	padding-left: 2px;
 }
-.minimize #minimize{
+.minimize > #bar > #minimize{
 	flex-basis: 1rem;
 }
 #previews {
@@ -189,8 +188,8 @@ main > * {
 	width: 0;
 	display: flex;
 }
-#previews video,
-#previews canvas {
+#previews > video,
+#previews > canvas {
 	width: auto;
 	height: auto;
 	background-image: linear-gradient(90deg,
@@ -201,13 +200,13 @@ main > * {
 		hsl( 36, 100%, 70%) 83.3%,	hsl( 20,90%, 70%) 83.3%
 	);
 }
-.edit #previews video,
-.edit #previews canvas {
+.edit > #bar > #previews > video,
+.edit > #bar > #previews > canvas {
 	height: auto;
 	max-width: 50%;
 	object-fit: contain;
 }
-#previews>h2 {
+#previews > h2 {
 	flex-grow: 1;
 	font-size: .9rem;
 	line-height: 1.4;
@@ -216,7 +215,7 @@ main > * {
 	align-items: center;
 	justify-content: center;
 }
-#previews:hover>h2 {
+#previews:hover > h2 {
 	transform: translateY(-2px);
 }
 
@@ -258,17 +257,16 @@ main > * {
 #fields > label > #presets {
 	overflow: hidden;
 	height: 1.5rem;
-	margin-bottom: -0.15rem;
 }
 #presets > * {
 	flex-grow: 1;
 	height: 100%;
 	font-weight: normal;
 }
-#presets>:hover {
+#presets > :hover {
 	background: var(--bg);
 }
-#presets>:focus {
+#presets > :focus {
 	background: var(--txt);
 	color: var(--bg);
 }
@@ -353,7 +351,7 @@ input#sepia {
 }
 input#hue,
 input#rotate {
-	background: linear-gradient(90deg, hsl(0, 80%, 75%), hsl(60, 80%, 75%), hsl(120, 80%, 75%), hsl(180, 80%, 75%), hsl(240, 80%, 75%), hsl(300, 80%, 75%), hsl(0, 80%, 75%), hsl(60, 80%, 75%), hsl(120, 80%, 75%), hsl(180, 80%, 75%), hsl(240, 80%, 75%), hsl(300, 80%, 75%), hsl(0, 80%, 75%))
+	--gradient: var(--rainbow), var(--rainbow)
 }
 input#saturate {
 	--gradient: gray, #8880 50%, blue, magenta
@@ -541,7 +539,7 @@ input#letterbox {
 					input.append(...Object.keys(preset_values).map(key => {
 						const button = document.createElement('button')
 						const reset = key === 'reset'
-						button.textContent =  reset ? i18n.reset : key
+						button.textContent = reset ? i18n.reset : key
 						button.setAttribute('aria-label', i18n.preset + button.textContent)
 						button.addEventListener('click', event => {
 							event.preventDefault()
