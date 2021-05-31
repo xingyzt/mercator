@@ -495,9 +495,9 @@ input#letterbox {
 					input = document.createElement('textarea')
 					input.rows = 3
 					input.placeholder = `\n🌈 ${i18n.text_tip} 🌦️`
-					input.addEventListener('input', () => {
+					input.addEventListener('input', () =>
 						// String substitution
-						set_value(input, (input.value + '')
+						set_value(input, input.value
 							.replace(/--/g, '―')
 							.replace(/\\sqrt/g, '√')
 							.replace(/\\pm/g, '±')
@@ -506,18 +506,12 @@ input#letterbox {
 							.replace(/\\over/g, '∕')
 							// Numbers starting with ^ (superscript) or _ (subscript)
 							.replace(/(\^|\_)(\d+)/g, (_, sign, number) =>
-								number.split('').map(digit =>
-									String.fromCharCode(digit.charCodeAt(0) + (
-										// Difference in character codes between subscript numbers and their regular equivalents.
-										sign === '_' ? 8272 :
-										// Superscript 1, 2 & 3 are in separate ranges.
-										digit === '1' ? 136 :
-										'23'.includes(digit) ? 128 : 8256
-									))
-								).join('')
+								number.split('')
+								.map( char => '₀₁₂₃₄₅₆₇₈₉⁰¹²³⁴⁵⁶⁷⁸⁹'[ (sign === '^')*10 + parseInt(char) ] )
+								.join('')
 							)
 						)
-					})
+					)
 					break
 				case 'checkbox':
 					input = document.createElement('input')
