@@ -1,9 +1,5 @@
 Mercator Studio gives you fine control over your appearance on Google Meet.
 
-Write text & emoji in front of your face:
-· Auto-adjusts size to fit any length of text onto the screen.
-· Auto-converts \sqrt to √, \times to ×, \cdot to ·, \pm to ±, ^number to ¹², and _number to ₄₂.
-
 Precisely adjust lighting and colors:
 · Exposure & Contrast
 · Temperature & Tint
@@ -16,15 +12,19 @@ Move the focus to where you want it:
 · Horizontal & Vertical Translate
 · Pillarbox & Letterbox Crop
 
+Write text & emoji in front of your face:
+· Auto-adjusts size to fit any length of text onto the screen.
+· Auto-converts \sqrt to √, \times to ×, \cdot to ·, \pm to ±, ^number to ¹², and _number to ₄₂.
+
 Somewhat nice presets:
 · Concorde
 · Mono
 · Matcha
 · Deepfry
 
-Scroll, drag, or use arrow keys on the sliders to adjust, right click or press 0 on them to reset, and hold down Ctrl or Shift for finer steps.
+Scroll, drag, or use arrow keys on the sliders to adjust; Right click or press 0 on them to reset; And hold down Ctrl or Shift for finer steps.
 
-Ctrl+M to open/close the interface, Ctrl+Shift+M to minimize it.
+Ctrl + M to open/close the interface. Ctrl + Shift + M to minimize it.
 
 Translated for português, español, italiano, français, & 中文.
 
@@ -53,11 +53,11 @@ Changelog:
 · 1.1 Add a way to reset everything.
 · 1.0 Hello world!
 
-Source code: https://github.com/FlyOrBoom/mercator
+Source code: https://github.com/FlyOrBoom/mercator.
 
-Available for other browsers: https://x-ing.space/mercator
+Available for other browsers: https://x-ing.space/mercator.
 Unfortunately, temperature & tint filters don't work in Firefox.
 
-(C) Xing Liu 2020-2021, MIT License
+(C) Xing Liu 2020–2021, MIT License.
 
 Check out other things I’ve made at https://x-ing.space.

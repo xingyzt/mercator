@@ -257,22 +257,13 @@ main > * {
 }
 #fields > label > #presets {
 	overflow: hidden;
-	height: auto;
+	height: 1.5rem;
 	margin-bottom: -0.15rem;
 }
-#presets>* {
-	border: 0;
-	border-radius: 0;
-	background: transparent;
+#presets > * {
 	flex-grow: 1;
-	height: 1.3rem;
+	height: 100%;
 	font-weight: normal;
-}
-#presets>:first-child {
-	border-radius: 0.25rem 0 0 0.25rem;
-}
-#presets>:last-child {
-	border-radius: 0 0.25rem 0.25rem 0;
 }
 #presets>:hover {
 	background: var(--bg);
@@ -464,7 +455,9 @@ input#letterbox {
 		freeze: false,
 		presets: 'reset',
 	}
-	const saved_values = JSON.parse(window.localStorage.getItem('mercator-studio-values-20')) || {}
+	const saved_values = Object.fromEntries(Object.entries(
+		JSON.parse(window.localStorage.getItem('mercator-studio-values-20')) || {}
+	).filter(([key]) => key in default_values))
 
 	const preset_values = {
 		reset: {},
@@ -498,7 +491,8 @@ input#letterbox {
 	// Clone default values into updating object
 	const values = {
 		...default_values,
-		...saved_values
+		...saved_values,
+		freeze: false,
 	}
 
 	const inputs = Object.fromEntries(
@@ -546,12 +540,14 @@ input#letterbox {
 					input = document.createElement('label')
 					input.append(...Object.keys(preset_values).map(key => {
 						const button = document.createElement('button')
-						button.textContent = ( key === 'reset' ) ? i18n.reset : key
+						const reset = key === 'reset'
+						button.textContent =  reset ? i18n.reset : key
 						button.setAttribute('aria-label', i18n.preset + button.textContent)
 						button.addEventListener('click', event => {
 							event.preventDefault()
 							Object.entries({...default_values,...preset_values[key]})
-								.forEach(([key, value]) => set_value(inputs[key], value))
+							.filter(([key]) => !['radio','checkbox'].includes(types[key]))
+							.forEach(([key, value]) => set_value(inputs[key], value))
 						})
 						return button
 					}))
@@ -603,7 +599,7 @@ input#letterbox {
 					})
 			}
 
-			input.value = value
+			set_value(input,value)
 			input.id = key
 
 			if (!(isFirefox && ['warmth', 'tint'].includes(key))) {
@@ -619,7 +615,7 @@ input#letterbox {
 	)
 
 	function set_value(input, value) {
-		values[input.id] = input.value = value
+		values[input.id] = input.value = input.checked = value
 		window.localStorage.setItem('mercator-studio-values-20', JSON.stringify(values))
 	}
 	function reset_value(input) {
@@ -812,8 +808,8 @@ input#letterbox {
 				image: document.createElement('img'),
 				canvas: canvases.freeze,
 			}
-			inputs.freeze.addEventListener('change', e => {
-				freeze.state = freeze.init = e.target.checked
+			inputs.freeze.addEventListener('change', () => {
+				freeze.state = freeze.init = inputs.freeze.checked
 			})
 
 			// Amp: for values that can range from 0 to +infinity, amp**value does the mapping.
