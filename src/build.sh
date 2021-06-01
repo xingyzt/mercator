@@ -1,6 +1,9 @@
-zip -r dist/extension.zip src/icon.png src/script.js src/injector.js src/manifest.json
+zip -rX dist/extension.zip \
+icon.png src/script.js src/injector.js src/manifest.json
 
-curl -X POST -s --data-urlencode 'input@script.js' https://javascript-minifier.com/raw > dist/bookmarklet.js
+curl -X POST -s --data-urlencode 'input@src/script.js' \
+https://javascript-minifier.com/raw > dist/bookmarklet.js
+
 sed -i "s/'/\`/g" dist/bookmarklet.js
 sed -i 's/!/(/' dist/bookmarklet.js
 sed -i 's/();$/)()/' dist/bookmarklet.js
