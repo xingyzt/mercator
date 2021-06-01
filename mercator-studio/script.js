@@ -762,215 +762,210 @@ input#letterbox {
 	const amp = 8
 
 	let task = 0
-
+ 
+	const freeze = {
+		state: false,
+		init: false,
+		image: document.createElement('img'),
+		canvas: canvases.freeze,
+	}
+	inputs.freeze.addEventListener('change', () => {
+		freeze.state = freeze.init = inputs.freeze.checked
+	})
 	// Background Blur for Google Meet does this (hello@brownfoxlabs.com)
+
+	function draw( width, height ) {
+		
+		const center = [width / 2, height / 2]
+		const fill = [0, 0, width, height]
+		const { context } = canvases.buffer
+		
+		context.clearRect(...fill)
+
+		// Get values
+
+		inputs.hue.value %= 1
+		inputs.rotate.value %= 1
+
+		let v = values
+
+		let light = percentage(polynomial_map(v.light, 2))
+		let contrast = percentage(polynomial_map(v.contrast, 3))
+		let warmth = isFirefox ? 0 : v.warmth
+		let tint = isFirefox ? 0 : v.tint
+		let sepia = percentage(v.sepia)
+		let hue = 360 * v.hue + 'deg'
+		let saturate = percentage(amp ** v.saturate)
+		let blur = v.blur * width / 16 + 'px'
+		let fade = v.fade
+		let vignette = v.vignette
+		let rotate = v.rotate * 2 * Math.PI
+		let scale = polynomial_map(v.scale, 2)
+		let mirror = v.mirror
+		let move_x = v.pan * width
+		let move_y = v.tilt * height
+		let pillarbox = v.pillarbox * width / 2
+		let letterbox = v.letterbox * height / 2
+		let text = v.text.split('\n')
+
+		// Color balance
+
+		components.R.setAttribute('tableValues', polynomial_table(-warmth + tint / 2))
+		components.G.setAttribute('tableValues', polynomial_table(-tint))
+		components.B.setAttribute('tableValues', polynomial_table( warmth + tint / 2))
+
+		// CSS filters
+
+		context.filter = (`
+			brightness(${light})
+			contrast(${contrast})
+			${'url(#filter)'.repeat(Boolean(warmth||tint))}
+			sepia(${sepia})
+			hue-rotate(${hue})
+			saturate(${saturate})
+			blur(${blur})
+		`)
+
+		// Linear transformations: rotation, scaling, translation
+		context.translate(...center)
+		if (rotate) context.rotate(rotate)
+		if (scale - 1) context.scale(scale, scale)
+		if (mirror) context.scale(-1, 1)
+		if (move_x || move_y) context.translate(move_x, -move_y)
+		context.translate(...center.map(x=>-x))
+
+		// Apply CSS filters & linear transformations
+		if (freeze.init) {
+			freeze.canvas.context.drawImage(video, ...fill)
+			let data = freeze.canvas.element.toDataURL('image/png')
+			freeze.image.setAttribute('src', data)
+			freeze.init = false
+		} else if (freeze.state) {
+			// Draw frozen image
+			context.drawImage(freeze.image, ...fill)
+		} else if (video.srcObject) {
+			// Draw video
+			context.drawImage(video, ...fill)
+		} else {
+			// Draw preview stripes if video doesn't exist
+			'18, 100%, 68%; -10,100%,80%; 5, 90%, 72%; 48, 100%, 75%; 36, 100%, 70%; 20, 90%, 70%'
+			.split(';')
+				.forEach((color, index) => {
+					context.fillStyle = `hsl(${color})`
+					context.fillRect(index * width / 6, 0, width / 6, height)
+				})
+		}
+
+		// Clear transforms & filters
+		context.setTransform(1, 0, 0, 1, 0, 0)
+		context.filter = 'brightness(1)'
+
+		// Fade: cover the entire image with a single color
+		if (fade) {
+			let fade_lum = Math.sign(fade) * 100
+			let fade_alpha = Math.abs(fade)
+
+			context.fillStyle = `hsla(0,0%,${fade_lum}%,${fade_alpha})`
+			context.fillRect(...fill)
+		}
+
+		// Vignette: cover the edges of the image with a single color
+		if (vignette) {
+			let vignette_lum = Math.sign(vignette) * 100
+			let vignette_alpha = Math.abs(vignette)
+			let vignette_gradient = context.createRadialGradient(
+				...center, 0,
+				...center, center.reduce( (x,y) => Math.sqrt(x**2 + y**2) )
+			)
+
+			vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
+			vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
+
+			context.fillStyle = vignette_gradient
+			context.fillRect(...fill)
+
+		}
+
+		// Pillarbox: crop width
+		if (pillarbox) {
+			context.clearRect(0, 0, pillarbox, height)
+			context.clearRect(width, 0, -pillarbox, height)
+		}
+
+		// Letterbox: crop height
+		if (letterbox) {
+			context.clearRect(0, 0, width, letterbox)
+			context.clearRect(0, height, width, -letterbox)
+		}
+
+		// Text:
+		if (text) {
+
+			// Find out the font size that just fits
+
+			const vw = 0.9 * (width - 2 * pillarbox)
+			const vh = 0.9 * (height - 2 * letterbox)
+			const line_count = text.length
+
+			context.font = `bold ${vw}px ${display_fonts}`
+			context.textAlign = 'center'
+			context.textBaseline = 'middle'
+
+			let char_metrics = context.measureText('0')
+			let line_height = char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent
+			let text_width = text.reduce(
+				(max_width, current_line) => Math.max(
+					max_width,
+					context.measureText(current_line).width
+				), 0 // Accumulator starts at 0
+			)
+
+			const font_size = Math.min(vw ** 2 / text_width, vh ** 2 / line_height / line_count)
+
+			// Found the font size. Time to draw!
+
+			context.font = `bold ${font_size}px ${display_fonts}`
+
+			char_metrics = context.measureText('0')
+			line_height = 1.5 * (char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent)
+
+			context.lineWidth = font_size / 8
+			context.strokeStyle = 'black'
+			context.fillStyle = 'white'
+
+			text.forEach((line, index) => {
+				let position = [ ...center ]
+				position[1] += line_height * (index - line_count / 2 + 0.5)
+				context.strokeText(line, ...position)
+				context.fillText(line, ...position)
+			})
+		}
+
+		canvases.display.context.clearRect(...fill)
+		canvases.display.context.drawImage(canvases.buffer.element, 0, 0)
+	}
 
 	class mercator_studio_MediaStream extends MediaStream {
 
 		constructor(old_stream) {
 
 			// Copy original stream settings
-
 			super(old_stream)
-
 			video.srcObject = old_stream
 
-			const old_stream_settings = old_stream.getVideoTracks()[0].getSettings()
-
-			const w = old_stream_settings.width
-			const h = old_stream_settings.height
-			const center = [w / 2, h / 2]
+			const { width, height } = old_stream.getVideoTracks()[0].getSettings()
 			Object.values(canvases).forEach(canvas => {
-				canvas.element.width = w
-				canvas.element.height = h
+				canvas.element.width = width
+				canvas.element.height = height
 			})
-			const canvas = canvases.buffer.buffer
-			const context = canvases.buffer.context
-			const freeze = {
-				state: false,
-				init: false,
-				image: document.createElement('img'),
-				canvas: canvases.freeze,
-			}
-			inputs.freeze.addEventListener('change', () => {
-				freeze.state = freeze.init = inputs.freeze.checked
-			})
-
 			// Amp: for values that can range from 0 to +infinity, amp**value does the mapping.
-
-			context.textAlign = 'center'
-			context.textBaseline = 'middle'
-
-			function draw() {
-
-				context.clearRect(0, 0, w, h)
-
-				// Get values
-
-				inputs.hue.value %= 1
-				inputs.rotate.value %= 1
-
-				let v = values
-
-				let light = percentage(polynomial_map(v.light, 2))
-				let contrast = percentage(polynomial_map(v.contrast, 3))
-				let warmth = isFirefox ? 0 : v.warmth
-				let tint = isFirefox ? 0 : v.tint
-				let sepia = percentage(v.sepia)
-				let hue = 360 * v.hue + 'deg'
-				let saturate = percentage(amp ** v.saturate)
-				let blur = v.blur * w / 16 + 'px'
-				let fade = v.fade
-				let vignette = v.vignette
-				let rotate = v.rotate * 2 * Math.PI
-				let scale = polynomial_map(v.scale, 2)
-				let mirror = v.mirror
-				let move_x = v.pan * w
-				let move_y = v.tilt * h
-				let pillarbox = v.pillarbox * w / 2
-				let letterbox = v.letterbox * h / 2
-				let text = v.text.split('\n')
-
-				// Color balance
-
-				components.R.setAttribute('tableValues', polynomial_table(-warmth + tint / 2))
-				components.G.setAttribute('tableValues', polynomial_table(-tint))
-				components.B.setAttribute('tableValues', polynomial_table( warmth + tint / 2))
-
-				// CSS filters
-
-				context.filter = (`
-					brightness(${light})
-					contrast(${contrast})
-					${'url(#filter)'.repeat(Boolean(warmth||tint))}
-					sepia(${sepia})
-					hue-rotate(${hue})
-					saturate(${saturate})
-					blur(${blur})
-				`)
-
-				// Linear transformations: rotation, scaling, translation
-				context.translate(...center)
-				if (rotate) context.rotate(rotate)
-				if (scale - 1) context.scale(scale, scale)
-				if (mirror) context.scale(-1, 1)
-				if (move_x || move_y) context.translate(move_x, move_y)
-				context.translate(-w / 2, -h / 2)
-
-				// Apply CSS filters & linear transformations
-				if (freeze.init) {
-					freeze.canvas.context.drawImage(video, 0, 0, w, h)
-					let data = freeze.canvas.element.toDataURL('image/png')
-					freeze.image.setAttribute('src', data)
-					freeze.init = false
-				} else if (freeze.state) {
-					// Draw frozen image
-					context.drawImage(freeze.image, 0, 0, w, h)
-				} else if (video.srcObject) {
-					// Draw video
-					context.drawImage(video, 0, 0, w, h)
-				} else {
-					// Draw preview stripes if video doesn't exist
-					'18, 100%, 68%; -10,100%,80%; 5, 90%, 72%; 48, 100%, 75%; 36, 100%, 70%; 20, 90%, 70%'
-					.split(';')
-						.forEach((color, index) => {
-							context.fillStyle = `hsl(${color})`
-							context.fillRect(index * w / 6, 0, w / 6, h)
-						})
-				}
-
-				// Clear transforms & filters
-				context.setTransform(1, 0, 0, 1, 0, 0)
-				context.filter = 'brightness(1)'
-
-				// Fade: cover the entire image with a single color
-				if (fade) {
-					let fade_lum = Math.sign(fade) * 100
-					let fade_alpha = Math.abs(fade)
-
-					context.fillStyle = `hsla(0,0%,${fade_lum}%,${fade_alpha})`
-					context.fillRect(0, 0, w, h)
-				}
-
-				// Vignette: cover the edges of the image with a single color
-				if (vignette) {
-					let vignette_lum = Math.sign(vignette) * 100
-					let vignette_alpha = Math.abs(vignette)
-					let vignette_gradient = context.createRadialGradient(
-						...center, 0,
-						...center, Math.sqrt((w / 2) ** 2 + (h / 2) ** 2)
-					)
-
-					vignette_gradient.addColorStop(0, `hsla(0,0%,${vignette_lum}%,0`)
-					vignette_gradient.addColorStop(1, `hsla(0,0%,${vignette_lum}%,${vignette_alpha}`)
-
-					context.fillStyle = vignette_gradient
-					context.fillRect(0, 0, w, h)
-
-				}
-
-				// Pillarbox: crop width
-				if (pillarbox) {
-					context.clearRect(0, 0, pillarbox, h)
-					context.clearRect(w, 0, -pillarbox, h)
-				}
-
-				// Letterbox: crop height
-				if (letterbox) {
-					context.clearRect(0, 0, w, letterbox)
-					context.clearRect(0, h, w, -letterbox)
-				}
-
-				// Text:
-				if (text) {
-
-					// Find out the font size that just fits
-
-					const vw = 0.9 * (w - 2 * pillarbox)
-					const vh = 0.9 * (h - 2 * letterbox)
-					const line_count = text.length
-
-					context.font = `bold ${vw}px ${display_fonts}`
-
-					let char_metrics = context.measureText('0')
-					let line_height = char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent
-					let text_width = text.reduce(
-						(max_width, current_line) => Math.max(
-							max_width,
-							context.measureText(current_line).width
-						), 0 // Accumulator starts at 0
-					)
-
-					const font_size = Math.min(vw ** 2 / text_width, vh ** 2 / line_height / line_count)
-
-					// Found the font size. Time to draw!
-
-					context.font = `bold ${font_size}px ${display_fonts}`
-
-					char_metrics = context.measureText('0')
-					line_height = 1.5 * (char_metrics.actualBoundingBoxAscent + char_metrics.actualBoundingBoxDescent)
-
-					context.lineWidth = font_size / 8
-					context.strokeStyle = 'black'
-					context.fillStyle = 'white'
-
-					text.forEach((line, index) => {
-						let x = center[0]
-						let y = center[1] + line_height * (index - line_count / 2 + 0.5)
-						context.strokeText(line, x, y)
-						context.fillText(line, x, y)
-					})
-				}
-
-				canvases.display.context.clearRect(0, 0, w, h)
-				canvases.display.context.drawImage(canvases.buffer.element, 0, 0)
-			}
 			clearInterval(task)
-			task = setInterval(draw, 33)
-			const new_stream = canvases.display.element.captureStream(30)
+			const fps = 30
+			task = setInterval(draw, 1000/fps, width, height)
+			const new_stream = canvases.display.element.captureStream(fps)
 			new_stream.addEventListener('inactive', () => {
 				old_stream.getTracks().forEach(track => track.stop())
-				canvases.display.context.clearRect(0, 0, w, h)
+				canvases.display.context.clearRect(...fill)
 				video.srcObject = null
 			})
 			return new_stream
