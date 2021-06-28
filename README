@@ -60,4 +60,27 @@ Unfortunately, temperature & tint filters don't work in Firefox.
 
 (C) Xing Liu 2020–2021, MIT License.
 
+---
+
+This project is no longer in active development. As the pandemic subsides
+in my area, so has my use of Google Meet, and with it Mercator Studio.
+Its development has reached calm plateau.
+
+My fingers are crossed that Mercator will continue working for those still
+learning or working from home, but I will no longer add new features or
+patch minor bugs. Though, if there are any changes to Google Meet that
+breaks the core functionality of Mercator Studio, I will strive to get
+them fixed.
+
+Until then, thank you for all of your support. I know this year must have
+been awful for a lot of you. I hope my extension helped alleviate some
+of your camera anxieties, or caused some laughter as you turned your skin
+blue.
+
+Best regards,
+Xing Liu
+2021-06-28
+
+---
+
 Check out other things I’ve made at https://x-ing.space.
